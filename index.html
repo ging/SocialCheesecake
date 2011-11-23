@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+    <meta charset="utf-8">
+		<style>
+			body {
+
+				margin: 0px;
+				padding: 0px;
+			}
+			
+		</style>
+		<script src="static/kinetic-v2.0.0.js"></script>
+		<script src="static/socialCheesecake.js"></script>
+		<script>
+		var tarta
+			window.requestAnimFrame = (function(callback) {
+				return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+				function(callback) {
+					window.setTimeout(callback, 1000 / 60);
+				};
+
+			})();
+
+			window.onload = function() {
+        var json_sectors = {"rMax" : 240, 
+                            "center" : {"x" : 400, "y" : 300},
+                            "sectors" : [{ "name":"John" , "subsectors" : [{"name" : "Cassidy"},{"name" : "Cassidy2"}]}, 
+                                         { "name":"Anna" , "subsectors" : [{"name" : "Abc"},{"name" : "Cassidy2"}]}, 
+                                         { "name":"Peter", "subsectors" : [{"name" : "Another"},{"name" : "World"}]},
+                                         { "name":"Olivia","subsectors" : [{"name" : "Dunham"},{"name" : "FBI"}]}
+                          ]};
+        new socialCheesecake.Cheesecake(json_sectors);
+/*				var stage = new Kinetic.Stage("container", 800, 600);
+        
+				stage.add((new socialCheesecake.Sector(400, 300, 240, 0, 0, (2 * Math.PI / 5),"ABC")).drawRegion());
+
+				stage.add((new socialCheesecake.Sector(400, 300, 240, 0, 2*Math.PI / 5, 2 * Math.PI/5, "DEF")).drawRegion()); 
+				//stage.add((new socialCheesecake.Sector(400, 300, 120, 0, 2 * Math.PI / 5, 2 * Math.PI / 5, "GHIJK")).drawRegion());
+
+				stage.add((new socialCheesecake.Sector(380, 300, 240, 0, 4 * Math.PI / 5, 2 * Math.PI / 5, "LMNO")).drawRegion());
+				//stage.add((new socialCheesecake.Sector(400, 300, 160, 80, 4 * Math.PI / 5, 2 * Math.PI / 5, "Mamíferos")).drawRegion());
+				//stage.add((new socialCheesecake.Sector(400, 300, 80, 0, 4 * Math.PI / 5, 2 * Math.PI / 5, "Compis")).drawRegion());
+
+				stage.add((new socialCheesecake.Sector(400, 300, 240, 0, 6 * Math.PI / 5, 2 * Math.PI / 5, "ZZZZZzzz")).drawRegion());
+				//stage.add((new socialCheesecake.Sector(400, 300, 120, 0, 6 * Math.PI / 5, 2 * Math.PI/5 , "SPQR")).drawRegion());
+
+				stage.add((new socialCheesecake.Sector(400, 300, 240, 0, 8 * Math.PI / 5, 2 * Math.PI / 5, "X")).drawRegion());
+				//stage.add((new socialCheesecake.Sector(400, 300, 160, 80, 8 * Math.PI / 5, 2 * Math.PI / 5, "Y")).drawRegion());
+				//stage.add((new socialCheesecake.Sector(400, 300, 80, 0, 8 * Math.PI / 5, 2 * Math.PI / 5, "1!!")).drawRegion());
+*/
+			};
+
+		</script>
+	</head>
+	<body id="container" onmousedown="return false;"></body>
+</html>
