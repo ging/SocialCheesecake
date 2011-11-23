@@ -64,29 +64,45 @@ window.socialCheesecake.Cheesecake = function(cheesecake) {
   this.stage = new Kinetic.Stage("container", 800, 600);
   var phi = 0;
   var delta = 2 * Math.PI / jsonSectors.length;
-  for(var i = 0; i < jsonSectors.length; i++) {
-    console.log(cheesecake.sectors[i]);
-    this.sectors[i] = (new socialCheesecake.Sector(this, cheesecake.center.x, cheesecake.center.y, cheesecake.rMax, 0, phi, delta, jsonSectors[i].name));
+  for(var i = 0; i < jsonSectors.length; i++) {    
+    var settings = { parent: this,
+                     center: { x: cheesecake.center.x, y: cheesecake.center.y},
+                     sector_info: { label: jsonSectors[i], phi: phi, delta: delta, rOut: cheesecake.rMax}
+                   };
+    console.log("Settings for " + i);
+    console.log(settings);
+    console.log("Settings for " + i + " end");
+    this.sectors[i] = (new socialCheesecake.Sector(settings));
     this.stage.add(this.sectors[i].getOrDrawRegion());
     phi += delta;
   }
 }
-window.socialCheesecake.Sector = function(parent, x, y, rOut, rIn, phi, delta, label) {
-  if(delta <= 0 || delta > 2 * Math.PI) {
+window.socialCheesecake.Sector = function(settings) {
+  if(settings.sector_info.delta <= 0 || settings.sector_info.delta > 2 * Math.PI) {
     throw "Delta must be greater than 0 and less than 2*pi";
   }
-  if(phi < 0 || phi > 2 * Math.PI) {
+  if(settings.sector_info.phi < 0 || settings.sector_info.phi > 2 * Math.PI) {
     throw "Phi must be greater or equal t 0 and less than 2*pi";
   }
-  this.parent = parent;
-  this.x = x;
-  this.y = y;
-  this.rOut = rOut;
-  this.rIn = rIn;
-  this.phi = phi;
-  this.delta = delta;
-  this.label = label;
+
+  if(settings.parent != null) this.parent = settings.parent;
+  
+  (settings.center.x !=null) ? this.x=settings.center.x : this.x=0;
+
+  (settings.center.y !=null) ? this.y=settings.center.y : this.y=0;
+  
+  (settings.sector_info.rOut !=null) ? this.rOut= settings.sector_info.rOut : this.rOut= 300;
+  
+  (settings.sector_info.rIn !=null) ? this.rIn= settings.sector_info.rIn : this.rIn=0;
+
+  (settings.sector_info.phi !=null) ? this.phi= settings.sector_info.phi : this.phi=0;
+  
+  (settings.sector_info.delta !=null) ? this.delta= settings.sector_info.delta : this.delta=0;
+  
+  (settings.sector_info.label.name !=null) ? this.label= settings.sector_info.label.name : this.label=0;
+  
   this._region = null;
+  
 }
 
 window.socialCheesecake.Sector.prototype._draw = function(context) {
