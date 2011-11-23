@@ -25,7 +25,14 @@ window.socialCheesecake.animations = {
         //socialCheesecake.transformations.changeColor(cheesecake.sectors[i].getOrDrawRegion().getContext(), "#f5f5f5");
       }
     }
-    
+    var settings = { parent: cheesecake,
+                          center: { x: cheesecake.center.x, y: cheesecake.center.y},
+                          sector_info: { phi: Math.PI/2, delta: 3*Math.PI/2, rOut: cheesecake.rMax, mouseout: { color:"#f5f5f5"},
+                                              mousedown: { color:"#f5f5f5"}, mouseup: { color:"#f5f5f5"},
+                                              mouseover: {color:"#f5f5f5"}
+                                            }                                              
+                         }; 
+    cheesecake.stage.add((new window.socialCheesecake.Sector(settings)).getOrDrawRegion());   
   },
   rotateFromTo : function(region, phiOrigion, phiDestination) {
 
@@ -60,8 +67,12 @@ window.socialCheesecake.text = {
 }
 window.socialCheesecake.Cheesecake = function(cheesecake) {
   var jsonSectors = cheesecake.sectors;
+  
+  this.center={x: cheesecake.center.x, y: cheesecake.center.y};
+  this.rMax= cheesecake.rMax;
   this.sectors = [];
   this.stage = new Kinetic.Stage("container", 800, 600);
+  
   var phi = 0;
   var delta = 2 * Math.PI / jsonSectors.length;
   for(var i = 0; i < jsonSectors.length; i++) {    
@@ -69,10 +80,7 @@ window.socialCheesecake.Cheesecake = function(cheesecake) {
                      center: { x: cheesecake.center.x, y: cheesecake.center.y},
                      sector_info: { label: jsonSectors[i], phi: phi, delta: delta, rOut: cheesecake.rMax}
                    };
-    console.log("Settings for " + i);
-    console.log(settings);
-    console.log("Settings for " + i + " end");
-    this.sectors[i] = (new socialCheesecake.Sector(settings));
+    this.sectors[i] = new socialCheesecake.Sector(settings);
     this.stage.add(this.sectors[i].getOrDrawRegion());
     phi += delta;
   }
@@ -88,19 +96,21 @@ window.socialCheesecake.Sector = function(settings) {
   if(settings.parent != null) this.parent = settings.parent;
   
   (settings.center.x !=null) ? this.x=settings.center.x : this.x=0;
-
   (settings.center.y !=null) ? this.y=settings.center.y : this.y=0;
   
-  (settings.sector_info.rOut !=null) ? this.rOut= settings.sector_info.rOut : this.rOut= 300;
-  
+  (settings.sector_info.rOut !=null) ? this.rOut= settings.sector_info.rOut : this.rOut= 300; 
   (settings.sector_info.rIn !=null) ? this.rIn= settings.sector_info.rIn : this.rIn=0;
 
-  (settings.sector_info.phi !=null) ? this.phi= settings.sector_info.phi : this.phi=0;
-  
+  (settings.sector_info.phi !=null) ? this.phi= settings.sector_info.phi : this.phi=0; 
   (settings.sector_info.delta !=null) ? this.delta= settings.sector_info.delta : this.delta=0;
   
-  (settings.sector_info.label.name !=null) ? this.label= settings.sector_info.label.name : this.label=0;
+  ((settings.sector_info.label !=null)&&(settings.sector_info.label.name !=null)) ? this.label= settings.sector_info.label.name : this.label="";
   
+  if(settings.sector_info.mouseover !=null) this.mouseover= settings.sector_info.mouseover;
+  if(settings.sector_info.mouseout !=null) this.mouseout= settings.sector_info.mouseout;
+  if(settings.sector_info.mousedown !=null) this.mousedown= settings.sector_info.mousedown;
+  if(settings.sector_info.mouseup !=null) this.mouseup= settings.sector_info.mouseup;
+
   this._region = null;
   
 }
@@ -134,42 +144,51 @@ window.socialCheesecake.Sector.prototype.getOrDrawRegion = function(redraw) {
       context.clearRect(0, 0, context.canvas.width, context.canvas.height);
       sector._draw(context);
     }
-
     
-   sector._region.addEventListener('mouseover', function() {
-     socialCheesecake.transformations.changeColor(sector._region.getContext(), "#aaffaa");
-     sector._region.getContext().restore();
-     sector._region.getContext().save();
-     socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
-                                           sector.y, (sector.rOut+sector.rIn)/2,
-                                           sector.phi, sector.delta);
-   });
-   sector._region.addEventListener('mouseout', function() {
-     socialCheesecake.transformations.changeColor(sector._region.getContext(), "#eeffee");
-     sector._region.getContext().restore();
-     sector._region.getContext().save();
-     socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
-     sector.y, (sector.rOut+sector.rIn)/2,
-     sector.phi, sector.delta);
-   });
-   sector._region.addEventListener('mousedown', function() {
-     socialCheesecake.transformations.changeColor(sector._region.getContext(), "#77ff77");
-     sector._region.getContext().restore();
-     sector._region.getContext().save();
-     socialCheesecake.animations.blurCheesecake(sector.parent, sector);
-     socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
-                                           sector.y, (sector.rOut+sector.rIn)/2,
-                                           sector.phi, sector.delta);
-   });
-   sector._region.addEventListener('mouseup', function() {
-     socialCheesecake.transformations.changeColor(sector._region.getContext(), "#aaffaa");
-     sector._region.getContext().restore();
-     sector._region.getContext().save();
-     socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
-     sector.y, (sector.rOut+sector.rIn)/2,
-     sector.phi, sector.delta);
-   });
-     
+    sector._region.addEventListener('mouseover', function() {
+      var color= "#aaffaa";
+      if((sector.mouseover != null) && (sector.mouseover.color != null)) color= sector.mouseover.color; 
+      socialCheesecake.transformations.changeColor(sector._region.getContext(), color);
+      sector._region.getContext().restore();
+      sector._region.getContext().save();
+      socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
+                                                                sector.y, (sector.rOut+sector.rIn)/2,
+                                                                sector.phi, sector.delta); 
+      if((sector.mouseover != null) && (sector.mouseover.callback != null)){
+        sector.mouseover.callback();
+      }
+    });
+    sector._region.addEventListener('mouseout', function() {
+      var color= "#eeffee";
+      if((sector.mouseout != null) && (sector.mouseout.color != null)) color= sector.mouseout.color;
+      socialCheesecake.transformations.changeColor(sector._region.getContext(), color);
+      sector._region.getContext().restore();
+      sector._region.getContext().save();
+      socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
+                                                                sector.y, (sector.rOut+sector.rIn)/2,
+                                                                sector.phi, sector.delta);
+    });
+    sector._region.addEventListener('mousedown', function() {
+      var color= "#77ff77";
+      if((sector.mousedown != null) && (sector.mousedown.color != null)) color= sector.mousedown.color;
+      socialCheesecake.transformations.changeColor(sector._region.getContext(), color);
+      sector._region.getContext().restore();
+      sector._region.getContext().save();
+      socialCheesecake.animations.blurCheesecake(sector.parent, sector);
+      socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
+                                                                sector.y, (sector.rOut+sector.rIn)/2,
+                                                                sector.phi, sector.delta);
+    });
+    sector._region.addEventListener('mouseup', function() {
+      var color= "#aaffaa";
+      if((sector.mouseover != null) && (sector.mouseover.color != null)) color= sector.mouseover.color;
+      socialCheesecake.transformations.changeColor(sector._region.getContext(), color);
+      sector._region.getContext().restore();
+      sector._region.getContext().save();
+      socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
+                                                                sector.y, (sector.rOut+sector.rIn)/2,
+                                                                sector.phi, sector.delta);
+    });       
   }
   return this._region
 }
