@@ -86,33 +86,54 @@ window.socialCheesecake.Cheesecake = function(cheesecake) {
   }
 }
 window.socialCheesecake.Sector = function(settings) {
-  if(settings.sector_info.delta <= 0 || settings.sector_info.delta > 2 * Math.PI) {
-    throw "Delta must be greater than 0 and less than 2*pi";
-  }
-  if(settings.sector_info.phi < 0 || settings.sector_info.phi > 2 * Math.PI) {
-    throw "Phi must be greater or equal t 0 and less than 2*pi";
-  }
 
   if(settings.parent != null) this.parent = settings.parent;
   
-  (settings.center.x !=null) ? this.x=settings.center.x : this.x=0;
-  (settings.center.y !=null) ? this.y=settings.center.y : this.y=0;
-  
-  (settings.sector_info.rOut !=null) ? this.rOut= settings.sector_info.rOut : this.rOut= 300; 
-  (settings.sector_info.rIn !=null) ? this.rIn= settings.sector_info.rIn : this.rIn=0;
+  if(!settings.center){
+    this.x=0;
+    this.y=0;
+  }else{
+    (settings.center.x !=null) ? this.x=settings.center.x : this.x=0;
+    (settings.center.y !=null) ? this.y=settings.center.y : this.y=0;
+  }
+  if(!settings.sector_info){
+    this.rOut= 300;
+    this.rIn=0;
+    this.phi=0;
+    this.delta=Math.PI/2;
+    this.label="";
+    this.mouseover={color : "#aaffaa"};
+    this.mouseout={color : "#eeffee"};
+    this.mousedown={color : "#77ff77"};
+    this.mouseup= {color :"#aaffaa"};
+  }else{
+    (settings.sector_info.rOut !=null) ? this.rOut= settings.sector_info.rOut : this.rOut= 300; 
+    (settings.sector_info.rIn !=null) ? this.rIn= settings.sector_info.rIn : this.rIn=0;
+    
+    if(!settings.sector_info.delta){
+      this.delta=Math.PI/2;
+    }else{
+      if(settings.sector_info.delta <= 0 || settings.sector_info.delta > 2 * Math.PI) {
+        throw "Delta must be greater than 0 and less than 2*pi";
+      }
+      this.delta= settings.sector_info.delta
+    }
+    
+    if(!settings.sector_info.phi){
+      this.phi=0;
+    }else{
+      if(settings.sector_info.phi < 0 || settings.sector_info.phi > 2 * Math.PI) {
+        throw "Phi must be greater or equal t 0 and less than 2*pi";
+      }
+      this.phi= settings.sector_info.phi
+    }
 
-  (settings.sector_info.phi !=null) ? this.phi= settings.sector_info.phi : this.phi=0; 
-  (settings.sector_info.delta !=null) ? this.delta= settings.sector_info.delta : this.delta=0;
-  
-  ((settings.sector_info.label !=null)&&(settings.sector_info.label.name !=null)) ? this.label= settings.sector_info.label.name : this.label="";
-  
-  if(settings.sector_info.mouseover !=null) this.mouseover= settings.sector_info.mouseover;
-  if(settings.sector_info.mouseout !=null) this.mouseout= settings.sector_info.mouseout;
-  if(settings.sector_info.mousedown !=null) this.mousedown= settings.sector_info.mousedown;
-  if(settings.sector_info.mouseup !=null) this.mouseup= settings.sector_info.mouseup;
+    ((settings.sector_info.label !=null)&&(settings.sector_info.label.name !=null)) ? 
+      this.label= settings.sector_info.label.name : this.label="";
+      
+  }
 
   this._region = null;
-  
 }
 
 window.socialCheesecake.Sector.prototype._draw = function(context) {
@@ -146,48 +167,62 @@ window.socialCheesecake.Sector.prototype.getOrDrawRegion = function(redraw) {
     }
     
     sector._region.addEventListener('mouseover', function() {
-      var color= "#aaffaa";
-      if((sector.mouseover != null) && (sector.mouseover.color != null)) color= sector.mouseover.color; 
-      socialCheesecake.transformations.changeColor(sector._region.getContext(), color);
-      sector._region.getContext().restore();
-      sector._region.getContext().save();
-      socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
-                                                                sector.y, (sector.rOut+sector.rIn)/2,
-                                                                sector.phi, sector.delta); 
+      if((sector.mouseover != null) && (sector.mouseover.color != null)){
+        var color= sector.mouseover.color;        
+        socialCheesecake.transformations.changeColor(sector._region.getContext(), color);
+        sector._region.getContext().restore();
+        sector._region.getContext().save();
+        socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
+                                                                  sector.y, (sector.rOut+sector.rIn)/2,
+                                                                  sector.phi, sector.delta);
+      }
       if((sector.mouseover != null) && (sector.mouseover.callback != null)){
         sector.mouseover.callback();
       }
     });
     sector._region.addEventListener('mouseout', function() {
-      var color= "#eeffee";
-      if((sector.mouseout != null) && (sector.mouseout.color != null)) color= sector.mouseout.color;
-      socialCheesecake.transformations.changeColor(sector._region.getContext(), color);
-      sector._region.getContext().restore();
-      sector._region.getContext().save();
-      socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
-                                                                sector.y, (sector.rOut+sector.rIn)/2,
-                                                                sector.phi, sector.delta);
+      if((sector.mouseout != null) && (sector.mouseout.color != null)){
+        var color= sector.mouseout.color;
+        
+        socialCheesecake.transformations.changeColor(sector._region.getContext(), color);
+        sector._region.getContext().restore();
+        sector._region.getContext().save();
+        socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
+                                                                  sector.y, (sector.rOut+sector.rIn)/2,
+                                                                  sector.phi, sector.delta);
+      }
+      if((sector.mouseout != null) && (sector.mouseout.callback != null)){
+        sector.mouseout.callback();
+      }
     });
     sector._region.addEventListener('mousedown', function() {
-      var color= "#77ff77";
-      if((sector.mousedown != null) && (sector.mousedown.color != null)) color= sector.mousedown.color;
-      socialCheesecake.transformations.changeColor(sector._region.getContext(), color);
-      sector._region.getContext().restore();
-      sector._region.getContext().save();
-      socialCheesecake.animations.blurCheesecake(sector.parent, sector);
-      socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
-                                                                sector.y, (sector.rOut+sector.rIn)/2,
-                                                                sector.phi, sector.delta);
+      if((sector.mousedown != null) && (sector.mousedown.color != null)){ 
+        var color = sector.mousedown.color;
+        socialCheesecake.transformations.changeColor(sector._region.getContext(), color);
+        sector._region.getContext().restore();
+        sector._region.getContext().save();
+        socialCheesecake.animations.blurCheesecake(sector.parent, sector);
+        socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
+                                                                  sector.y, (sector.rOut+sector.rIn)/2,
+                                                                  sector.phi, sector.delta);
+      }
+      if((sector.mousedown != null) && (sector.mousedown.callback != null)){
+        sector.mousedown.callback();
+      }
     });
     sector._region.addEventListener('mouseup', function() {
-      var color= "#aaffaa";
-      if((sector.mouseover != null) && (sector.mouseover.color != null)) color= sector.mouseover.color;
-      socialCheesecake.transformations.changeColor(sector._region.getContext(), color);
-      sector._region.getContext().restore();
-      sector._region.getContext().save();
-      socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
-                                                                sector.y, (sector.rOut+sector.rIn)/2,
-                                                                sector.phi, sector.delta);
+      if((sector.mouseup != null) && (sector.mouseup.color != null)){ 
+        var color= sector.mouseup.color;
+        socialCheesecake.transformations.changeColor(sector._region.getContext(), color);
+        sector._region.getContext().restore();
+        sector._region.getContext().save();
+        socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
+                                                                  sector.y, (sector.rOut+sector.rIn)/2,
+                                                                  sector.phi, sector.delta);
+      }
+      if((sector.mouseup != null) && (sector.mouseup.callback != null)){
+        sector.mouseup.callback();
+      }
     });       
   }
   return this._region
