@@ -51,7 +51,7 @@ window.socialCheesecake.Cheesecake = function(cheesecake) {
                                               mouseup: {color: "#aaffaa"} }
                         };
     this.sectors[i] = new socialCheesecake.Sector(settings);
-    this.stage.add(this.sectors[i].getOrDrawRegion());
+    this.stage.add(this.sectors[i].getRegion());
     phi += delta;
   }
 }
@@ -115,36 +115,66 @@ window.socialCheesecake.Sector = function(settings) {
   this._region = null;
 }
 
-window.socialCheesecake.Sector.prototype._draw = function(context) {
+window.socialCheesecake.Sector.prototype._draw = function(context, options) {
+  var x= this.x;
+  var y= this.y;
+  var phi= this.phi;
+  var delta= this.delta;
+  var rIn= this.rIn;
+  var rOut= this.rOut;
+  var color= this.color;
+  var label= this.label;
+  if(options!=null){
+    if(options.x) x=options.x;
+    if(options.y) y=options.y;
+    if(options.phi) phi= options.phi;
+    if(options.delta) delta= options.delta;
+    if(options.rIn) rIn= options.rIn;
+    if(options.rOut) rOut= options.rOut;
+    if(options.color) color= options.color;
+    if(options.label) label= options.label;
+  }
   context.save();
   context.beginPath();
-  context.arc(this.x, this.y, this.rOut, -this.phi, -(this.phi + this.delta), true);
-  context.lineTo(this.x + this.rIn * Math.cos(-this.phi - this.delta), this.y + this.rIn * Math.sin(-this.phi - this.delta));
-  context.arc(this.x, this.y, this.rIn, -(this.phi + this.delta), -this.phi, false);
+  context.arc(x, y, rOut, -phi, -(phi + delta), true);
+  context.lineTo(x + rIn * Math.cos(-phi - delta), y + rIn * Math.sin(-phi - delta));
+  context.arc(x, y, rIn, -(phi + delta), -phi, false);
   context.closePath();
-  context.fillStyle = this.color;
+  context.fillStyle = color;
   context.fill();
   context.lineWidth = 4;
   context.stroke();
   console.log(this);
-  socialCheesecake.text.writeCurvedText(this.label, context, this.x, this.y, (this.rOut + this.rIn) / 2, this.phi, this.delta);
+  socialCheesecake.text.writeCurvedText(label, context, x, y, (rOut + rIn) / 2, phi, delta);
 }
-window.socialCheesecake.Sector.prototype.getOrDrawRegion = function(redraw) {
-  if((this._region == null) || (redraw == true)) {
+window.socialCheesecake.Sector.prototype.getRegion = function(regenerate) {
+  if((this._region == null) || (regenerate == true)) {
     var sector = this;
-    if(sector._region == null) {
-      sector._region = new Kinetic.Region(function() {
-        var context = this.getContext();
-        sector._draw(context);
-      });
-      console.log("Creada nueva región");
-    } else {
-      var context = sector._region.getContext();
-      context.restore();
-      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-      sector._draw(context);
+    if(sector._region != null) {
+      /* TO-DO!!!
+      if(sector.parent != null){
+        var cheesecake=sector.parent;
+        var regions= cheesecake.stage.regions;
+        var regionIndex;
+        for(var j in regions){
+          if(regions[j]==sector._region){
+            regionIndex= j;
+          }
+        }
+      }
+      var canvas=sector.getRegion().getCanvas();
+      if((canvas!=null)&&(canvas.parentNode!=null)){
+        canvas.parentNode.removeChild(canvas);
+      }*/
     }
-    
+    sector._region = new Kinetic.Shape(function() {
+      var context = this.getContext();
+      sector._draw(context);
+    });
+    /*
+    if(regionIndex!=null){
+      regions[regionIndex]=this._region;
+    } */
     sector._region.addEventListener('mouseover', function() {
       if((sector.mouseover != null) && (sector.mouseover.color != null)){
         var color= sector.mouseover.color;        
@@ -180,7 +210,8 @@ window.socialCheesecake.Sector.prototype.getOrDrawRegion = function(redraw) {
       if((sector.mouseup != null) && (sector.mouseup.callback != null)){
         sector.mouseup.callback(sector);
       }
-    });       
+    });
+      
   }
   return this._region
 }
@@ -200,24 +231,22 @@ window.socialCheesecake.Sector.prototype.changeColor = function(color) {
 window.socialCheesecake.Sector.prototype.focus = function() {
   var sector= this;
   var context = sector._region.getContext();
-  var rOut= sector.rOut;
-  sector.rOut= rOut*1.1;
-  var redraw=true;
-  sector.getOrDrawRegion(redraw);
-  sector.rOut=rOut;
+  var options={rOut: sector.rOut*1.05};
+  sector.clear();
+  sector._draw(context, options);
 }
 window.socialCheesecake.Sector.prototype.focusAndBlurCheesecake = function() {
   var sector=this;
   var cheesecake= this.parent;
   var regions= cheesecake.stage.regions;
   regions.splice(0, regions.length);
-  regions.push(sector.getOrDrawRegion());
+  regions.push(sector.getRegion());
   cheesecake.stage.clear();
   console.log(regions);
 
-  for(i in cheesecake.sectors){
+  for(var i in cheesecake.sectors){
     if(cheesecake.sectors[i] != sector){
-      var canvas=cheesecake.sectors[i].getOrDrawRegion().getCanvas();
+      var canvas=cheesecake.sectors[i].getRegion().getCanvas();
       if(canvas.parentNode!=null){
         canvas.parentNode.removeChild(canvas);
         cheesecake.sectors[i].clear();
@@ -229,15 +258,16 @@ window.socialCheesecake.Sector.prototype.focusAndBlurCheesecake = function() {
                         sector_info: { phi: Math.PI/2, delta: 3*Math.PI/2, rOut: cheesecake.rMax, mouseout: { color:"#f5f5f5"},
                                             mousedown: { color:"#f5f5f5"}, mouseup: { color:"#f5f5f5"},
                                             mouseover: {color:"#f5f5f5"}, color: "#f5f5f5"
-                                          }                                              
+                                      }                                              
                        }; 
-  cheesecake.stage.add((new window.socialCheesecake.Sector(settings)).getOrDrawRegion());  
+  cheesecake.stage.add((new window.socialCheesecake.Sector(settings)).getRegion());  
 }
 window.socialCheesecake.Sector.prototype.clear = function() {
   var sector=this;
-  var context= sector.getOrDrawRegion().getContext();
-  if (context!=undefined){
-    context.restore();    
+  var context = sector.getRegion().getContext();
+  if (context!=undefined){    
+    context.restore();
+    context.save();
   }
-  sector.getOrDrawRegion().clear();
+  sector.getRegion().clear();
 }
