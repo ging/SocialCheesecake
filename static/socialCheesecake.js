@@ -282,8 +282,13 @@ window.socialCheesecake.Sector.prototype.focusAndBlurCheesecake = function() {
   var dummySector = new window.socialCheesecake.Sector(dummySettings);
   cheesecake.stage.add(greySector.getRegion());
   cheesecake.stage.add(dummySector.getRegion());
-  greySector.rotateTo(greySector.getRegion().getContext(),Math.PI/2);
-  dummySector.rotateTo(dummySector.getRegion().getContext(),Math.PI/2 - dummySector.delta);
+  greySector.rotateTo({ context: greySector.getRegion().getContext(), 
+                          phiDestination: Math.PI/2, 
+                          callback: function(){console.log("Ta Da!")}
+                      });
+  dummySector.rotateTo({ context: dummySector.getRegion().getContext(), 
+                          phiDestination: Math.PI/2 - dummySector.delta, 
+                      });
 }
 window.socialCheesecake.Sector.prototype.clear = function() {
   var sector=this;
@@ -295,26 +300,24 @@ window.socialCheesecake.Sector.prototype.clear = function() {
   sector.getRegion().clear();
 }
 
-window.socialCheesecake.Sector.prototype.rotateTo = function(context, phiDestination, step, currentPhi) {
+window.socialCheesecake.Sector.prototype.rotateTo = function(options){
     // update stage
     var sector = this;
-    //if(phiDestination < 0) phiDestination = phiDestination + 2*Math.PI;
-    if(currentPhi==null) var currentPhi = this.phi;
-    if(step==null) var step = 0.05;
+    var currentPhi = this.phi;
+    if(options.currentPhi) currentPhi = options.currentPhi;
+    var step = 0.05;
+    if(options.step) step = options.step;
+    if(!options.context) throw "context must be defined"   
+    var context = options.context;
     var canvas = context.canvas;
+    if(!options.phiDestination) throw "phiDestination must be defined"
+    var phiDestination = options.phiDestination
     if((phiDestination < 2*Math.PI)&&(currentPhi > phiDestination)) phiDestination = phiDestination + 2*Math.PI;
     
     currentPhi = currentPhi + step;
     if(currentPhi > phiDestination){
       currentPhi = phiDestination
     }
-    
-    
-    console.log("Phi sector");
-    console.log(this.phi);    
-    console.log(phiDestination);  
-    console.log(currentPhi);
-    console.log("----------------------------------------------------");
     // clear stage
     context.restore();
     context.save();
@@ -326,7 +329,15 @@ window.socialCheesecake.Sector.prototype.rotateTo = function(context, phiDestina
     // request new frame
     if(currentPhi < phiDestination){
       requestAnimFrame(function() {
-        sector.rotateTo(context, phiDestination, step, currentPhi);
+        sector.rotateTo({ context: context, 
+                          phiDestination: phiDestination, 
+                          step: step, 
+                          currentPhi: currentPhi, 
+                          callback: options.callback
+                        });
+          
       });
+    }else{
+      if(options.callback) options.callback();
     }
   }
