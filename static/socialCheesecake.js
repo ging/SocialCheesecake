@@ -110,9 +110,11 @@ window.socialCheesecake.Sector = function(settings) {
     if(settings.sector_info.mousedown !=null) this.mousedown= settings.sector_info.mousedown;
     if(settings.sector_info.mouseup !=null) this.mouseup= settings.sector_info.mouseup;
   }
-
-
-  
+  this.originalAttr = { x: this.x, y: this.y, phi: this.phi, delta: this.delta, rIn: this.rIn, 
+                        rOut: this.rOut, color: this.color, label: this.label,
+                        mouseover: this.mouseover, mouseout: this.mouseout, 
+                        mousedown: this.mousedown, mouseup: this.mouseup
+                      };
   this._region = null;
 }
 
@@ -133,7 +135,7 @@ window.socialCheesecake.Sector.prototype._draw = function(context, options) {
     if(options.rIn) rIn = options.rIn;
     if(options.rOut) rOut = options.rOut;
     if(options.color) color = options.color;
-    if(options.label) label = options.label;
+    if(options.label) label = options.label;    
   }
   context.save();
   context.beginPath();
@@ -228,6 +230,13 @@ window.socialCheesecake.Sector.prototype.changeColor = function(color) {
                                                             sector.y, (sector.rOut+sector.rIn)/2,
                                                             sector.phi, sector.delta);
 }
+window.socialCheesecake.Sector.prototype.expand = function() {
+  var sector = this;
+  var context= sector._region.getContext();
+  var options={delta: Math.PI/2, phi: 0};
+  sector.clear();
+  sector._draw(context, options);
+}
 window.socialCheesecake.Sector.prototype.focus = function() {
   var sector= this;
   var context = sector._region.getContext();
@@ -278,8 +287,8 @@ window.socialCheesecake.Sector.prototype.focusAndBlurCheesecake = function() {
                                  label: {name: sector.label}
                                }                                              
                  }; 
-  var greySector = new window.socialCheesecake.Sector(greySettings);
-  var dummySector = new window.socialCheesecake.Sector(dummySettings);
+  var greySector = new socialCheesecake.Sector(greySettings);
+  var dummySector = new socialCheesecake.Sector(dummySettings);
   cheesecake.stage.add(greySector.getRegion());
   cheesecake.stage.add(dummySector.getRegion());
   greySector.rotateTo({ context: greySector.getRegion().getContext(), 
@@ -287,7 +296,8 @@ window.socialCheesecake.Sector.prototype.focusAndBlurCheesecake = function() {
                           callback: function(){console.log("Ta Da!")}
                       });
   dummySector.rotateTo({ context: dummySector.getRegion().getContext(), 
-                          phiDestination: Math.PI/2 - dummySector.delta, 
+                          phiDestination: Math.PI/2 - dummySector.delta,
+                          callback: function(){dummySector.expand();}
                       });
 }
 window.socialCheesecake.Sector.prototype.clear = function() {
