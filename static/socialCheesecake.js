@@ -128,14 +128,14 @@ window.socialCheesecake.Sector.prototype._draw = function(context, options) {
   var color = this.color;
   var label = this.label;
   if(options!=null){
-    if(options.x) x = options.x;
-    if(options.y) y = options.y;
-    if(options.phi) phi = options.phi;
-    if(options.delta) delta = options.delta;
-    if(options.rIn) rIn = options.rIn;
-    if(options.rOut) rOut = options.rOut;
-    if(options.color) color = options.color;
-    if(options.label) label = options.label;    
+    if(options.x != null) x = options.x;
+    if(options.y != null) y = options.y;
+    if(options.phi != null) phi = options.phi;
+    if(options.delta != null) delta = options.delta;
+    if(options.rIn != null) rIn = options.rIn;
+    if(options.rOut != null) rOut = options.rOut;
+    if(options.color != null) color = options.color;
+    if(options.label != null) label = options.label;    
   }
   context.save();
   context.beginPath();
@@ -232,10 +232,41 @@ window.socialCheesecake.Sector.prototype.changeColor = function(color) {
 }
 window.socialCheesecake.Sector.prototype.expand = function() {
   var sector = this;
+  var delta= sector.delta;
+  var phi= sector.phi;
   var context= sector._region.getContext();
-  var options={delta: Math.PI/2, phi: 0};
+  var currentPhi = this.phi;
+  var step = 0.05;
+  //if(options.step) step = options.step;
+  
+  if(delta>Math.PI/2){
+    if(delta-Math.PI/2 < step){
+      delta-=delta-Math.PI/2;
+      phi += delta-Math.PI/2;
+    }else{
+      delta -= step;
+      phi += step;
+    }
+  }
+  else if(delta<Math.PI/2){
+    if(Math.PI/2 - delta < step){
+      delta += Math.PI/2 - delta;
+      phi -= Math.PI/2 - delta;
+    }
+    delta += step;
+    phi -= step;
+  }
+  
+  this.delta= delta;
+  this.phi= phi;
+  
   sector.clear();
-  sector._draw(context, options);
+  sector._draw(context);
+  if(delta!= Math.PI/2){
+    requestAnimFrame(function() {
+      sector.expand();
+    });
+  }
 }
 window.socialCheesecake.Sector.prototype.focus = function() {
   var sector= this;
@@ -311,16 +342,17 @@ window.socialCheesecake.Sector.prototype.clear = function() {
 }
 
 window.socialCheesecake.Sector.prototype.rotateTo = function(options){
+    console.log("Opciones rotate");
+    console.log(options);
     // update stage
     var sector = this;
     var currentPhi = this.phi;
-    if(options.currentPhi) currentPhi = options.currentPhi;
     var step = 0.05;
     if(options.step) step = options.step;
-    if(!options.context) throw "context must be defined"   
+    if(options.context==null) throw "context must be defined"   
     var context = options.context;
     var canvas = context.canvas;
-    if(!options.phiDestination) throw "phiDestination must be defined"
+    if(options.phiDestination==null) throw "phiDestination must be defined"
     var phiDestination = options.phiDestination
     if((phiDestination < 2*Math.PI)&&(currentPhi > phiDestination)) phiDestination = phiDestination + 2*Math.PI;
     
@@ -328,23 +360,23 @@ window.socialCheesecake.Sector.prototype.rotateTo = function(options){
     if(currentPhi > phiDestination){
       currentPhi = phiDestination
     }
+    sector.phi= currentPhi;
     // clear stage
     context.restore();
     context.save();
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     // draw stage
-    this._draw(context, {phi : currentPhi});
+    this._draw(context);
 
     // request new frame
     if(currentPhi < phiDestination){
       requestAnimFrame(function() {
         sector.rotateTo({ context: context, 
-                          phiDestination: phiDestination, 
-                          step: step, 
-                          currentPhi: currentPhi, 
-                          callback: options.callback
-                        });
+                                phiDestination: phiDestination, 
+                                step: step,  
+                                callback: options.callback
+                              });
           
       });
     }else{
