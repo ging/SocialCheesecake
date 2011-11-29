@@ -95,7 +95,7 @@ window.socialCheesecake.Sector = function(settings) {
       this.phi=0;
     }else{
       if(settings.sector_info.phi < 0 || settings.sector_info.phi > 2 * Math.PI) {
-        throw "Phi must be greater or equal t 0 and less than 2*pi";
+        throw "Phi must be greater or equal to 0 and less than 2*pi";
       }
       this.phi= settings.sector_info.phi
     }
@@ -230,54 +230,84 @@ window.socialCheesecake.Sector.prototype.changeColor = function(color) {
                                                             sector.y, (sector.rOut+sector.rIn)/2,
                                                             sector.phi, sector.delta);
 }
-window.socialCheesecake.Sector.prototype.expand = function() {
+
+/**
+  *
+  * Options: delta - new delta to achieve
+                  context - sector context to work with
+                  step - sets the animation speed
+                  anchor - "beginning" , "b"
+                               "middle", "m"
+                               "end", "e"
+  *
+**/
+window.socialCheesecake.Sector.prototype.resize = function(options) {
+  if(!options) throw "No arguments passed to the function";
+  if(options.context==null) throw "context must be defined"   
+  var context = options.context;
   var sector = this;
-  var delta= sector.delta;
-  var phi= sector.phi;
-  var context= sector._region.getContext();
-  var currentPhi = this.phi;
+  var currentDelta= sector.delta;
+  var currentPhi= sector.phi;
   var step = 0.05;
-  //if(options.step) step = options.step;
-  
-  if(delta>Math.PI/2){
-    if(delta-Math.PI/2 < step){
-      delta-=delta-Math.PI/2;
-      phi += delta-Math.PI/2;
+  var goalDelta= Math.PI/2;
+  var anchor= 1;
+  if(options.step) step = options.step;
+  if(options.delta){
+    goalDelta= options.delta;
+    console.log("Cambiando delta objetivo a "+ goalDelta);
+  }
+  if(options.anchor){
+    if((options.anchor=="b")||(options.anchor=="B")||(options.anchor=="beginning")) anchor= 0;
+    if((options.anchor=="m")||(options.anchor=="M")||(options.anchor=="middle")) anchor= 0.5;
+    if((options.anchor=="e")||(options.anchor=="E")||(options.anchor=="end")) anchor= 1;   
+  }
+ 	console.log("Entrando en extend");
+  console.log("Phi: "+ currentPhi);
+  console.log("Delta: "+ currentDelta);
+  if(currentDelta>goalDelta){
+    if(currentDelta-goalDelta < step){
+      currentPhi += anchor*(currentDelta-goalDelta);
+      currentDelta-=currentDelta-goalDelta;
     }else{
-      delta -= step;
-      phi += step;
+      currentDelta -= step;
+      currentPhi += anchor*step;
     }
-  }
-  else if(delta<Math.PI/2){
-    if(Math.PI/2 - delta < step){
-      delta += Math.PI/2 - delta;
-      phi -= Math.PI/2 - delta;
+  }else if(currentDelta<goalDelta){
+    if(goalDelta - currentDelta < step){
+      currentPhi -= anchor*(goalDelta - currentDelta);
+      currentDelta += goalDelta - currentDelta;     
+    }else{
+      currentDelta += step;
+      currentPhi -= anchor*step;
     }
-    delta += step;
-    phi -= step;
   }
   
-  this.delta= delta;
-  this.phi= phi;
+  sector.delta= currentDelta;
+  sector.phi= currentPhi;
   
   sector.clear();
   sector._draw(context);
-  if(delta!= Math.PI/2){
+  if(currentDelta!= goalDelta){
     requestAnimFrame(function() {
-      sector.expand();
+      sector.resize(options);
     });
+  }else{
+	console.log("Dejo de ampliar/reducir");
+	console.log("Phi definitivo: "+ currentPhi);
+  console.log("Delta definitivo: "+ currentDelta);
   }
 }
 window.socialCheesecake.Sector.prototype.focus = function() {
   var sector= this;
   var context = sector._region.getContext();
-  var options={rOut: sector.rOut*1.05};
+  sector.rOut*=1.05;
   sector.clear();
-  sector._draw(context, options);
+  sector._draw(context);
 }
 window.socialCheesecake.Sector.prototype.unfocus = function() {
   var sector= this;
   var context = sector._region.getContext();
+  sector.rOut= sector.originalAttr.rOut;
   sector.clear();
   sector._draw(context);
 }
@@ -286,17 +316,14 @@ window.socialCheesecake.Sector.prototype.focusAndBlurCheesecake = function() {
   var cheesecake= this.parent;
   var regions= cheesecake.stage.shapes;
   regions.splice(0, regions.length);
-  //regions.push(sector.getRegion());
   cheesecake.stage.clear();
 
   for(var i in cheesecake.sectors){
-    //if(cheesecake.sectors[i] != sector){
       var canvas=cheesecake.sectors[i].getRegion().getCanvas();
       if(canvas.parentNode!=null){
         canvas.parentNode.removeChild(canvas);
         cheesecake.sectors[i].clear();
       }
-    //}
   }
   var greySettings ={ parent: cheesecake,
                   center: { x: cheesecake.center.x, y: cheesecake.center.y},
@@ -313,7 +340,7 @@ window.socialCheesecake.Sector.prototype.focusAndBlurCheesecake = function() {
                   center: { x: cheesecake.center.x, y: cheesecake.center.y},
                   sector_info: { phi: sector.phi, 
                                  delta: sector.delta, 
-                                 rOut: cheesecake.rMax, 
+                                 rOut: sector.rOut, 
                                  color: "#eeffee",
                                  label: {name: sector.label}
                                }                                              
@@ -322,13 +349,15 @@ window.socialCheesecake.Sector.prototype.focusAndBlurCheesecake = function() {
   var dummySector = new socialCheesecake.Sector(dummySettings);
   cheesecake.stage.add(greySector.getRegion());
   cheesecake.stage.add(dummySector.getRegion());
-  greySector.rotateTo({ context: greySector.getRegion().getContext(), 
+  var greySectorContext= greySector.getRegion().getContext();
+  var dummySectorContext= dummySector.getRegion().getContext();
+  greySector.rotateTo({ context: greySectorContext, 
                           phiDestination: Math.PI/2, 
-                          callback: function(){console.log("Ta Da!")}
+                          callback: function(){greySector.resize({context:greySectorContext, delta: 3*Math.PI/2, anchor:"B" });}
                       });
-  dummySector.rotateTo({ context: dummySector.getRegion().getContext(), 
+  dummySector.rotateTo({ context: dummySectorContext, 
                           phiDestination: Math.PI/2 - dummySector.delta,
-                          callback: function(){dummySector.expand();}
+                          callback: function(){dummySector.resize({context: dummySectorContext, anchor: "E"});}
                       });
 }
 window.socialCheesecake.Sector.prototype.clear = function() {
@@ -342,17 +371,15 @@ window.socialCheesecake.Sector.prototype.clear = function() {
 }
 
 window.socialCheesecake.Sector.prototype.rotateTo = function(options){
-    console.log("Opciones rotate");
-    console.log(options);
     // update stage
     var sector = this;
     var currentPhi = this.phi;
     var step = 0.05;
+    if(!options) throw "No arguments passed to the function";
     if(options.step) step = options.step;
-    if(options.context==null) throw "context must be defined"   
+    if(options.context==null) throw "context must be defined";   
     var context = options.context;
-    var canvas = context.canvas;
-    if(options.phiDestination==null) throw "phiDestination must be defined"
+    if(options.phiDestination==null) throw "phiDestination must be defined";
     var phiDestination = options.phiDestination
     if((phiDestination < 2*Math.PI)&&(currentPhi > phiDestination)) phiDestination = phiDestination + 2*Math.PI;
     
@@ -362,9 +389,7 @@ window.socialCheesecake.Sector.prototype.rotateTo = function(options){
     }
     sector.phi= currentPhi;
     // clear stage
-    context.restore();
-    context.save();
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    sector.clear();
 
     // draw stage
     this._draw(context);
