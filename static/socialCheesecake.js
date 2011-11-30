@@ -8,6 +8,7 @@ window.socialCheesecake.text = {
   writeCurvedText : function(text, context, x, y, r, phi, delta) {
     context.font = "bold 20px sans-serif";
     context.fillStyle = '#000';
+    context.textBaseline="middle";
     var medium_alpha = Math.tan(context.measureText(text).width / (text.length * r));
     if(medium_alpha * text.length <= delta) {
       context.translate(x, y);
@@ -82,7 +83,7 @@ window.socialCheesecake.Sector = function(settings) {
     (settings.sector_info.rOut !=null) ? this.rOut= settings.sector_info.rOut : this.rOut= 300; 
     (settings.sector_info.rIn !=null) ? this.rIn= settings.sector_info.rIn : this.rIn=0;
     
-    if(!settings.sector_info.delta){
+    if(settings.sector_info.delta==null){
       this.delta=Math.PI/2;
     }else{
       if(settings.sector_info.delta <= 0 || settings.sector_info.delta > 2 * Math.PI) {
@@ -91,7 +92,7 @@ window.socialCheesecake.Sector = function(settings) {
       this.delta= settings.sector_info.delta
     }
     
-    if(!settings.sector_info.phi){
+    if(settings.sector_info.phi==null){
       this.phi=0;
     }else{
       if(settings.sector_info.phi < 0 || settings.sector_info.phi > 2 * Math.PI) {
@@ -236,9 +237,9 @@ window.socialCheesecake.Sector.prototype.changeColor = function(color) {
   * Options: delta - new delta to achieve
                   context - sector context to work with
                   step - sets the animation speed
-                  anchor - "beginning" , "b"
-                               "middle", "m"
-                               "end", "e"
+                  anchor - "beginning" , "b", "B"
+                               "middle", "m", "M"
+                               "end", "e", "E"
   *
 **/
 window.socialCheesecake.Sector.prototype.resize = function(options) {
@@ -252,18 +253,13 @@ window.socialCheesecake.Sector.prototype.resize = function(options) {
   var goalDelta= Math.PI/2;
   var anchor= 1;
   if(options.step) step = options.step;
-  if(options.delta){
-    goalDelta= options.delta;
-    console.log("Cambiando delta objetivo a "+ goalDelta);
-  }
+  if(options.delta) goalDelta= options.delta;
   if(options.anchor){
-    if((options.anchor=="b")||(options.anchor=="B")||(options.anchor=="beginning")) anchor= 0;
-    if((options.anchor=="m")||(options.anchor=="M")||(options.anchor=="middle")) anchor= 0.5;
-    if((options.anchor=="e")||(options.anchor=="E")||(options.anchor=="end")) anchor= 1;   
+    if((options.anchor.toLowerCase()=="b")||(options.anchor=="beginning")) anchor= 0;
+    if((options.anchor.toLowerCase()=="m")||(options.anchor=="middle")) anchor= 0.5;
+    if((options.anchor.toLowerCase()=="e")||(options.anchor=="end")) anchor= 1;   
   }
- 	console.log("Entrando en extend");
-  console.log("Phi: "+ currentPhi);
-  console.log("Delta: "+ currentDelta);
+  
   if(currentDelta>goalDelta){
     if(currentDelta-goalDelta < step){
       currentPhi += anchor*(currentDelta-goalDelta);
@@ -291,10 +287,6 @@ window.socialCheesecake.Sector.prototype.resize = function(options) {
     requestAnimFrame(function() {
       sector.resize(options);
     });
-  }else{
-	console.log("Dejo de ampliar/reducir");
-	console.log("Phi definitivo: "+ currentPhi);
-  console.log("Delta definitivo: "+ currentDelta);
   }
 }
 window.socialCheesecake.Sector.prototype.focus = function() {
@@ -315,7 +307,10 @@ window.socialCheesecake.Sector.prototype.focusAndBlurCheesecake = function() {
   var sector=this;
   var cheesecake= this.parent;
   var regions= cheesecake.stage.shapes;
-  regions.splice(0, regions.length);
+ // regions.splice(0, regions.length);
+  for(var i in cheesecake.stage.shapes){
+    cheesecake.stage.remove(cheesecake.stage.shapes[i]);
+  }
   cheesecake.stage.clear();
 
   for(var i in cheesecake.sectors){
@@ -351,6 +346,7 @@ window.socialCheesecake.Sector.prototype.focusAndBlurCheesecake = function() {
   cheesecake.stage.add(dummySector.getRegion());
   var greySectorContext= greySector.getRegion().getContext();
   var dummySectorContext= dummySector.getRegion().getContext();
+
   greySector.rotateTo({ context: greySectorContext, 
                           phiDestination: Math.PI/2, 
                           callback: function(){greySector.resize({context:greySectorContext, delta: 3*Math.PI/2, anchor:"B" });}
@@ -380,29 +376,43 @@ window.socialCheesecake.Sector.prototype.rotateTo = function(options){
     if(options.context==null) throw "context must be defined";   
     var context = options.context;
     if(options.phiDestination==null) throw "phiDestination must be defined";
-    var phiDestination = options.phiDestination
-    if((phiDestination < 2*Math.PI)&&(currentPhi > phiDestination)) phiDestination = phiDestination + 2*Math.PI;
-    
-    currentPhi = currentPhi + step;
-    if(currentPhi > phiDestination){
-      currentPhi = phiDestination
+    var phiDestination = options.phiDestination % (2*Math.PI);
+    while(phiDestination<0){
+      phiDestination +=  (2*Math.PI);
     }
-    sector.phi= currentPhi;
+    
+    var grow=0;
+    if( phiDestination > currentPhi){
+      grow=1;
+    }else if( phiDestination < currentPhi){
+      grow=-1;
+    }
+   
+    if( (2*Math.PI) - Math.abs(phiDestination-currentPhi) >= Math.abs(phiDestination-currentPhi)){
+      if( Math.abs(phiDestination-currentPhi) < step) step= Math.abs(phiDestination-currentPhi);
+      currentPhi +=  (grow*step);
+    }else {
+      if( (2*Math.PI) - Math.abs(phiDestination-currentPhi) < step) step= (2*Math.PI) - Math.abs(phiDestination-currentPhi);
+      phiDestination -= (grow*2*Math.PI);
+      currentPhi -=  (grow*step);
+    }
+    sector.phi=currentPhi;
+    
     // clear stage
     sector.clear();
 
     // draw stage
     this._draw(context);
-
+    
     // request new frame
-    if(currentPhi < phiDestination){
+    if(Math.abs(currentPhi -phiDestination) > 0.001){
+      sector.phi= currentPhi%(2*Math.PI);      
       requestAnimFrame(function() {
         sector.rotateTo({ context: context, 
-                                phiDestination: phiDestination, 
+                                phiDestination: options.phiDestination, 
                                 step: step,  
-                                callback: options.callback
-                              });
-          
+                                callback: options.callback,
+                              });         
       });
     }else{
       if(options.callback) options.callback();
