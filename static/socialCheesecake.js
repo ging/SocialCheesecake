@@ -29,30 +29,99 @@ window.socialCheesecake.text = {
 }
 
 /* CHEESECAKE */
-window.socialCheesecake.Cheesecake = function(cheesecake) {
-  var jsonSectors = cheesecake.sectors;
-  
-  this.center={x: cheesecake.center.x, y: cheesecake.center.y};
-  this.rMax= cheesecake.rMax;
-  this.sectors = [];
-  this.auxiliarSectors = [];
-  this.stage = new Kinetic.Stage("container", 800, 600);
+window.socialCheesecake.Cheesecake = function(cheesecakeData) {
+  var jsonSectors = cheesecakeData.sectors;
+  var cheesecake= this;
+  cheesecake.center={x: cheesecakeData.center.x, y: cheesecakeData.center.y};
+  cheesecake.rMax= cheesecakeData.rMax;
+  cheesecake.sectors = [];
+  cheesecake.auxiliarSectors = [];
+  cheesecake.stage = new Kinetic.Stage("container", 800, 600);
   
   var phi = 0;
   var delta = 2 * Math.PI / jsonSectors.length;
   for(var i = 0; i < jsonSectors.length; i++) {    
-    var settings ={ parent: this,
-                    center: { x: cheesecake.center.x, y: cheesecake.center.y},
-                    sector_info: { label: jsonSectors[i], phi: phi, delta: delta, rOut: cheesecake.rMax,
-                                  mouseover: {color: "#aaffaa", callback: function(sector) {sector.focus();}}, 
-                                  mouseout: {color: "#eeffee", callback: function(sector) {sector.unfocus();}},
-                                  mousedown: {color: "#77ff77", callback: function(sector) {sector.focusAndBlurCheesecake();}}, 
+    var settings ={ parent: cheesecake,
+                    center: { x: cheesecakeData.center.x, y: cheesecakeData.center.y},
+                    sector_info: { label: jsonSectors[i], phi: phi, delta: delta, rOut: cheesecakeData.rMax,
+                                  mouseover: {color: "#aaffaa", 
+                                              callback: function(sector) {sector.focus();}}, 
+                                  mouseout: {color: "#eeffee", 
+                                              callback: function(sector) {sector.unfocus();}},
+                                  mousedown: {color: "#77ff77", 
+                                              callback: function(sector) {cheesecake.focusAndBlurCheesecake(sector);}}, 
                                   mouseup: {color: "#aaffaa"} }
                    };
-    this.sectors[i] = new socialCheesecake.Sector(settings);
-    this.stage.add(this.sectors[i].getRegion());
+    cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
+    cheesecake.stage.add(cheesecake.sectors[i].getRegion());
     phi += delta;
   }
+}
+
+window.socialCheesecake.Cheesecake.prototype.focusAndBlurCheesecake = function(sector) {
+  var cheesecake = this;
+  var regions = cheesecake.stage.shapes;
+  var sectorIndex;
+  for( var i in cheesecake.sectors){
+    if(cheesecake.sectors[i] === sector) sectorIndex= i;
+  }
+  if(sectorIndex==null) throw "sector doesn't belong to this cheesecake"
+  
+  //Clear stage and remove regions
+  for(var i=(regions.length -1); i>=0; i--){
+    cheesecake.stage.remove(regions[i])
+  }
+
+  cheesecake.stage.clear();
+
+  //Add auxiliar sectors
+  var greySettings ={ parent: cheesecake,
+                      center: { x: cheesecake.center.x, y: cheesecake.center.y},
+                      sector_info: { phi: sector.phi + sector.delta, delta: 2*Math.PI - sector.delta, 
+                                     rOut: cheesecake.rMax,
+                                     mouseout: { color:"#f5f5f5"},
+                                     mousedown: { color:"#f5f5f5"}, 
+                                     mouseup: { color:"#f5f5f5"},
+                                     mouseover: {color:"#f5f5f5"},
+                                     color: "#f5f5f5"
+                                   }
+                     }; 
+  var dummySettings = { parent: cheesecake,
+                        center: { x: cheesecake.center.x, y: cheesecake.center.y},
+                        sector_info: { phi: sector.phi, 
+                                      delta: sector.delta, 
+                                      rOut: sector.rOut, 
+                                      color: "#eeffee",
+                                      label: {name: sector.label},
+                                      simulate: sectorIndex
+                                    }
+                       }; 
+  var greySector = new socialCheesecake.Sector(greySettings);
+  cheesecake.auxiliarSectors.push(greySector);
+  var dummySector = new socialCheesecake.Sector(dummySettings)
+  cheesecake.auxiliarSectors.push(dummySector);
+  
+  cheesecake.stage.add(greySector.getRegion());
+  cheesecake.stage.add(dummySector.getRegion());
+  var greySectorContext= greySector.getRegion().getContext();
+  var dummySectorContext= dummySector.getRegion().getContext();
+  
+  //Animations
+  greySector.rotateTo({ context: greySectorContext, 
+                        phiDestination: Math.PI/2, 
+                        callback: function(){
+                                    greySector.resize({context:greySectorContext, delta: 3*Math.PI/2, anchor:"B" });
+                                    greySector.mousedown.callback= function(sector){
+                                                              cheesecake.unfocusAndUnblurCheesecake(sector);
+                                                             };
+                                  }
+                      });
+  dummySector.rotateTo({ context: dummySectorContext, 
+                          phiDestination: Math.PI/2 - dummySector.delta,
+                          callback: function(){
+                                      dummySector.resize({context: dummySectorContext, anchor: "E"});
+                                    }
+                      });
 }
 
 window.socialCheesecake.Cheesecake.prototype.recoverCheesecake = function() {
@@ -70,6 +139,45 @@ window.socialCheesecake.Cheesecake.prototype.recoverCheesecake = function() {
   for( var i in cheesecake.sectors){
     cheesecake.stage.add(cheesecake.sectors[i].getRegion());
   }
+}
+
+window.socialCheesecake.Cheesecake.prototype.unfocusAndUnblurCheesecake = function(sector) {
+  var cheesecake = this;
+  var auxiliarSectors= this.auxiliarSectors;
+  var sector;
+  var greySector;
+  
+  //Localize the dummy and grey sectors
+  for(var i in auxiliarSectors){
+    if(sector.simulate != null){
+      sector= auxiliarSectors[i];                         
+    }else{
+      greySector = auxiliarSectors[i];
+    }
+  }
+  
+  //Animate and go back to the general view
+  sector.resize({context: sector.getRegion().getContext(), 
+                          anchor: "B",
+                          delta: sector.originalAttr.delta,
+                          callback: function(){
+                                                    sector.rotateTo({ context: sector.getRegion().getContext(), 
+                                                                            phiDestination: sector.originalAttr.phi
+                                                                          });
+                                                  }
+                      });
+  greySector.resize({context: greySector.getRegion().getContext(), 
+                                    anchor: "E",
+                                    delta: greySector.originalAttr.delta,
+                                    callback: function(){
+                                                    greySector.rotateTo({ context: greySector.getRegion().getContext(), 
+                                                                                    phiDestination: greySector.originalAttr.phi,
+                                                                                    callback: function(){ 
+                                                                                                    cheesecake.recoverCheesecake();
+                                                                                                  }
+                                                                                  });
+                                                  }
+                             });  
 }
 
 /*SECTOR*/
@@ -125,11 +233,14 @@ window.socialCheesecake.Sector = function(settings) {
     if(settings.sector_info.mouseout !=null) this.mouseout= settings.sector_info.mouseout;
     if(settings.sector_info.mousedown !=null) this.mousedown= settings.sector_info.mousedown;
     if(settings.sector_info.mouseup !=null) this.mouseup= settings.sector_info.mouseup;
+    
+    if(settings.sector_info.simulate !=null) this.simulate= settings.sector_info.simulate;
   }
   this.originalAttr = { x: this.x, y: this.y, phi: this.phi, delta: this.delta, rIn: this.rIn, 
                         rOut: this.rOut, color: this.color, label: this.label,
                         mouseover: this.mouseover, mouseout: this.mouseout, 
-                        mousedown: this.mousedown, mouseup: this.mouseup
+                        mousedown: this.mousedown, mouseup: this.mouseup,
+                        simulate: this.simulate
                       };
   this._region = null;
 }
@@ -245,8 +356,8 @@ window.socialCheesecake.Sector.prototype.changeColor = function(color) {
   sector._region.getContext().restore();
   sector._region.getContext().save();
   socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), sector.x,
-                                                            sector.y, (sector.rOut+sector.rIn)/2,
-                                                            sector.phi, sector.delta);
+                                        sector.y, (sector.rOut+sector.rIn)/2,
+                                        sector.phi, sector.delta);
 }
 
 /**
@@ -271,13 +382,15 @@ window.socialCheesecake.Sector.prototype.resize = function(options) {
   var goalDelta= Math.PI/2;
   var anchor= 1;
   if(options.step) step = options.step;
-  if(options.delta) goalDelta= options.delta;
+  if(options.delta){
+    goalDelta= options.delta;
+  } 
   if(options.anchor){
     if((options.anchor.toLowerCase()=="b")||(options.anchor=="beginning")) anchor= 0;
     if((options.anchor.toLowerCase()=="m")||(options.anchor=="middle")) anchor= 0.5;
     if((options.anchor.toLowerCase()=="e")||(options.anchor=="end")) anchor= 1;   
   }
-  
+
   if(currentDelta>goalDelta){
     if(currentDelta-goalDelta < step) step= currentDelta-goalDelta;    
     currentDelta -= step;
@@ -297,6 +410,8 @@ window.socialCheesecake.Sector.prototype.resize = function(options) {
     requestAnimFrame(function() {
       sector.resize(options);
     });
+  }else if(options.callback){
+    options.callback();
   }
 }
 window.socialCheesecake.Sector.prototype.focus = function() {
@@ -312,60 +427,6 @@ window.socialCheesecake.Sector.prototype.unfocus = function() {
   sector.rOut = sector.originalAttr.rOut;
   sector.clear();
   sector._draw(context);
-}
-window.socialCheesecake.Sector.prototype.focusAndBlurCheesecake = function() {
-  var sector = this;
-  var cheesecake = this.parent;
-  var regions = cheesecake.stage.shapes;
- 
-  for(var i=(regions.length -1); i>=0; i--){
-    cheesecake.stage.remove(regions[i])
-  }
-
-  cheesecake.stage.clear();
-
-  var greySettings ={ parent: cheesecake,
-                              center: { x: cheesecake.center.x, y: cheesecake.center.y},
-                              sector_info: { phi: sector.phi + sector.delta, delta: 2*Math.PI - sector.delta, 
-                                             rOut: cheesecake.rMax,
-                                             mouseout: { color:"#f5f5f5"},
-                                             mousedown: { color:"#f5f5f5", 
-                                                                  callback : function(sector){sector.parent.recoverCheesecake();}}, 
-                                             mouseup: { color:"#f5f5f5"},
-                                             mouseover: {color:"#f5f5f5"},
-                                             color: "#f5f5f5"
-                                           }                                              
-                             }; 
-  var dummySettings = { parent: cheesecake,
-                                    center: { x: cheesecake.center.x, y: cheesecake.center.y},
-                                    sector_info: { phi: sector.phi, 
-                                                        delta: sector.delta, 
-                                                        rOut: sector.rOut, 
-                                                        color: "#eeffee",
-                                                        label: {name: sector.label}
-                                                      }                                              
-                                   }; 
-  var greySector = new socialCheesecake.Sector(greySettings);
-  cheesecake.auxiliarSectors.push(greySector);
-  var dummySector = new socialCheesecake.Sector(dummySettings)
-  cheesecake.auxiliarSectors.push(dummySettings);
-  
-  cheesecake.stage.add(greySector.getRegion());
-  cheesecake.stage.add(dummySector.getRegion());
-  var greySectorContext= greySector.getRegion().getContext();
-  var dummySectorContext= dummySector.getRegion().getContext();
-
-  greySector.rotateTo({ context: greySectorContext, 
-                          phiDestination: Math.PI/2, 
-                          callback: function(){greySector.resize({context:greySectorContext, delta: 3*Math.PI/2, anchor:"B" });
-                                               
-                                                      }
-                      });
-  dummySector.rotateTo({ context: dummySectorContext, 
-                          phiDestination: Math.PI/2 - dummySector.delta,
-                          callback: function(){dummySector.resize({context: dummySectorContext, anchor: "E"});}
-                      });
-                      
 }
 
 window.socialCheesecake.Sector.prototype.clear = function() {
@@ -399,14 +460,19 @@ window.socialCheesecake.Sector.prototype.rotateTo = function(options){
     }else if( phiDestination < currentPhi){
       grow=-1;
     }
-   
-    if( (2*Math.PI) - Math.abs(phiDestination-currentPhi) >= Math.abs(phiDestination-currentPhi)){
+    if( Math.round(((2*Math.PI) - Math.abs(phiDestination-currentPhi) )*1000)/1000 >= Math.round(Math.abs(phiDestination-currentPhi)*1000)/1000){
       if( Math.abs(phiDestination-currentPhi) < step) step= Math.abs(phiDestination-currentPhi);
       currentPhi +=  (grow*step);
+      
+      if (grow>0) console.log("giro al contrario agujas. Caso 1: ");
+      if(grow<0) console.log("giro segun agujas. Caso 1");
     }else {
-      if( (2*Math.PI) - Math.abs(phiDestination-currentPhi) < step) step= (2*Math.PI) - Math.abs(phiDestination-currentPhi);
+      if( (2*Math.PI) - Math.abs(phiDestination-currentPhi) < step) 
+        step= (2*Math.PI) - Math.abs(phiDestination-currentPhi);
       phiDestination -= (grow*2*Math.PI);
       currentPhi -=  (grow*step);
+      if (grow<0) console.log("giro al contrario agujas. Caso 2");
+      if(grow>0) console.log("giro segun agujas. Caso 2 ");
     }
     sector.phi=currentPhi;
     
@@ -421,10 +487,10 @@ window.socialCheesecake.Sector.prototype.rotateTo = function(options){
       sector.phi= currentPhi%(2*Math.PI);      
       requestAnimFrame(function() {
         sector.rotateTo({ context: context, 
-                                phiDestination: options.phiDestination, 
-                                step: step,  
-                                callback: options.callback,
-                              });         
+                          phiDestination: options.phiDestination, 
+                          step: step,  
+                          callback: options.callback,
+                        });         
       });
     }else{
       if(options.callback) options.callback();
