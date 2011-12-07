@@ -1,9 +1,9 @@
 /**
- * KineticJS JavaScript Library v2.3.0
+ * KineticJS JavaScript Library v2.3.2
  * http://www.kineticjs.com/
  * Copyright 2011, Eric Rowell
  * Licensed under the MIT or GPL Version 2 licenses.
- * Date: Nov 24 2011
+ * Date: Dec 01 2011
  *
  * Copyright (C) 2011 by Eric Rowell
  *
@@ -61,12 +61,41 @@ Kinetic.Stage = function(containerId, width, height){
     this.listen();
 };
 
+/*
+ * clear stage canvas
+ */
 Kinetic.Stage.prototype.clear = function(){
     var context = this.getContext();
     var canvas = this.getCanvas();
     context.clearRect(0, 0, canvas.width, canvas.height);
 };
 
+/*
+ * clear stage canvas and all shape canvases
+ */
+Kinetic.Stage.prototype.clearAll = function(){
+    // clear stage
+    this.clear();
+    
+    // clear shapes
+    for (var n = 0; n < this.shapes.length; n++) {
+        this.shapes[n].clear();
+    }
+};
+
+/*
+ * draw all shapes
+ */
+Kinetic.Stage.prototype.drawAll = function(){
+    // draw shapes
+    for (var n = 0; n < this.shapes.length; n++) {
+        this.shapes[n].draw();
+    }
+};
+
+/*
+ * remove a shape from the stage
+ */
 Kinetic.Stage.prototype.remove = function(shape){
     var shapes = this.shapes;
     
@@ -82,14 +111,42 @@ Kinetic.Stage.prototype.remove = function(shape){
     }
 };
 
+/*
+ * remove all shapes from the stage
+ */
+Kinetic.Stage.prototype.removeAll = function(){
+    // remove all shapes
+    while (this.shapes.length > 0) {
+        var that = this;
+        this.remove(that.shapes[0]);
+    }
+};
+
+/*
+ * get stage canvas
+ */
 Kinetic.Stage.prototype.getCanvas = function(){
     return this.canvas;
 };
 
+/*
+ * get stage context
+ */
 Kinetic.Stage.prototype.getContext = function(){
     return this.context;
 };
 
+/*
+ * add event listener to stage (which is essentially
+ * the container DOM)
+ */
+Kinetic.Stage.prototype.addEventListener = function(type, func){
+    this.container.addEventListener(type, func);
+};
+
+/*
+ * add shape to stage
+ */
 Kinetic.Stage.prototype.add = function(shape){
     shape.stage = this;
     shape.canvas = document.createElement('canvas');
@@ -104,6 +161,9 @@ Kinetic.Stage.prototype.add = function(shape){
     shape.draw();
 };
 
+/*
+ * handle incoming event
+ */
 Kinetic.Stage.prototype.handleEvent = function(evt){
     if (!evt) {
         evt = window.event;
@@ -129,6 +189,8 @@ Kinetic.Stage.prototype.handleEvent = function(evt){
                     if (el.onmousedown !== undefined) {
                         el.onmousedown(evt);
                     }
+                    
+                    n = -1; // break;
                 }
                 // handle onmouseup & onclick
                 else if (that.mouseUp) {
@@ -154,6 +216,8 @@ Kinetic.Stage.prototype.handleEvent = function(evt){
                             shape.inDoubleClickWindow = false;
                         }, that.dblClickWindow);
                     }
+                    
+                    n = -1; // break;
                 }
                 
                 // handle onmouseover
@@ -162,37 +226,45 @@ Kinetic.Stage.prototype.handleEvent = function(evt){
                     if (el.onmouseover !== undefined) {
                         el.onmouseover(evt);
                     }
+                    
+                    n = -1; // break;
                 }
                 
                 // handle onmousemove
                 else if (el.onmousemove !== undefined) {
                     el.onmousemove(evt);
+                    
+                    n = -1; // break;
                 }
                 
                 // handle touchstart
-                if (that.touchStart) {
-                
+                else if (that.touchStart) {
                     that.touchStart = false;
                     if (el.touchstart !== undefined) {
                         el.touchstart(evt);
                     }
+                    
+                    n = -1; // break;
                 }
                 
                 // handle touchend
-                if (that.touchEnd) {
+                else if (that.touchEnd) {
                     that.touchEnd = false;
                     if (el.touchend !== undefined) {
                         el.touchend(evt);
                     }
+                    
+                    n = -1; // break;
                 }
                 
                 // handle touchmove
-                if (!that.touchMove) {
+                else if (!that.touchMove) {
                     if (el.touchmove !== undefined) {
                         el.touchmove(evt);
                     }
+                    
+                    n = -1; // break;
                 }
-                
             }
             // handle mouseout condition
             else if (shape.mouseOver) {
@@ -200,11 +272,17 @@ Kinetic.Stage.prototype.handleEvent = function(evt){
                 if (el.onmouseout !== undefined) {
                     el.onmouseout(evt);
                 }
+                
+                n = -1; // break;
             }
         }());
     }
 };
 
+/*
+ * begin listening for events by adding event handlers
+ * to the container
+ */
 Kinetic.Stage.prototype.listen = function(){
     var that = this;
     
@@ -258,14 +336,23 @@ Kinetic.Stage.prototype.listen = function(){
     }, false);
 };
 
+/*
+ * get mouse position for desktop apps
+ */
 Kinetic.Stage.prototype.getMousePos = function(evt){
     return this.mousePos;
 };
 
+/*
+ * get touch position for mobile apps
+ */
 Kinetic.Stage.prototype.getTouchPos = function(evt){
     return this.touchPos;
 };
 
+/*
+ * set mouse positon for desktop apps
+ */
 Kinetic.Stage.prototype.setMousePosition = function(evt){
     var mouseX = evt.clientX - this.getContainerPos().left + window.pageXOffset;
     var mouseY = evt.clientY - this.getContainerPos().top + window.pageYOffset;
@@ -275,6 +362,9 @@ Kinetic.Stage.prototype.setMousePosition = function(evt){
     };
 };
 
+/*
+ * set touch position for mobile apps
+ */
 Kinetic.Stage.prototype.setTouchPosition = function(evt){
     if (evt.touches !== undefined && evt.touches.length == 1) { // Only deal with
         // one finger
@@ -290,6 +380,9 @@ Kinetic.Stage.prototype.setTouchPosition = function(evt){
     }
 };
 
+/*
+ * get container position
+ */
 Kinetic.Stage.prototype.getContainerPos = function(){
     var obj = this.container;
     var top = 0;
@@ -305,6 +398,9 @@ Kinetic.Stage.prototype.getContainerPos = function(){
     };
 };
 
+/*
+ * get container DOM element
+ */
 Kinetic.Stage.prototype.getContainer = function(){
     return this.container;
 };
@@ -327,6 +423,16 @@ Kinetic.Shape = function(drawFunc){
     this.inDblClickWindow = false;
 };
 
+/*
+ * get stage
+ */
+Kinetic.Shape.prototype.getStage = function(){
+    return this.stage();
+};
+
+/*
+ * draw shape
+ */
 Kinetic.Shape.prototype.draw = function(args){
     var context = this.getContext();
     this.clear();
@@ -346,30 +452,48 @@ Kinetic.Shape.prototype.draw = function(args){
     context.restore();
 };
 
+/*
+ * get shape canvas
+ */
 Kinetic.Shape.prototype.getCanvas = function(){
     return this.canvas;
 };
 
+/*
+ * get shape context
+ */
 Kinetic.Shape.prototype.getContext = function(){
     return this.context;
 };
 
+/*
+ * set shape canvas scale
+ */
 Kinetic.Shape.prototype.setScale = function(scale){
     this.scale.x = scale;
     this.scale.y = scale;
 };
 
+/*
+ * clear shape canvas
+ */
 Kinetic.Shape.prototype.clear = function(){
     var context = this.getContext();
     var canvas = this.getCanvas();
     context.clearRect(0, 0, canvas.width, canvas.height);
 };
 
+/*
+ * add event listener to shape
+ */
 Kinetic.Shape.prototype.addEventListener = function(type, func){
     var event = (type.indexOf('touch') == -1) ? 'on' + type : type;
     this.eventListeners[event] = func;
 };
 
+/*
+ * move shape canvas to the top via z-index
+ */
 Kinetic.Shape.prototype.moveToTop = function(){
     var stage = this.stage;
     // remove shape from shapes
