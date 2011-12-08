@@ -8,11 +8,13 @@
 				margin: 0px;
 				padding: 0px;
 			}
+			canvas {
+				border: solid 1px black;
+			}
 		</style>
 		<script src="static/kinetic.js"></script>
 		<script src="static/socialCheesecake.js"></script>
 		<script>
-		var tarta
 			window.requestAnimFrame = (function(callback) {
 				return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
 				function(callback) {
@@ -22,8 +24,8 @@
 			})();
 
 			window.onload = function() {
-        var json_sectors = {"rMax" : 240, 
-                            "center" : {"x" : 400, "y" : 300},
+        var json_sectors = {"rMax" : 190, 
+                            "center" : {"x" : 230, "y" : 270},
                             "sectors" : [{ "name":"John" , "subsectors" : [{"name" : "Cassidy"},{"name" : "Cassidy2"}]}, 
                                          { "name":"Anna" , "subsectors" : [{"name" : "Abc"},{"name" : "Cassidy2"}]}, 
                                          { "name":"Peter", "subsectors" : [{"name" : "Another"},{"name" : "World"}]},
@@ -32,9 +34,9 @@
                                          { "name":"Walter","subsectors" : [{"name" : "Bishop"},{"name" : "Craziness"}]},
                                          { "name":"Nina","subsectors" : [{"name" : "Massive Dynamic"}]}
                           ]};
-        new socialCheesecake.Cheesecake(json_sectors);
-        var i={};
-        new socialCheesecake.Sector(i);
+        var cheese = new socialCheesecake.Cheesecake(json_sectors);
+		new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png"});
+
 /*				var stage = new Kinetic.Stage("container", 800, 600);
         
 				stage.add((new socialCheesecake.Sector(400, 300, 240, 0, 0, (2 * Math.PI / 5),"ABC")).drawRegion());
