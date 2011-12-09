@@ -24,40 +24,22 @@
 			})();
 
 			window.onload = function() {
-        var json_sectors = {"rMax" : 190, 
+        var cheesecake_data = {"rMax" : 190, 
                             "center" : {"x" : 230, "y" : 270},
-                            "sectors" : [{ "name":"John" , "subsectors" : [{"name" : "Cassidy"},{"name" : "Cassidy2"}]}, 
-                                         { "name":"Anna" , "subsectors" : [{"name" : "Abc"},{"name" : "Cassidy2"}]}, 
+                            "sectors" : [{ "name":"John" , "subsectors" : [{"name" : "Cassidy", "actors": [ "John 1", "John 2", "John 3"]},{"name" : "Cassidy2"}]}, 
+                                         { "name":"Anna" , "subsectors" : [{"name" : "Abc"},{"name" : "Cassidy2", "actors": [ "Anna 1", "Anna 2"]}]}, 
                                          { "name":"Peter", "subsectors" : [{"name" : "Another"},{"name" : "World"}]},
                                          { "name":"Olivia","subsectors" : [{"name" : "Dunham"},{"name" : "FBI"}]},
-                                         { "name":"Bolivia","subsectors" : [{"name" : "Dunham"},{"name" : "FBI"}]},
+                                         { "name":"Altivia","subsectors" : [{"name" : "Dunham"},{"name" : "FBI"}]},
                                          { "name":"Walter","subsectors" : [{"name" : "Bishop"},{"name" : "Craziness"}]},
                                          { "name":"Nina","subsectors" : [{"name" : "Massive Dynamic"}]}
                           ]};
-        var cheese = new socialCheesecake.Cheesecake(json_sectors);
+        var cheese = new socialCheesecake.Cheesecake(cheesecake_data);
+		/*
 		new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png",
 		                            width: 64, height: 64, x : 500, y : 80});
     new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png",
-                                width: 64, height: 64, x : 600, y : 80});
-
-/*				var stage = new Kinetic.Stage("container", 800, 600);
-        
-				stage.add((new socialCheesecake.Sector(400, 300, 240, 0, 0, (2 * Math.PI / 5),"ABC")).drawRegion());
-
-				stage.add((new socialCheesecake.Sector(400, 300, 240, 0, 2*Math.PI / 5, 2 * Math.PI/5, "DEF")).drawRegion()); 
-				//stage.add((new socialCheesecake.Sector(400, 300, 120, 0, 2 * Math.PI / 5, 2 * Math.PI / 5, "GHIJK")).drawRegion());
-
-				stage.add((new socialCheesecake.Sector(380, 300, 240, 0, 4 * Math.PI / 5, 2 * Math.PI / 5, "LMNO")).drawRegion());
-				//stage.add((new socialCheesecake.Sector(400, 300, 160, 80, 4 * Math.PI / 5, 2 * Math.PI / 5, "Mamíferos")).drawRegion());
-				//stage.add((new socialCheesecake.Sector(400, 300, 80, 0, 4 * Math.PI / 5, 2 * Math.PI / 5, "Compis")).drawRegion());
-
-				stage.add((new socialCheesecake.Sector(400, 300, 240, 0, 6 * Math.PI / 5, 2 * Math.PI / 5, "ZZZZZzzz")).drawRegion());
-				//stage.add((new socialCheesecake.Sector(400, 300, 120, 0, 6 * Math.PI / 5, 2 * Math.PI/5 , "SPQR")).drawRegion());
-
-				stage.add((new socialCheesecake.Sector(400, 300, 240, 0, 8 * Math.PI / 5, 2 * Math.PI / 5, "X")).drawRegion());
-				//stage.add((new socialCheesecake.Sector(400, 300, 160, 80, 8 * Math.PI / 5, 2 * Math.PI / 5, "Y")).drawRegion());
-				//stage.add((new socialCheesecake.Sector(400, 300, 80, 0, 8 * Math.PI / 5, 2 * Math.PI / 5, "1!!")).drawRegion());
-*/
+                                width: 64, height: 64, x : 600, y : 80}); */
 			};
 
 		</script>

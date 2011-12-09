@@ -2,7 +2,7 @@ var socialCheesecake = {}
 
 socialCheesecake.text = {
 	writeCurvedText : function(text, context, x, y, r, phi, delta) {
-		context.font = "bold 20px sans-serif";
+		context.font = "bold 14px sans-serif";
 		context.fillStyle = '#000';
 		context.textBaseline = "middle";
 		var medium_alpha = Math.tan(context.measureText(text).width / (text.length * r));
@@ -25,6 +25,9 @@ socialCheesecake.text = {
 		} else {
 			return false;
 		}
+	},
+	writeCenterText : function(text, context, centerX, centerY){
+		context.fillText(text, centerX - context.measureText(text).width/2, centerY);
 	}
 }
 
@@ -32,15 +35,20 @@ socialCheesecake.text = {
 socialCheesecake.Cheesecake = function(cheesecakeData) {
 	var jsonSectors = cheesecakeData.sectors;
 	var cheesecake = this;
-	cheesecake.center = { x : cheesecakeData.center.x, 
-							y : cheesecakeData.center.y};
+	//Properties
+	cheesecake.center = {
+		x : cheesecakeData.center.x, 
+		y : cheesecakeData.center.y
+	};
 	cheesecake.rMax = cheesecakeData.rMax;
 	cheesecake.sectors = [];
 	cheesecake.auxiliarSectors = [];
 	cheesecake.stage = new Kinetic.Stage("container", 780, 600);
+	cheesecake.grid;
 
 	var phi = 0;
 	var delta = 2 * Math.PI / jsonSectors.length;
+	var actors = [];
 	for(var i = 0; i < jsonSectors.length; i++) {
 		var settings = {
 			parent : cheesecake,
@@ -72,7 +80,18 @@ socialCheesecake.Cheesecake = function(cheesecakeData) {
 		cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
 		cheesecake.stage.add(cheesecake.sectors[i].getRegion());
 		phi += delta;
+		for ( var j in jsonSectors[i].subsectors) {
+			if (jsonSectors[i].subsectors[j].actors) actors= actors.concat(jsonSectors[i].subsectors[j].actors);
+		}
 	}
+	cheesecake.grid = new socialCheesecake.Grid ({ 
+		parent: this, 
+		x : 500, 
+		y : 80, 
+		width : 270, 
+		height : 520,
+		actors : actors
+	});
 }
 socialCheesecake.Cheesecake.prototype.focusAndBlurCheesecake = function(sector) {
 	var cheesecake = this;
@@ -658,7 +677,8 @@ socialCheesecake.Actor = function (settings){
 		x : 0,
 		y : 0,
 		width : 64,
-		height : 64
+		height : 64,
+		name : ""
 	}
 	for(var property in defaultSettings) {
 		if(!( property in settings)) {
@@ -672,39 +692,36 @@ socialCheesecake.Actor = function (settings){
 	this.y = settings.y;
 	this.width = settings.width;
 	this.height = settings.height;
-	//necessary?
-	this.avatarImageObject = new Image(); 
-	this.avatarImageObject.src = settings.imgSrc;
+	this.name = settings.name;
 
-	var actor = this;	
-	
-	this.avatarImageObject.onload = function () {
-		actor._draw();
+	var avatarImageObject = new Image(); 
+	avatarImageObject.src = settings.imgSrc;
+
+	var actor = this;		
+	avatarImageObject.onload = function () {
+		actor._draw({image : this});
 	}
 }
 
 socialCheesecake.Actor.prototype._draw = function (settings){
-
 	var actor = this;
 	var stage = this.parent.stage;
-	var avatarImage = Kinetic.drawImage(this.avatarImageObject, this.x, this.y, 
+	var avatarImage = Kinetic.drawImage(settings.image, this.x, this.y, 
 										this.width, this.height);
 	this.avatarRegion = new Kinetic.Shape(avatarImage);
 	var avatarRegion = this.avatarRegion;
-	if(!settings){
-		avatarRegion.permanent = true
-	}else{
-		(settings.permanent==null) ? 
-			avatarRegion.permanent = true : avatarRegion.permanent = false;
-	}
+	var percentage = 10;
+	
+	(settings.permanent==null) ? 
+		avatarRegion.permanent = true : avatarRegion.permanent = false;
 	//Listeners
 	var mouseoverListener = function(){
 		document.body.style.cursor = "pointer";
-		actor.addBackground({percentage : 10, backgroundColor : "#1F4A75"});
+		actor.addBackground({percentage : percentage, backgroundColor : "#1F4A75"});
 	};
 	var mouseoutListener = 	function(){
 		document.body.style.cursor = "default";
-		actor.addBackground({percentage : 20, backgroundColor : "#FFF"});
+		actor.addBackground({percentage : percentage, backgroundColor : "#FFF"});
 	};
 	avatarRegion.addEventListener("mouseover", mouseoverListener);
 	avatarRegion.addEventListener("mouseout", mouseoutListener);
@@ -718,9 +735,9 @@ socialCheesecake.Actor.prototype._draw = function (settings){
 			arguments.callee.activeActor= false;
 		}else{
 			//Activate Actor
-			actor.addBackground({percentage : 10, 
-								backgroundColor : "#1F4A75", 
-								strokeColor : "#DEEFF8"
+			actor.addBackground({percentage : percentage, 
+								backgroundColor : "#DEEFF8", 
+								strokeColor : "#1F4A75"
 								});
 			avatarRegion.addEventListener("mouseout", function(){
 				document.body.style.cursor = "default";
@@ -731,6 +748,9 @@ socialCheesecake.Actor.prototype._draw = function (settings){
 	});
 	
 	stage.add(avatarRegion);
+	avatarRegion.getContext().save();
+	socialCheesecake.text.writeCenterText(this.name, avatarRegion.getContext(), this.x + this.width/2, 
+																this.y + this.height*(1+2*percentage/100));
 }
 
 socialCheesecake.Actor.prototype.addBackground = function (settings){
@@ -748,13 +768,62 @@ socialCheesecake.Actor.prototype.addBackground = function (settings){
 	var height = this.height * (1+ settings.percentage/100);
 	var x = this.x - this.width * settings.percentage/(2*100);
 	var y = this.y - this.height * settings.percentage/(2*100);
+	this.avatarRegion.clear();
+	context.beginPath();
 	context.rect(x, y, width, height);
+	context.closePath();
 	context.fillStyle = settings.backgroundColor;
     context.fill();
     if (settings.strokeColor){ 
     	context.strokeStyle = settings.strokeColor;
     	context.stroke();
 	}
+	context.restore();
+	context.save();
     this.avatarRegion.drawFunc();
+	socialCheesecake.text.writeCenterText(this.name, context, this.x + this.width/2, 
+																this.y + this.height*(1+2*settings.percentage/100));
 }
 
+/* GRID */
+socialCheesecake.Grid = function (settings){
+	if (!settings) throw "No arguments passed to the function";
+	console.log(settings.actors);
+	
+	//Dimensions
+	this.x = settings.x;
+	this.y = settings.y;
+	this.width = settings.width;
+	this.height = settings.height;
+	this.actors = [];
+	
+	var imageX = this.x;
+	var imageY = this.y;
+	var imageWidth = settings.imageWidth | 64;
+	var imageHeight = settings.imageWidth | 64;
+	var xSeparation = settings.xSeparation | 30;
+	var ySeparation = settings.ySeparation | 30;
+	
+	//Create actors
+	for ( var i in settings.actors){
+		var actor = new socialCheesecake.Actor ({ 
+			parent : settings.parent,
+			imgSrc : "images/youngAlberto.png",
+			width: imageWidth, 
+			height: imageHeight, 
+			x : imageX, 
+			y : imageY,
+			name : settings.actors[i]
+		});
+		this.actors.push( actor);		
+		imageX += imageWidth + xSeparation;
+		if (imageWidth > (this.width + this.x - imageX )) {
+			if (imageHeight < (this.height + this.y - imageY )) {
+				imageY += imageHeight + ySeparation;
+				imageX = this.x;
+			} else{
+				break;
+			}
+		}
+	}
+}
