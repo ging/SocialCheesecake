@@ -652,59 +652,109 @@ socialCheesecake.Subsector.prototype = new socialCheesecake.Sector({
 /* ACTOR */
 socialCheesecake.Actor = function (settings){
 	if (!settings) throw "No arguments passed to the function"
-	if (!settings.parent) throw "Actor must be associated to a sector"
+	if (!settings.parent) throw "Actor must be associated to a subsector"
+	
+	var defaultSettings = {
+		x : 0,
+		y : 0,
+		width : 64,
+		height : 64
+	}
+	for(var property in defaultSettings) {
+		if(!( property in settings)) {
+			settings[property] = defaultSettings[property];
+		}
+	}
 	
 	this.parent = settings.parent;
 	this.avatarRegion;
+	this.x = settings.x;
+	this.y = settings.y;
+	this.width = settings.width;
+	this.height = settings.height;
+	//necessary?
+	this.avatarImageObject = new Image(); 
+	this.avatarImageObject.src = settings.imgSrc;
 
 	var actor = this;	
-	var avatarImageObject = new Image();
-	avatarImageObject.src = settings.imgSrc;
-
-	avatarImageObject.onload = function () {
-		actor._draw({ image : this});
+	
+	this.avatarImageObject.onload = function () {
+		actor._draw();
 	}
 }
 
 socialCheesecake.Actor.prototype._draw = function (settings){
-	var draggingRect = false;
-	var draggingRectOffsetX = 0;
-	var draggingRectOffsetY = 0;
+
+	var actor = this;
 	var stage = this.parent.stage;
+	var avatarImage = Kinetic.drawImage(this.avatarImageObject, this.x, this.y, 
+										this.width, this.height);
+	this.avatarRegion = new Kinetic.Shape(avatarImage);
 	var avatarRegion = this.avatarRegion;
-	var avatarImage = Kinetic.drawImage(settings.image, 500, 80, 64, 64);
-	avatarRegion = new Kinetic.Shape(avatarImage);
-	(settings.permanent==null) ? avatarRegion.permanent = true : avatarRegion.permanent = false;
+	if(!settings){
+		avatarRegion.permanent = true
+	}else{
+		(settings.permanent==null) ? 
+			avatarRegion.permanent = true : avatarRegion.permanent = false;
+	}
+	//Listeners
+	var mouseoverListener = function(){
+		document.body.style.cursor = "pointer";
+		actor.addBackground({percentage : 10, backgroundColor : "#1F4A75"});
+	};
+	var mouseoutListener = 	function(){
+		document.body.style.cursor = "default";
+		actor.addBackground({percentage : 20, backgroundColor : "#FFF"});
+	};
+	avatarRegion.addEventListener("mouseover", mouseoverListener);
+	avatarRegion.addEventListener("mouseout", mouseoutListener);
 	
 	avatarRegion.addEventListener("mousedown", function(){
-		draggingRect = true;
-		var mousePos = stage.getMousePos();
-
-		draggingRectOffsetX = mousePos.x - avatarRegion.x;
-		draggingRectOffsetY = mousePos.y - avatarRegion.y;
-	});
-	avatarRegion.addEventListener("mouseover", function(){
-		document.body.style.cursor = "pointer";
-	});
-	avatarRegion.addEventListener("mouseout", function(){
-		document.body.style.cursor = "default";
+		if(arguments.callee.activeActor){
+			//Deactive Actor
+			mouseoverListener();
+			avatarRegion.addEventListener("mouseout", mouseoutListener);
+			avatarRegion.addEventListener("mouseover", mouseoverListener);
+			arguments.callee.activeActor= false;
+		}else{
+			//Activate Actor
+			actor.addBackground({percentage : 10, 
+								backgroundColor : "#1F4A75", 
+								strokeColor : "#DEEFF8"
+								});
+			avatarRegion.addEventListener("mouseout", function(){
+				document.body.style.cursor = "default";
+			});
+			avatarRegion.addEventListener("mouseover", undefined);
+			arguments.callee.activeActor= true;
+		}
 	});
 	
 	stage.add(avatarRegion);
-	
-	stage.addEventListener("mouseout", function(){
-		draggingRect = false;
-	}, false);
-
-	stage.addEventListener("mousemove", function(){
-		var mousePos = stage.getMousePos();
-		if (draggingRect) {
-			avatarRegion.x = mousePos.x - draggingRectOffsetX;
-			avatarRegion.y = mousePos.y - draggingRectOffsetY;
-			avatarRegion.draw();
-		}
-	}, false);
-	stage.addEventListener("mouseup", function(){
-		draggingRect = false;
-	});
 }
+
+socialCheesecake.Actor.prototype.addBackground = function (settings){
+	var defaultSettings = {
+		percentage : 0,
+		backgroundColor : "#FFF"
+	}
+	for(var property in defaultSettings) {
+		if(!( property in settings)) {
+			settings[property] = defaultSettings[property];
+		}
+	}
+	var context = this.avatarRegion.getContext();	
+	var width = this.width * (1+ settings.percentage/100);
+	var height = this.height * (1+ settings.percentage/100);
+	var x = this.x - this.width * settings.percentage/(2*100);
+	var y = this.y - this.height * settings.percentage/(2*100);
+	context.rect(x, y, width, height);
+	context.fillStyle = settings.backgroundColor;
+    context.fill();
+    if (settings.strokeColor){ 
+    	context.strokeStyle = settings.strokeColor;
+    	context.stroke();
+	}
+    this.avatarRegion.drawFunc();
+}
+

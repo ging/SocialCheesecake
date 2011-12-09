@@ -35,7 +35,10 @@
                                          { "name":"Nina","subsectors" : [{"name" : "Massive Dynamic"}]}
                           ]};
         var cheese = new socialCheesecake.Cheesecake(json_sectors);
-		new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png"});
+		new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png",
+		                            width: 64, height: 64, x : 500, y : 80});
+    new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png",
+                                width: 64, height: 64, x : 600, y : 80});
 
 /*				var stage = new Kinetic.Stage("container", 800, 600);
         
