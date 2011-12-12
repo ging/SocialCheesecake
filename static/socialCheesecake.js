@@ -1,11 +1,19 @@
-var socialCheesecake = socialCheesecake | {};
+var socialCheesecake = socialCheesecake || {};
 
 (function() {
+	var scripts = document.head.getElementsByTagName('script');
+	for(var i in scripts){
+		if((scripts[i].getAttribute)&&(scripts[i].getAttribute('src')=="static/socialCheesecake.js")){
+			var rootPath = scripts[i].getAttribute('root');
+			var where = scripts[i].getAttribute('where');
+		}
+	}
     socialCheesecake = {
         modules : {},
         currentModule : undefined,
         moduleQueue : [],
-        rootPath : 'static/',
+        rootPath : rootPath || 'static/',
+		where : where,
         log: function(message, level){
             var now = new Date();
             var timestamp = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + "," + now.getMilliseconds();

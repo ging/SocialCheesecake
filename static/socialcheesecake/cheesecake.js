@@ -17,7 +17,7 @@ socialCheesecake.defineModule(
     cheesecake.rMax = cheesecakeData.rMax;
     cheesecake.sectors = [];
     cheesecake.auxiliarSectors = [];
-    cheesecake.stage = new Kinetic.Stage("container", 780, 600);
+    cheesecake.stage = new Kinetic.Stage(socialCheesecake.where, 780, 600);
     cheesecake.grid
   
     var phi = 0;
