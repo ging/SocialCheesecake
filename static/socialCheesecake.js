@@ -81,7 +81,11 @@ socialCheesecake.Cheesecake = function(cheesecakeData) {
 		cheesecake.stage.add(cheesecake.sectors[i].getRegion());
 		phi += delta;
 		for ( var j in jsonSectors[i].subsectors) {
-			if (jsonSectors[i].subsectors[j].actors) actors= actors.concat(jsonSectors[i].subsectors[j].actors);
+			if (jsonSectors[i].subsectors[j].actors) {
+				for(var k in jsonSectors[i].subsectors[j].actors) 
+					jsonSectors[i].subsectors[j].actors[k].push(cheesecake.sectors[i]);
+				actors= actors.concat(jsonSectors[i].subsectors[j].actors);
+			}
 		}
 	}
 	cheesecake.grid = new socialCheesecake.Grid ({ 
@@ -407,6 +411,7 @@ socialCheesecake.Sector.prototype.getRegion = function(regenerate) {
 		 regions[regionIndex]=this._region;
 		 } */
 		sector._region.addEventListener('mouseover', function() {
+			
 			if((sector.mouseover != null) && (sector.mouseover.color != null)) {
 				var color = sector.mouseover.color;
 				sector.changeColor(color);
@@ -705,7 +710,7 @@ socialCheesecake.Actor = function (settings){
 
 socialCheesecake.Actor.prototype._draw = function (settings){
 	var actor = this;
-	var stage = this.parent.stage;
+	var stage = this.parent.parent.stage;
 	var avatarImage = Kinetic.drawImage(settings.image, this.x, this.y, 
 										this.width, this.height);
 	this.avatarRegion = new Kinetic.Shape(avatarImage);
@@ -782,7 +787,7 @@ socialCheesecake.Actor.prototype.addBackground = function (settings){
 	context.save();
     this.avatarRegion.drawFunc();
 	socialCheesecake.text.writeCenterText(this.name, context, this.x + this.width/2, 
-																this.y + this.height*(1+2*settings.percentage/100));
+										this.y + this.height*(1+2*settings.percentage/100));
 }
 
 /* GRID */
@@ -807,13 +812,13 @@ socialCheesecake.Grid = function (settings){
 	//Create actors
 	for ( var i in settings.actors){
 		var actor = new socialCheesecake.Actor ({ 
-			parent : settings.parent,
-			imgSrc : "images/youngAlberto.png",
+			parent : settings.actors[i][2],
+			imgSrc : settings.actors[i][1],
 			width: imageWidth, 
 			height: imageHeight, 
 			x : imageX, 
 			y : imageY,
-			name : settings.actors[i]
+			name : settings.actors[i][0]
 		});
 		this.actors.push( actor);		
 		imageX += imageWidth + xSeparation;

@@ -26,8 +26,21 @@
 			window.onload = function() {
         var cheesecake_data = {"rMax" : 190, 
                             "center" : {"x" : 230, "y" : 270},
-                            "sectors" : [{ "name":"John" , "subsectors" : [{"name" : "Cassidy", "actors": [ "John 1", "John 2", "John 3"]},{"name" : "Cassidy2"}]}, 
-                                         { "name":"Anna" , "subsectors" : [{"name" : "Abc"},{"name" : "Cassidy2", "actors": [ "Anna 1", "Anna 2"]}]}, 
+                            "sectors" : [{ "name":"John" , "subsectors" : [{"name" : "Cassidy", 
+                                                                            "actors": [ ["John 1", "images/youngAlberto.png"], 
+                                                                                        ["John 2", "images/beatriz.png"],
+                                                                                        ["John 3", "images/youngAlberto.png"]
+                                                                                      ]
+                                                                            },
+                                                                          {"name" : "Cassidy2"}]}, 
+                                         { "name":"Anna" , "subsectors" : [{"name" : "Abc"},
+                                                                          {"name" : "Cassidy2", 
+                                                                            "actors": [ ["Anna 1", "images/youngAlberto.png"],
+                                                                                        [ "Anna 2","images/beatriz.png"]
+                                                                                      ]
+                                                                          }
+                                                                          ]
+                                          }, 
                                          { "name":"Peter", "subsectors" : [{"name" : "Another"},{"name" : "World"}]},
                                          { "name":"Olivia","subsectors" : [{"name" : "Dunham"},{"name" : "FBI"}]},
                                          { "name":"Altivia","subsectors" : [{"name" : "Dunham"},{"name" : "FBI"}]},
