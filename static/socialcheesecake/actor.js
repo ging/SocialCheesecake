@@ -15,11 +15,63 @@ socialCheesecake.defineModule(
 				settings[property] = defaultSettings[property];
 			}
 		}
-
 		this.id = settings.id;
 		this.parents = [];
-
 		this.parents.push(settings.parent);
+	}
+	
+	socialCheesecake.Actor.prototype.focus = function() {
+		var cheesecake = this.parent[0].parent.parent;
+		var gridIdPrefix = cheesecake.grid.divIdPrefix;
+		var actor_id = this.id;
+		var actor_div = document.getElementById(gridIdPrefix+actor_id);
+		var newClass="";
+		if (actor_div.getAttribute("class")){
+			if (!(actor_div.getAttribute("class").match(/\sfocused/) ))
+				newClass = actor_div.getAttribute("class").concat(" focused");
+		}else{
+			newClass = " focused ";
+		}
+		actor_div.setAttribute("class", newClass);
+	}
+	
+	socialCheesecake.Actor.prototype.unfocus = function() {
+		var cheesecake = this.parent[0].parent.parent;
+		var gridIdPrefix = cheesecake.grid.divIdPrefix;
+		var actor_id = this.id;
+		var actor_div = document.getElementById(gridIdPrefix+actor_id);
+		var newClass="";
+		if (actor_div.getAttribute("class")){
+			newClass = actor_div.getAttribute("class").replace(/\sfocused/, "");
+			actor_div.setAttribute("class", newClass);
+		}	
+	}
+	
+	socialCheesecake.Actor.prototype.hide = function() {
+		var cheesecake = this.parent[0].parent.parent;
+		var gridIdPrefix = cheesecake.grid.divIdPrefix;
+		var actor_id = this.id;
+		var actor_div = document.getElementById(gridIdPrefix+actor_id);
+		var newStyle=" display: none;";
+		if (actor_div.getAttribute("style")){
+			if (actor_div.getAttribute("style").match(/display\s*:\s*[a-z]*;/)){
+				newStyle = actor_div.getAttribute("style").replace(/display\s*:\s*[a-z]*;/, "display: none;");			
+			}else{
+				newStyle = actor_div.getAttribute("style").concat("display: none;");
+			}
+		}
+		actor_div.setAttribute("style", newStyle);
+	}
+	
+	socialCheesecake.Actor.prototype.show = function() {
+		var cheesecake = this.parent[0].parent.parent;
+		var gridIdPrefix = cheesecake.grid.divIdPrefix;
+		var actor_id = this.id;
+		var actor_div = document.getElementById(gridIdPrefix+actor_id);
+		if (actor_div.getAttribute("style")){
+			var newStyle = actor_div.getAttribute("style").replace(/display\s*:\s*none;/, "");
+			actor_div.setAttribute("style", newStyle);
+		}
 	}
 });  
   
