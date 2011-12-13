@@ -5,46 +5,76 @@ socialCheesecake.defineModule(
     'SocialCheesecake#Actor'  
 )
 .withCode(function() { 
-  socialCheesecake.Grid = function (settings){
-    if (!settings) throw "No arguments passed to the function";
-    console.log(settings.actors);
-    
-    //Dimensions
-    this.x = settings.x;
-    this.y = settings.y;
-    this.width = settings.width;
-    this.height = settings.height;
-    this.actors = [];
-    
-    var imageX = this.x;
-    var imageY = this.y;
-    var imageWidth = settings.imageWidth | 64;
-    var imageHeight = settings.imageWidth | 64;
-    var xSeparation = settings.xSeparation | 30;
-    var ySeparation = settings.ySeparation | 30;
-    
-    //Create actors
-    for ( var i in settings.actors){
-      var actor = new socialCheesecake.Actor ({ 
-        parent : settings.actors[i][2],
-        imgSrc : settings.actors[i][1],
-        width: imageWidth, 
-        height: imageHeight, 
-        x : imageX, 
-        y : imageY,
-        name : settings.actors[i][0]
-      });
-      this.actors.push( actor);   
-      imageX += imageWidth + xSeparation;
-      if (imageWidth > (this.width + this.x - imageX )) {
-        if (imageHeight < (this.height + this.y - imageY )) {
-          imageY += imageHeight + ySeparation;
-          imageX = this.x;
-        } else{
-          break;
-        }
-      }
-    }
-  }
+	socialCheesecake.Grid = function (settings){
+		if (!settings) throw "No arguments passed to the function";
+		console.log(settings.actors);
+
+		//Dimensions
+		this.x = settings.x;
+		this.y = settings.y;
+		this.width = settings.width;
+		this.height = settings.height;
+		
+		//Actors dimensions and positions
+		this.actors = [];
+		this.pointerX = this.x;
+		this.pointerY = this.y;
+		this.imageWidth = settings.imageWidth || 64;
+		this.imageHeight = settings.imageWidth || 64;
+		this.separationWidth = settings.separationWidth || 30;
+		this.separationHeight = settings.separationHeight || 30;
+	}
+	
+	socialCheesecake.Grid.prototype.updateNextImageCoordinates = function () {
+		var imageX = this.pointerX;
+		var imageY = this.pointerY;
+		var imageWidth = this.imageWidth;
+		var imageHeight = this.imageHeight;
+		var xSeparation = this.separationWidth;
+		var ySeparation = this.separationHeight;
+
+		imageX += imageWidth + xSeparation;
+		if (imageWidth > (this.width + this.x - imageX )) {
+			if (imageHeight < (this.height + this.y - imageY )) {
+				imageY += imageHeight + ySeparation;
+				imageX = this.x;
+			} 
+		}
+		this.pointerX = imageX;
+		this.pointerY = imageY;
+	}
+  
+	socialCheesecake.Grid.prototype.addActor = function (actor_info, subsector) {
+		var actors = this.actors;
+		
+		//Check if the actor is already in the array
+		var actorAlreadyDeclared = false;
+		for ( var actor in actors){
+			if (actors[actor].id == actor_info.id){
+				actorAlreadyDeclared = true;
+				//Check if the subsector has already been declared a parent of the actor
+				var subsectorAlreadyDeclared = false;
+				for ( var parent in actors[actor].parents){
+					if (actors[actor].parents[parent] == subsector) subsectorAlreadyDeclared=true;
+				}
+				if (!subsectorAlreadyDeclared) actors[actor].parents.push(subsector);
+			}
+		}
+		// If the actor was not in the array, create it and add it to the array
+		if(!actorAlreadyDeclared){
+			var actor = new socialCheesecake.Actor({
+				id : actor_info.id,
+				name : actor_info.name,
+				imgSrc : actor_info.imgSrc,
+				parent : subsector,
+				width: this.imageWidth, 
+				height: this.imageHeight, 
+				x : this.pointerX, 
+				y : this.pointerY
+			});
+			this.updateNextImageCoordinates();
+			actors.push( actor);
+		}
+	}
 });
 

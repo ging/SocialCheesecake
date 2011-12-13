@@ -4,7 +4,6 @@
     <meta charset="utf-8">
 		<style>
 			body {
-
 				margin: 0px;
 				padding: 0px;
 			}
@@ -13,7 +12,7 @@
 			}
 		</style>
 		<script src="static/kinetic.js"></script>
-		<script src="static/socialCheesecake.js" root="static/" where="container" ></script>
+		<script src="static/socialCheesecake.js" root="static/" ></script>
 		<script>
 			window.requestAnimFrame = (function(callback) {
 				return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
@@ -24,30 +23,51 @@
 			})();
 
 			window.onload = function() {
-        var cheesecake_data = {"rMax" : 190, 
-                            "center" : {"x" : 230, "y" : 270},
-                            "sectors" : [{ "name":"John" , "subsectors" : [{"name" : "Cassidy", 
-                                                                            "actors": [ ["John 1", "images/youngAlberto.png"], 
-                                                                                        ["John 2", "images/beatriz.png"],
-                                                                                        ["John 3", "images/youngAlberto.png"]
-                                                                                      ]
-                                                                            },
-                                                                          {"name" : "Cassidy2"}]}, 
-                                         { "name":"Anna" , "subsectors" : [{"name" : "Abc"},
-                                                                          {"name" : "Cassidy2", 
-                                                                            "actors": [ ["Anna 1", "images/youngAlberto.png"],
-                                                                                        [ "Anna 2","images/beatriz.png"]
-                                                                                      ]
-                                                                          }
-                                                                          ]
-                                          }, 
-                                         { "name":"Peter", "subsectors" : [{"name" : "Another"},{"name" : "World"}]},
-                                         { "name":"Olivia","subsectors" : [{"name" : "Dunham"},{"name" : "FBI"}]},
-                                         { "name":"Altivia","subsectors" : [{"name" : "Dunham"},{"name" : "FBI"}]},
-                                         { "name":"Walter","subsectors" : [{"name" : "Bishop"},{"name" : "Craziness"}]},
-                                         { "name":"Nina","subsectors" : [{"name" : "Massive Dynamic"}]}
-                          ]};
-        var cheese = new socialCheesecake.Cheesecake(cheesecake_data);
+        var cheesecake_data = {
+			"rMax" : 190, 
+			"center" : {"x" : 230, "y" : 270},
+			"sectors" : [
+				{ "name":"John" ,  "subsectors" : [
+					{"name" : "Cassidy", 
+						"actors": [
+							[0, "John 1", "images/youngAlberto.png"], 
+							[0 , "John 2", "images/beatriz.png"],
+							[2 , "John 3", "images/youngAlberto.png"]
+						]
+					},
+					{"name" : "Cassidy2"}
+				]}, 
+				{ "name":"Anna" , "subsectors" : [
+					{"name" : "Abc"}, 
+					{"name" : "Cassidy2",  
+						"actors": [ 
+							[3, "Anna 1", "images/youngAlberto.png"],
+							[4, "Anna 2","images/beatriz.png"]
+						]
+					}
+				]}, 
+				{ "name":"Peter", "subsectors" : [
+					{"name" : "Another"},
+					{"name" : "World"}
+				]},
+				{ "name":"Olivia","subsectors" : [
+					{"name" : "Dunham"},
+					{"name" : "FBI"}
+				]},
+				{ "name":"Altivia","subsectors" : [
+					{"name" : "Dunham"},
+					{"name" : "FBI"}
+				]},
+				{ "name":"Walter","subsectors" : [
+					{"name" : "Bishop"},
+					{"name" : "Craziness"}]
+				},
+				{ "name":"Nina","subsectors" : [
+					{"name" : "Massive Dynamic"}
+				]}
+			]
+		};
+        var cheese = new socialCheesecake.Cheesecake("container", cheesecake_data);
 		/*
 		new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png",
 		                            width: 64, height: 64, x : 500, y : 80});
