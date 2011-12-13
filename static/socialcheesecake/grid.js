@@ -18,7 +18,7 @@ socialCheesecake.defineModule(
 		
 		//Check if the actor is already in the array
 		var actorAlreadyDeclared = false;
-		for ( var actor in actors){
+		for (var actor in actors){
 			if (actors[actor].id == actor_info.id){
 				actorAlreadyDeclared = true;
 				//Check if the subsector has already been declared a parent of the actor
@@ -37,6 +37,107 @@ socialCheesecake.defineModule(
 			});
 			actors.push(actor);
 		}
+	}
+	
+	socialCheesecake.Grid.prototype.getActor = function (id) {
+		for (var i in actors){
+			if (this.actors[i].id == id){
+				return this.actors[i];
+			}
+		}
+		return null
+	}
+	
+	socialCheesecake.Grid.prototype.focus = function (actor_ids) {
+		if (actor_ids instanceof Array) {
+			for(var i in actor_ids){
+				var actor = actor_ids[i];
+				if(actor instanceof socialCheesecake.Actor){
+					actor.focus();
+				}else{
+					this.getActor(actor).focus();
+				}				
+			}
+		} else {
+			if(actor_ids instanceof socialCheesecake.Actor){
+				actor_ids.focus();
+			}else{
+				this.getActor(actor_ids).focus();
+			}		
+		}
+	}
+	
+	socialCheesecake.Grid.prototype.focus_all = function () {
+		this.focus(this.actors);
+	}
+	
+	socialCheesecake.Grid.prototype.hide = function (actor_ids) {
+		if (actor_ids instanceof Array) {
+			for(var i in actor_ids){
+				var actor = actor_ids[i];
+				if(actor instanceof socialCheesecake.Actor){
+					actor.hide();
+				}else{
+					this.getActor(actor).hide();
+				}				
+			}
+		} else {
+			if(actor_ids instanceof socialCheesecake.Actor){
+				actor_ids.hide();
+			}else{
+				this.getActor(actor_ids).hide();
+			}		
+		}
+	}
+	
+	socialCheesecake.Grid.prototype.hide_all = function () {
+		this.hide(this.actors)		
+	}
+	
+	socialCheesecake.Grid.prototype.show = function (actor_ids) {
+		if (actor_ids instanceof Array) {
+			for(var i in actor_ids){
+				var actor = actor_ids[i];
+				if(actor instanceof socialCheesecake.Actor){
+					actor.show();
+				}else{
+					this.getActor(actor).show();
+				}				
+			}
+		} else {
+			if(actor_ids instanceof socialCheesecake.Actor){
+				actor_ids.show();
+			}else{
+				this.getActor(actor_ids).show();
+			}		
+		}
+	}
+	
+	socialCheesecake.Grid.prototype.show_all = function () {
+		this.show(this.actors)
+	}
+	
+	socialCheesecake.Grid.prototype.unfocus = function (actor_ids) {
+		if (actor_ids instanceof Array) {
+			for(var i in actor_ids){
+				var actor = actor_ids[i];
+				if(actor instanceof socialCheesecake.Actor){
+					actor.unfocus();
+				}else{
+					this.getActor(actor).unfocus();
+				}				
+			}
+		} else {
+			if(actor_ids instanceof socialCheesecake.Actor){
+				actor_ids.unfocus();
+			}else{
+				this.getActor(actor_ids).unfocus();
+			}		
+		}
+	}
+	
+	socialCheesecake.Grid.prototype.unfocus_all = function () {
+		this.unfocus(this.actors)
 	}
 });
 

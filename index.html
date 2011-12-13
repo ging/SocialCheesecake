@@ -1,15 +1,30 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-    <meta charset="utf-8">
+		<meta charset="utf-8">
 		<style>
-			body {
-				margin: 0px;
-				padding: 0px;
-			}
-			canvas {
-				border: solid 1px black;
-			}
+		    body {
+		      	margin: 0px;
+		        padding: 0px;
+		    }
+		    canvas {
+		    }
+		    #grid {
+		        position: absolute;
+		        left: 460px;
+		        top: 20px;
+		    }
+		    #grid .actor {
+		        width: 64px;
+		        height: 64px;
+		        border: 1px solid #000;
+		        float: left;
+		        margin: 5px;
+		    }
+		    #grid .actor img {
+		        width: 64px;
+		        height: 64px;
+		    }
 		</style>
 		<script src="static/kinetic.js"></script>
 		<script src="static/socialCheesecake.js" ></script>
@@ -19,75 +34,161 @@
 				function(callback) {
 					window.setTimeout(callback, 1000 / 60);
 				};
-
 			})();
 
 			window.onload = function() {
-        var cheesecakeData = {
-          container: {
-            id: "container",
-            width: 440,
-            height: 440
-          },
-          grid: {
-            id: "grid",
-            divIdPrefix: "actor_"
-          },
-    			"rMax" : 200, 
-    			"center" : {"x" : 220, "y" : 220},
-    			"sectors" : [
-    				{ "name":"John" ,  "subsectors" : [
-    					{"name" : "Cassidy", 
-    						"actors": [
-    							[0, "John 1", "images/youngAlberto.png"], 
-    							[0 , "John 2", "images/beatriz.png"],
-    							[2 , "John 3", "images/youngAlberto.png"]
-    						]
-    					},
-    					{"name" : "Cassidy2"}
-    				]}, 
-    				{ "name":"Anna" , "subsectors" : [
-    					{"name" : "Abc"}, 
-    					{"name" : "Cassidy2",  
-    						"actors": [ 
-    							[3, "Anna 1", "images/youngAlberto.png"],
-    							[4, "Anna 2","images/beatriz.png"]
-    						]
-    					}
-    				]}, 
-    				{ "name":"Peter", "subsectors" : [
-    					{"name" : "Another"},
-    					{"name" : "World"}
-    				]},
-    				{ "name":"Olivia","subsectors" : [
-    					{"name" : "Dunham"},
-    					{"name" : "FBI"}
-    				]},
-    				{ "name":"Altivia","subsectors" : [
-    					{"name" : "Dunham"},
-    					{"name" : "FBI"}
-    				]},
-    				{ "name":"Walter","subsectors" : [
-    					{"name" : "Bishop"},
-    					{"name" : "Craziness"}]
-    				},
-    				{ "name":"Nina","subsectors" : [
-    					{"name" : "Massive Dynamic"}
-    				]}
-    			]
-    		};
-        var cheese = new socialCheesecake.Cheesecake(cheesecakeData);
-		/*
-		new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png",
-		                            width: 64, height: 64, x : 500, y : 80});
-    new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png",
-                                width: 64, height: 64, x : 600, y : 80}); */
+				var cheesecake_data = {
+					container : {
+						id : "container",
+						width : 440,
+						height : 440
+					},
+					grid : {
+						id : "grid",
+						divIdPrefix : "actor_"
+					},
+					rMax : 200,
+					center : {
+						x : 220,
+						y : 220
+					},
+					sectors : [{
+						name : "John",
+						subsectors : [{
+							name : "Cassidy",
+							actors : [[0], [1], [2]]
+						}, {
+							name : "Cassidy2"
+						}]
+					}, {
+						name : "Anna",
+						subsectors : [{
+							name : "Abc"
+						}, {
+							name : "Cassidy2",
+							actors : [[3], [4]]
+						}]
+					}, {
+						name : "Peter",
+						subsectors : [{
+							name : "Another"
+						}, {
+							name : "World"
+						}]
+					}, {
+						name : "Olivia",
+						subsectors : [{
+							name : "Dunham"
+						}, {
+							name : "FBI"
+						}]
+					}, {
+						name : "Altivia",
+						subsectors : [{
+							name : "Dunham"
+						}, {
+							name : "FBI"
+						}]
+					}, {
+						name : "Walter",
+						subsectors : [{
+							name : "var cheesecake_data = {
+					container : {
+						id : "container",
+						width : 440,
+						height : 440
+					},
+					grid : {
+						id : "grid",
+						divIdPrefix : "actor_"
+					},
+					rMax : 200,
+					center : {
+						x : 220,
+						y : 220
+					},
+					sectors : [{
+						name : "John",
+						subsectors : [{
+							name : "Cassidy",
+							actors : [[0], [1], [2]]
+						}, {
+							name : "Cassidy2"
+						}]
+					}, {
+						name : "Anna",
+						subsectors : [{
+							name : "Abc"
+						}, {
+							name : "Cassidy2",
+							actors : [[3], [4]]
+						}]
+					}, {
+						name : "Peter",
+						subsectors : [{
+							name : "Another"
+						}, {
+							name : "World"
+						}]
+					}, {
+						name : "Olivia",
+						subsectors : [{
+							name : "Dunham"
+						}, {
+							name : "FBI"
+						}]
+					}, {
+						name : "Altivia",
+						subsectors : [{
+							name : "Dunham"
+						}, {
+							name : "FBI"
+						}]
+					}, {
+						name : "Walter",
+						subsectors : [{
+							name : "Bishop"
+						}, {
+							name : "Craziness"
+						}]
+					}, {
+						name : "Nina",
+						subsectors : [{
+							name : "Massive Dynamic"
+						}]
+					}]Bishop"
+						}, {
+							name : "Craziness"
+						}]
+					}, {
+						name : "Nina",
+						subsectors : [{
+							name : "Massive Dynamic"
+						}]
+					}]
+				};
+				var cheese = new socialCheesecake.Cheesecake(cheesecake_data);
+				/*
+				 new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png",
+				 width: 64, height: 64, x : 500, y : 80});
+				 new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png",
+				 width: 64, height: 64, x : 600, y : 80}); */
 			};
 
 		</script>
 	</head>
-	<body id="container" onmousedown="return false;"></body>
-	<div id="grid">
-	  <div class="actor" id="actor_0">PRUEBAAAA</div>
-	</div>
+	<body id="container" onmousedown="return false;">
+		<div id="grid">
+			<div class="actor" id="actor_0"><img src="images/youngAlberto.png">
+			</div>
+			<div class="actor" id="actor_1"><img src="images/beatriz.png">
+			</div>
+			<div class="actor" id="actor_2"><img src="images/youngAlberto.png">
+			</div>
+			<div class="actor" id="actor_3"><img src="images/beatriz.png">
+			</div>
+			<div class="actor" id="actor_4"><img src="images/youngAlberto.png">
+			</div>
+		</div>
+	</body>
 </html>
