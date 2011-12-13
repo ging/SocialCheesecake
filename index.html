@@ -38,135 +38,58 @@
 
 			window.onload = function() {
 				var cheesecake_data = {
-					container : {
-						id : "container",
-						width : 440,
-						height : 440
-					},
-					grid : {
-						id : "grid",
-						divIdPrefix : "actor_"
-					},
-					rMax : 200,
-					center : {
-						x : 220,
-						y : 220
-					},
-					sectors : [{
-						name : "John",
-						subsectors : [{
-							name : "Cassidy",
-							actors : [[0], [1], [2]]
-						}, {
-							name : "Cassidy2"
-						}]
-					}, {
-						name : "Anna",
-						subsectors : [{
-							name : "Abc"
-						}, {
-							name : "Cassidy2",
-							actors : [[3], [4]]
-						}]
-					}, {
-						name : "Peter",
-						subsectors : [{
-							name : "Another"
-						}, {
-							name : "World"
-						}]
-					}, {
-						name : "Olivia",
-						subsectors : [{
-							name : "Dunham"
-						}, {
-							name : "FBI"
-						}]
-					}, {
-						name : "Altivia",
-						subsectors : [{
-							name : "Dunham"
-						}, {
-							name : "FBI"
-						}]
-					}, {
-						name : "Walter",
-						subsectors : [{
-							name : "var cheesecake_data = {
-					container : {
-						id : "container",
-						width : 440,
-						height : 440
-					},
-					grid : {
-						id : "grid",
-						divIdPrefix : "actor_"
-					},
-					rMax : 200,
-					center : {
-						x : 220,
-						y : 220
-					},
-					sectors : [{
-						name : "John",
-						subsectors : [{
-							name : "Cassidy",
-							actors : [[0], [1], [2]]
-						}, {
-							name : "Cassidy2"
-						}]
-					}, {
-						name : "Anna",
-						subsectors : [{
-							name : "Abc"
-						}, {
-							name : "Cassidy2",
-							actors : [[3], [4]]
-						}]
-					}, {
-						name : "Peter",
-						subsectors : [{
-							name : "Another"
-						}, {
-							name : "World"
-						}]
-					}, {
-						name : "Olivia",
-						subsectors : [{
-							name : "Dunham"
-						}, {
-							name : "FBI"
-						}]
-					}, {
-						name : "Altivia",
-						subsectors : [{
-							name : "Dunham"
-						}, {
-							name : "FBI"
-						}]
-					}, {
-						name : "Walter",
-						subsectors : [{
-							name : "Bishop"
-						}, {
-							name : "Craziness"
-						}]
-					}, {
-						name : "Nina",
-						subsectors : [{
-							name : "Massive Dynamic"
-						}]
-					}]Bishop"
-						}, {
-							name : "Craziness"
-						}]
-					}, {
-						name : "Nina",
-						subsectors : [{
-							name : "Massive Dynamic"
-						}]
-					}]
-				};
+					container: {
+			            id: "container",
+			            width: 440,
+			            height: 440
+		          	},
+		          	grid: {
+			            id: "grid",
+			            divIdPrefix: "actor_"
+		          	},
+	    			rMax : 200, 
+	    			center: {x : 220, y : 220},
+	    			sectors: [
+	    				{name:"John" ,  subsectors : [
+	    					{name : "Cassidy", 
+	    						actors: [
+	    							[0], 
+	    							[1],
+	    							[2]
+	    						]
+	    					},
+	    					{name : "Cassidy2"}
+	    				]}, 
+	    				{ name:"Anna" , subsectors : [
+	    					{name : "Abc"}, 
+	    					{name : "Cassidy2",  
+	    						actors: [ 
+	    							[3],
+	    							[4]
+	    						]
+	    					}
+	    				]}, 
+	    				{ name:"Peter", subsectors : [
+	    					{name : "Another"},
+	    					{name : "World"}
+	    				]},
+	    				{ name:"Olivia",subsectors : [
+	    					{name : "Dunham"},
+	    					{name : "FBI"}
+	    				]},
+	    				{ name:"Altivia",subsectors : [
+	    					{name : "Dunham"},
+	    					{name : "FBI"}
+	    				]},
+	    				{ name:"Walter",subsectors : [
+	    					{name : "Bishop"},
+	    					{name : "Craziness"}]
+	    				},
+	    				{ name:"Nina",subsectors : [
+	    					{name : "Massive Dynamic"}
+	    				]}
+	    			]
+	    		};
 				var cheese = new socialCheesecake.Cheesecake(cheesecake_data);
 				/*
 				 new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png",
