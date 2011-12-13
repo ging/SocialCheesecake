@@ -32,7 +32,7 @@ socialCheesecake.defineModule(
 				actor_div.setAttribute("class", newClass);
 			}
 		}else{
-			newClass = " focused ";
+			newClass = "focused";
 			actor_div.setAttribute("class", newClass);
 		}
 	}
