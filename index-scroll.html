@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+    <meta charset="utf-8">
+		<style>
+			body {
+				margin: 0px;
+				padding: 0px;
+			}
+			canvas {
+				border: solid 1px black;
+			}
+			#grid {
+			  position: absolute;
+			  left: 460px;
+			  top: 20px;
+			  
+			}
+		</style>
+		<script src="static/kinetic.js"></script>
+		<script src="static/socialCheesecake.js" root="static/" ></script>
+		<script>
+			window.requestAnimFrame = (function(callback) {
+				return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+				function(callback) {
+					window.setTimeout(callback, 1000 / 60);
+				};
+
+			})();
+
+			window.onload = function() {
+        var cheesecake_data = {
+			"rMax" : 200, 
+			"center" : {"x" : 220, "y" : 220},
+			"sectors" : [
+				{ "name":"John" ,  "subsectors" : [
+					{"name" : "Cassidy", 
+						"actors": [
+							[0, "John 1", "images/youngAlberto.png"], 
+							[0 , "John 2", "images/beatriz.png"],
+							[2 , "John 3", "images/youngAlberto.png"]
+						]
+					},
+					{"name" : "Cassidy2"}
+				]}, 
+				{ "name":"Anna" , "subsectors" : [
+					{"name" : "Abc"}, 
+					{"name" : "Cassidy2",  
+						"actors": [ 
+							[3, "Anna 1", "images/youngAlberto.png"],
+							[4, "Anna 2","images/beatriz.png"]
+						]
+					}
+				]}, 
+				{ "name":"Peter", "subsectors" : [
+					{"name" : "Another"},
+					{"name" : "World"}
+				]},
+				{ "name":"Olivia","subsectors" : [
+					{"name" : "Dunham"},
+					{"name" : "FBI"}
+				]},
+				{ "name":"Altivia","subsectors" : [
+					{"name" : "Dunham"},
+					{"name" : "FBI"}
+				]},
+				{ "name":"Walter","subsectors" : [
+					{"name" : "Bishop"},
+					{"name" : "Craziness"}]
+				},
+				{ "name":"Nina","subsectors" : [
+					{"name" : "Massive Dynamic"}
+				]}
+			]
+		};
+        var cheese = new socialCheesecake.Cheesecake("container", cheesecake_data, "grid");
+		/*
+		new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png",
+		                            width: 64, height: 64, x : 500, y : 80});
+    new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png",
+                                width: 64, height: 64, x : 600, y : 80}); */
+			};
+
+		</script>
+	</head>
+	<body id="container" onmousedown="return false;">
+	  <div id="grid">Holaaaa</div>
+	</body>
+</html>

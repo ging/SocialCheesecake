@@ -6,7 +6,7 @@ socialCheesecake.defineModule(
     'SocialCheesecake#Grid'  
 )
 .withCode(function() {
-	socialCheesecake.Cheesecake = function(id, cheesecakeData) {
+	socialCheesecake.Cheesecake = function(container_id, cheesecakeData, grid_id) {
 		var jsonSectors = cheesecakeData.sectors;
 		var cheesecake = this;
 		//Properties
@@ -17,13 +17,10 @@ socialCheesecake.defineModule(
 		cheesecake.rMax = cheesecakeData.rMax;
 		cheesecake.sectors = [];
 		cheesecake.auxiliarSectors = [];
-		cheesecake.stage = new Kinetic.Stage(id, 780, 600);
+		cheesecake.stage = new Kinetic.Stage(container_id, 440, 440);
 		cheesecake.grid = new socialCheesecake.Grid({
 			parent : this,
-			x : 500,
-			y : 80,
-			width : 270,
-			height : 520
+			grid_id : grid_id
 		});
 
 		var phi = 0;
