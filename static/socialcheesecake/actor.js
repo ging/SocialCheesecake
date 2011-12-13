@@ -21,22 +21,24 @@ socialCheesecake.defineModule(
 	}
 	
 	socialCheesecake.Actor.prototype.focus = function() {
-		var cheesecake = this.parent[0].parent.parent;
+		var cheesecake = this.parents[0].parent.parent;
 		var gridIdPrefix = cheesecake.grid.divIdPrefix;
 		var actor_id = this.id;
 		var actor_div = document.getElementById(gridIdPrefix+actor_id);
 		var newClass="";
 		if (actor_div.getAttribute("class")){
-			if (!(actor_div.getAttribute("class").match(/\sfocused/) ))
+			if (!(actor_div.getAttribute("class").match(/\sfocused/) )){
 				newClass = actor_div.getAttribute("class").concat(" focused");
+				actor_div.setAttribute("class", newClass);
+			}
 		}else{
 			newClass = " focused ";
+			actor_div.setAttribute("class", newClass);
 		}
-		actor_div.setAttribute("class", newClass);
 	}
 	
 	socialCheesecake.Actor.prototype.unfocus = function() {
-		var cheesecake = this.parent[0].parent.parent;
+		var cheesecake = this.parents[0].parent.parent;
 		var gridIdPrefix = cheesecake.grid.divIdPrefix;
 		var actor_id = this.id;
 		var actor_div = document.getElementById(gridIdPrefix+actor_id);
@@ -48,7 +50,7 @@ socialCheesecake.defineModule(
 	}
 	
 	socialCheesecake.Actor.prototype.hide = function() {
-		var cheesecake = this.parent[0].parent.parent;
+		var cheesecake = this.parents[0].parent.parent;
 		var gridIdPrefix = cheesecake.grid.divIdPrefix;
 		var actor_id = this.id;
 		var actor_div = document.getElementById(gridIdPrefix+actor_id);
@@ -64,7 +66,7 @@ socialCheesecake.defineModule(
 	}
 	
 	socialCheesecake.Actor.prototype.show = function() {
-		var cheesecake = this.parent[0].parent.parent;
+		var cheesecake = this.parents[0].parent.parent;
 		var gridIdPrefix = cheesecake.grid.divIdPrefix;
 		var actor_id = this.id;
 		var actor_div = document.getElementById(gridIdPrefix+actor_id);

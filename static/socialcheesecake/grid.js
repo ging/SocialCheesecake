@@ -11,6 +11,9 @@ socialCheesecake.defineModule(
 		
 		//Actors dimensions and positions
 		this.actors = [];
+		this.parent = settings.parent;
+		this.id = settings.grid_id;
+		this.divIdPrefix = settings.divIdPrefix;
 	}
   
 	socialCheesecake.Grid.prototype.addActor = function (actor_info, subsector) {
@@ -67,7 +70,7 @@ socialCheesecake.defineModule(
 		}
 	}
 	
-	socialCheesecake.Grid.prototype.focus_all = function () {
+	socialCheesecake.Grid.prototype.focusAll = function () {
 		this.focus(this.actors);
 	}
 	
@@ -90,7 +93,7 @@ socialCheesecake.defineModule(
 		}
 	}
 	
-	socialCheesecake.Grid.prototype.hide_all = function () {
+	socialCheesecake.Grid.prototype.hideAll = function () {
 		this.hide(this.actors)		
 	}
 	
@@ -113,7 +116,7 @@ socialCheesecake.defineModule(
 		}
 	}
 	
-	socialCheesecake.Grid.prototype.show_all = function () {
+	socialCheesecake.Grid.prototype.showAll = function () {
 		this.show(this.actors)
 	}
 	
@@ -136,7 +139,7 @@ socialCheesecake.defineModule(
 		}
 	}
 	
-	socialCheesecake.Grid.prototype.unfocus_all = function () {
+	socialCheesecake.Grid.prototype.unfocusAll = function () {
 		this.unfocus(this.actors)
 	}
 });
