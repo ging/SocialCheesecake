@@ -12,14 +12,18 @@
 		    #grid {
 		        position: absolute;
 		        left: 460px;
-		        top: 20px;
+		        top: 30px;
 		    }
 		    #grid .actor {
 		        width: 64px;
 		        height: 64px;
-		        border: 1px solid #000;
 		        float: left;
 		        margin: 5px;
+		    }
+		    #grid .actor.focused {
+		        border: 2px solid #00F;
+				background-color: #006;
+				margin: 3px;
 		    }
 		    #grid .actor img {
 		        width: 64px;
@@ -83,7 +87,9 @@
 	    				]},
 	    				{ name:"Walter",subsectors : [
 	    					{name : "Bishop"},
-	    					{name : "Craziness"}]
+	    					{name : "Craziness",
+                  actors: [[3]]
+                }]
 	    				},
 	    				{ name:"Nina",subsectors : [
 	    					{name : "Massive Dynamic"}

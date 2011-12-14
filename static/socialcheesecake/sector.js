@@ -147,43 +147,32 @@ socialCheesecake.defineModule(
 			regions[regionIndex]=this._region;
 			} */
 			sector._region.addEventListener('mouseover', function() {
-				if((sector.mouseover != null) && (sector.mouseover.color != null)) {
-					var color = sector.mouseover.color;
-					sector.changeColor(color);
-				}
-				if((sector.mouseover != null) && (sector.mouseover.callback != null)) {
-					sector.mouseover.callback(sector);
-				}
+				sector.eventHandler('mouseover');
 			});
 			sector._region.addEventListener('mouseout', function() {
-				if((sector.mouseout != null) && (sector.mouseout.color != null)) {
-					var color = sector.mouseout.color;
-					sector.changeColor(color);
-				}
-				if((sector.mouseout != null) && (sector.mouseout.callback != null)) {
-					sector.mouseout.callback(sector);
-				}
+				sector.eventHandler('mouseout');
 			});
 			sector._region.addEventListener('mousedown', function() {
-				if((sector.mousedown != null) && (sector.mousedown.color != null)) {
-					var color = sector.mousedown.color;
-					sector.changeColor(color);
-				}
-				if((sector.mousedown != null) && (sector.mousedown.callback != null)) {
-					sector.mousedown.callback(sector);
-				}
+				sector.eventHandler('mousedown');
 			});
 			sector._region.addEventListener('mouseup', function() {
-				if((sector.mouseup != null) && (sector.mouseup.color != null)) {
-					var color = sector.mouseup.color;
-					sector.changeColor(color);
-				}
-				if((sector.mouseup != null) && (sector.mouseup.callback != null)) {
-					sector.mouseup.callback(sector);
-				}
+				sector.eventHandler('mouseup');
 			});
 		}
 		return this._region
+	}
+	
+	socialCheesecake.Sector.prototype.eventHandler = function(eventName) {
+	  var sector = this;
+	  if(sector[eventName] != null){
+  	  if(sector[eventName].color != null) {
+        var color = sector[eventName].color;
+        sector.changeColor(color);
+      }
+      if(sector[eventName].callback != null) {
+        sector[eventName].callback(sector);
+      }
+    }
 	}
 	
 	socialCheesecake.Sector.prototype.splitUp = function() {
