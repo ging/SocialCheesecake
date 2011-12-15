@@ -5,7 +5,11 @@ var socialCheesecake = socialCheesecake || {};
 	for(var i in scripts){
 		if((scripts[i].getAttribute)&&(scripts[i].getAttribute('src').match("socialCheesecake.js"))){
 			var rootPath = scripts[i].getAttribute('src').replace("socialCheesecake.js", "");
+		}else if((scripts[i].getAttribute)&&(scripts[i].getAttribute('src').match("application.js"))){
+			//In case you are using rails, a compiled application.js is required instead of socialCheesecake.js
+			var rootPath = scripts[i].getAttribute('src').replace("application.js", "");
 		}
+		
 	}
     socialCheesecake = {
         modules : {},
