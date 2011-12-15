@@ -2,14 +2,21 @@ var socialCheesecake = socialCheesecake || {};
 
 (function() {
 	var scripts = document.head.getElementsByTagName('script');
+	var rootPath = null;
 	for(var i in scripts){
 		if((scripts[i].getAttribute)&&(scripts[i].getAttribute('src').match("socialCheesecake.js"))){
-			var rootPath = scripts[i].getAttribute('src').replace("socialCheesecake.js", "");
+			rootPath = scripts[i].getAttribute('src').replace("socialCheesecake.js", "");
 		}else if((scripts[i].getAttribute)&&(scripts[i].getAttribute('src').match("application.js"))){
 			//In case you are using rails, a compiled application.js is required instead of socialCheesecake.js
-			var rootPath = scripts[i].getAttribute('src').replace("application.js", "");
+			rootPath = scripts[i].getAttribute('src').replace("application.js", "");
 		}
-		
+	}
+	if((rootPath)||(rootPath=="")){
+		rootPath = rootPath.replace(/\s/g, "");
+		if(rootPath==""){
+			var href = document.location.href;
+			rootPath = href.slice(0, href.lastIndexOf("/")+1); 
+		} 
 	}
     socialCheesecake = {
         modules : {},
