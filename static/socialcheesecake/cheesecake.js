@@ -73,8 +73,7 @@ socialCheesecake.defineModule(
 		var regions = cheesecake.stage.shapes;
 		var sectorIndex;
 		for(var i in cheesecake.sectors) {
-			if(cheesecake.sectors[i] === sector)
-				sectorIndex = i;
+			if(cheesecake.sectors[i] === sector) sectorIndex = i;
 		}
 		if(sectorIndex == null)
 			throw "sector doesn't belong to this cheesecake"
@@ -83,7 +82,10 @@ socialCheesecake.defineModule(
 				cheesecake.stage.remove(regions[i]);
 			}
 		}
-
+		
+		//Unfocus all actors
+		cheesecake.grid.unfocusAll();
+		
 		//Add auxiliar sectors
 		var greySettings = {
 			parent : cheesecake,

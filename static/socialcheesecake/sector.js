@@ -43,6 +43,7 @@ socialCheesecake.defineModule(
 		this.mouseout = settings.mouseout;
 		this.mousedown = settings.mousedown;
 		this.subsectors = [];
+		this.actors = [];
 		if(settings.parent != null) this.parent = settings.parent;
 		if(settings.simulate != null) this.simulate = settings.simulate;
 
@@ -148,9 +149,15 @@ socialCheesecake.defineModule(
 			} */
 			sector._region.addEventListener('mouseover', function() {
 				sector.eventHandler('mouseover');
+				for ( var actor in sector.actors){
+					sector.actors[actor].focus();
+				}
 			});
 			sector._region.addEventListener('mouseout', function() {
 				sector.eventHandler('mouseout');
+				for ( var actor in sector.actors){
+					sector.actors[actor].unfocus();
+				}
 			});
 			sector._region.addEventListener('mousedown', function() {
 				sector.eventHandler('mousedown');
@@ -211,16 +218,18 @@ socialCheesecake.defineModule(
 	
 	socialCheesecake.Sector.prototype.changeColor = function(color) {
 		var sector = this;
-		var context = sector._region.getContext();
-		sector.color = color;
-		context.fillStyle = color;
-		context.fill();
-		context.lineWidth = 4;
-		context.stroke();
-		sector._region.getContext().restore();
-		sector._region.getContext().save();
-		socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(), 
-			sector.x, sector.y, (sector.rOut + sector.rIn) / 2, sector.phi, sector.delta);
+		if (sector._region){
+  		var context = sector._region.getContext();
+  		sector.color = color;
+  		context.fillStyle = color;
+  		context.fill();
+  		context.lineWidth = 4;
+  		context.stroke();
+  		sector._region.getContext().restore();
+  		sector._region.getContext().save();
+  		socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(),
+  		  sector.x, sector.y, (sector.rOut + sector.rIn) / 2, sector.phi, sector.delta);
+    }
 	}
 	
 	/**
@@ -368,25 +377,56 @@ socialCheesecake.defineModule(
 		}
 	}
 	
+	socialCheesecake.Sector.prototype.addActor = function(actor_info , subsector){
+		var actors = this.actors;
+		var actor;
+		
+		//Check if the actor is already in the array
+		var actorAlreadyDeclared = false;
+		for (var i in actors){
+			if (actors[i].id == actor_info.id){
+				actorAlreadyDeclared = true;
+				actor = actors[i];
+				//Check if the subsector has already been declared a parent of the actor
+				var subsectorAlreadyDeclared = false;
+				for ( var parent in actor.parents){
+					if (actor.parents[parent] == subsector) subsectorAlreadyDeclared=true;
+				}
+				if (!subsectorAlreadyDeclared) actor.parents.push(subsector);
+			}
+		}
+		// If the actor was not in the array, ask the parent or the grid for it
+		if(!actorAlreadyDeclared){		
+			if (this == subsector){
+				actor = this.parent.addActor(actor_info, subsector);
+			}else{
+				actor = this.parent.grid.addActor(actor_info, subsector);
+			}
+			actors.push(actor);
+		}
+		return actor;
+	}
+	
 	/*SUBSECTOR*/
 	socialCheesecake.Subsector = function(settings) {
 		if(settings.parent != null) this.parent = settings.parent;		
 		this.label = "";
 		if(settings.label != null) this.label = settings.label;
-		this.x = settings.x, this.y = settings.y, this.rOut = settings.rOut;
+		this.x = settings.x; 
+		this.y = settings.y; 
+		this.rOut = settings.rOut;
 		this.rIn = settings.rIn;
 		this.phi = settings.phi;
 		this.delta = settings.delta;
+		this.actors = [];
 
 		var grid = this.parent.parent.grid;
 		if (settings.actors){
 			for( var actor in settings.actors){
 				var actor_info = {
-				id : settings.actors[actor][0],
-				name :  settings.actors[actor][1],
-				imgSrc : settings.actors[actor][2]
+					id : settings.actors[actor][0]
 				}
-				grid.addActor(actor_info ,this);
+				this.addActor(actor_info ,this);
 			}
 		}
 	}

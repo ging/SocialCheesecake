@@ -18,28 +18,31 @@ socialCheesecake.defineModule(
   
 	socialCheesecake.Grid.prototype.addActor = function (actor_info, subsector) {
 		var actors = this.actors;
+		var actor;
 		
 		//Check if the actor is already in the array
 		var actorAlreadyDeclared = false;
-		for (var actor in actors){
-			if (actors[actor].id == actor_info.id){
+		for (var i in actors){
+			if (actors[i].id == actor_info.id){
 				actorAlreadyDeclared = true;
+				actor = actors[i];
 				//Check if the subsector has already been declared a parent of the actor
 				var subsectorAlreadyDeclared = false;
-				for ( var parent in actors[actor].parents){
-					if (actors[actor].parents[parent] == subsector) subsectorAlreadyDeclared=true;
+				for ( var parent in actor.parents){
+					if (actor.parents[parent] == subsector) subsectorAlreadyDeclared=true;
 				}
-				if (!subsectorAlreadyDeclared) actors[actor].parents.push(subsector);
+				if (!subsectorAlreadyDeclared) actor.parents.push(subsector);
 			}
 		}
 		// If the actor was not in the array, create it and add it to the array
 		if(!actorAlreadyDeclared){
-			var actor = new socialCheesecake.Actor({
-				id : actor_info.id,
-				parent : subsector
+			actor = new socialCheesecake.Actor({
+				id : actor_info.id, 
+				parent: subsector
 			});
 			actors.push(actor);
 		}
+		return actor;
 	}
 	
 	socialCheesecake.Grid.prototype.getActor = function (id) {

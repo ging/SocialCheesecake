@@ -17,27 +17,29 @@ socialCheesecake.defineModule(
 		}
 		this.id = settings.id;
 		this.parents = [];
-		this.parents.push(settings.parent);
+		if(settings.parent) this.parents.push(settings.parent);
 		
 		var actor = this;
 		var gridIdPrefix = this.parents[0].parent.parent.grid.divIdPrefix;
 		var actor_div = document.getElementById(gridIdPrefix+this.id);
 		actor_div.addEventListener("mouseover", function(){
-		  var sector;
-		  actor.focus();
-		  for (var subsector in actor.parents){
-		    sector = actor.parents[subsector].parent;
-		    sector.eventHandler("mouseover");
-		  }
+			var sector;
+			actor.focus();
+			for (var subsector in actor.parents){
+				sector = actor.parents[subsector].parent;
+				sector.eventHandler("mouseover");
+				actor.parents[subsector].eventHandler("mouseover");
+			}
 		});
 		actor_div.addEventListener("mouseout", function(){
-      var sector;
-      actor.unfocus();
-      for (var subsector in actor.parents){
-        sector = actor.parents[subsector].parent;
-        sector.eventHandler("mouseout");
-      }
-    });
+			var sector;
+			actor.unfocus();
+			for (var subsector in actor.parents){
+				sector = actor.parents[subsector].parent;
+				sector.eventHandler("mouseout");
+				actor.parents[subsector].eventHandler("mouseout");
+			}
+		});
 	}
 	
 	socialCheesecake.Actor.prototype.focus = function() {
