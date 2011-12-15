@@ -321,13 +321,23 @@ socialCheesecake.defineModule(
 		// update stage
 		var sector = this;
 		var currentPhi = this.phi;
+		var delta = this.delta;
 		var step = 0.05;
+		var anchor = 0;
 		if(!options) throw "No arguments passed to the function";
 		if(options.step) step = options.step;
 		if(options.context == null) throw "context must be defined";
 		var context = options.context;
-		if(options.phiDestination == null) throw "phiDestination must be defined";
-		var phiDestination = options.phiDestination % (2 * Math.PI);
+		if(options.destination == null) throw "destination must be defined";
+		if(options.anchor){
+			if((options.anchor.toLowerCase() == "b") || (options.anchor == "beginning"))
+				anchor = 0;
+			if((options.anchor.toLowerCase() == "m") || (options.anchor == "middle"))
+				anchor = 0.5;
+			if((options.anchor.toLowerCase() == "e") || (options.anchor == "end"))
+				anchor = 1;
+		}
+		var phiDestination = (options.destination- anchor*delta) % (2 * Math.PI) ;
 		while(phiDestination < 0) {
 			phiDestination += (2 * Math.PI);
 		}
@@ -367,9 +377,10 @@ socialCheesecake.defineModule(
 			requestAnimFrame(function() {
 				sector.rotateTo({
 					context : context,
-					phiDestination : options.phiDestination,
+					destination : options.destination,
 					step : step,
 					callback : options.callback,
+					anchor : options.anchor
 				});
 			});
 		} else {

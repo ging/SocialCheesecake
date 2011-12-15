@@ -155,7 +155,7 @@ socialCheesecake.defineModule(
 			greySector.resize({
 				context : greySectorContext,
 				delta : 3 * Math.PI / 2,
-				anchor : "B",
+				anchor : "M",
 				callback : greyResizeCallback
 			});
 		}
@@ -165,21 +165,23 @@ socialCheesecake.defineModule(
 		var dummyRotateToCallback = function() {
 			dummySector.resize({
 				context : dummySectorContext,
-				anchor : "E",
+				anchor : "M",
 				callback : dummyResizeCallback
 			});
 		}
 
 		greySector.rotateTo({
 			context : greySectorContext,
-			phiDestination : Math.PI / 2,
-			callback : greyRotateToCallback
+			destination : 5*Math.PI / 4,
+			callback : greyRotateToCallback,
+			anchor : "M"
 		});
 
 		dummySector.rotateTo({
 			context : dummySectorContext,
-			phiDestination : Math.PI / 2 - dummySector.delta,
-			callback : dummyRotateToCallback
+			destination : Math.PI / 4 ,
+			callback : dummyRotateToCallback,
+			anchor : "M"
 		});
 	}
 	socialCheesecake.Cheesecake.prototype.recoverCheesecake = function() {
@@ -218,23 +220,23 @@ socialCheesecake.defineModule(
 		sector.putTogether();
 		sector.resize({
 			context : sector.getRegion().getContext(),
-			anchor : "B",
+			anchor : "M",
 			delta : sector.originalAttr.delta,
 			callback : function() {
 				sector.rotateTo({
 					context : sector.getRegion().getContext(),
-					phiDestination : sector.originalAttr.phi
+					destination : sector.originalAttr.phi
 				});
 			}
 		});
 		greySector.resize({
 			context : greySector.getRegion().getContext(),
-			anchor : "E",
+			anchor : "M",
 			delta : greySector.originalAttr.delta,
 			callback : function() {
 				greySector.rotateTo({
 				context : greySector.getRegion().getContext(),
-				phiDestination : greySector.originalAttr.phi,
+				destination : greySector.originalAttr.phi,
 				callback : function() {
 						cheesecake.recoverCheesecake();
 					}
