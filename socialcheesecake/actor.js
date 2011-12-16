@@ -22,7 +22,7 @@ socialCheesecake.defineModule(
 		var actor = this;
 		var gridIdPrefix = this.parents[0].parent.parent.grid.divIdPrefix;
 		var actor_div = document.getElementById(gridIdPrefix+this.id);
-		actor_div.addEventListener("mouseover", function(){
+		var mouseoverCallback = function(){
 			var sector;
 			actor.focus();
 			for (var subsector in actor.parents){
@@ -30,14 +30,31 @@ socialCheesecake.defineModule(
 				sector.eventHandler("mouseover");
 				actor.parents[subsector].eventHandler("mouseover");
 			}
-		});
-		actor_div.addEventListener("mouseout", function(){
+		}
+		var mouseoutCallback = function(){
 			var sector;
 			actor.unfocus();
 			for (var subsector in actor.parents){
 				sector = actor.parents[subsector].parent;
 				sector.eventHandler("mouseout");
 				actor.parents[subsector].eventHandler("mouseout");
+			}
+			console.log("mouseout");
+		}
+		actor_div.addEventListener("mouseover", mouseoverCallback, false);
+		actor_div.addEventListener("mouseout", mouseoutCallback, false);
+		actor_div.addEventListener("mousedown", function(){
+			var sector;
+			if( arguments.callee.activeActor){
+				// Deactivate actor
+				arguments.callee.activeActor = false;
+				actor_div.addEventListener("mouseover", mouseoverCallback, false);
+				actor_div.addEventListener("mouseout", mouseoutCallback, false);
+			}else{
+				//Activate actor
+				arguments.callee.activeActor = true;
+				actor_div.removeEventListener("mouseover", mouseoverCallback, false);
+				actor_div.removeEventListener("mouseout", mouseoutCallback, false);
 			}
 		});
 	}
@@ -66,9 +83,22 @@ socialCheesecake.defineModule(
 		var actor_div = document.getElementById(gridIdPrefix+actor_id);
 		var newClass="";
 		if (actor_div.getAttribute("class")){
-			newClass = actor_div.getAttribute("class").replace(/\sfocused/, "");
+			newClass = actor_div.getAttribute("class").replace(/(^|\s)focused($|\s)/, "");
 			actor_div.setAttribute("class", newClass);
 		}	
+	}
+	
+	socialCheesecake.Actor.prototype.isFocused = function() {
+		var cheesecake = this.parents[0].parent.parent;
+		var gridIdPrefix = cheesecake.grid.divIdPrefix;
+		var actor_id = this.id;
+		var actor_div = document.getElementById(gridIdPrefix+actor_id);
+		var focused = false;
+		if ((actor_div.getAttribute("class")) && 
+				(actor_div.getAttribute("class").match(/(^|\s)focused($|\s)/))){
+			focused = true;
+		}	
+		return focused;
 	}
 	
 	socialCheesecake.Actor.prototype.hide = function() {

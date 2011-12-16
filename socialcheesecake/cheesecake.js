@@ -44,20 +44,27 @@ socialCheesecake.defineModule(
 				color : "#aaffaa",
 				callback : function(sector) {
 					document.body.style.cursor = "pointer";
-					sector.focus();
+					cheesecake.grid.hideAll();
+					for (var actor in sector.actors){
+						sector.actors[actor].show();
+					}
 				}
 			},
 			mouseout : {
 				color : "#eeffee",
 				callback : function(sector) {
 					document.body.style.cursor = "default";
-					sector.unfocus();
+					cheesecake.grid.showAll();
 				}
 			},
 			mousedown : {
 				color : "#77ff77",
 				callback : function(sector) {
 					cheesecake.focusAndBlurCheesecake(sector);
+					cheesecake.grid.hideAll();
+					for (var actor in sector.actors){
+						sector.actors[actor].show();
+					}
 				}
 			},
 			mouseup : { color : "#aaffaa" }
@@ -147,6 +154,7 @@ socialCheesecake.defineModule(
 		//Animations
 		var greyMousedownCallback = function() {
 			cheesecake.unfocusAndUnblurCheesecake();
+			cheesecake.grid.showAll();
 		}
 		var greyResizeCallback = function() {
 			greySector.mousedown.callback = greyMousedownCallback;

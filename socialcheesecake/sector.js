@@ -149,15 +149,9 @@ socialCheesecake.defineModule(
 			} */
 			sector._region.addEventListener('mouseover', function() {
 				sector.eventHandler('mouseover');
-				for ( var actor in sector.actors){
-					sector.actors[actor].focus();
-				}
 			});
 			sector._region.addEventListener('mouseout', function() {
 				sector.eventHandler('mouseout');
-				for ( var actor in sector.actors){
-					sector.actors[actor].unfocus();
-				}
 			});
 			sector._region.addEventListener('mousedown', function() {
 				sector.eventHandler('mousedown');
