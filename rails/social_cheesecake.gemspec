@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = "social_cheesecake"
 
   s.files         = `git ls-files`.split("\n") |
-                     Dir[File.expand_path("../app/assets/javascripts/socialcheesecake/*", __FILE__)]
+                     Dir["app/assets/javascripts/socialcheesecake/*"]
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
