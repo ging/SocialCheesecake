@@ -46,7 +46,7 @@ socialCheesecake.defineModule(
 		this.actors = [];
 		if(settings.parent != null) this.parent = settings.parent;
 		if(settings.simulate != null) this.simulate = settings.simulate;
-
+		
 		if(settings.subsectors != null) {
 			var rInSubsector = this.rIn;
 			var separation = (this.rOut - this.rIn) / settings.subsectors.length;
@@ -164,16 +164,16 @@ socialCheesecake.defineModule(
 	}
 	
 	socialCheesecake.Sector.prototype.eventHandler = function(eventName) {
-	  var sector = this;
-	  if(sector[eventName] != null){
-  	  if(sector[eventName].color != null) {
-        var color = sector[eventName].color;
-        sector.changeColor(color);
-      }
-      if(sector[eventName].callback != null) {
-        sector[eventName].callback(sector);
-      }
-    }
+		var sector = this;
+		if(sector[eventName] != null){
+			if(sector[eventName].color != null) {
+				var color = sector[eventName].color;
+				sector.changeColor(color);
+			}
+			if(sector[eventName].callback != null) {
+				sector[eventName].callback(sector);
+			}
+		}
 	}
 	
 	socialCheesecake.Sector.prototype.splitUp = function() {
@@ -182,7 +182,7 @@ socialCheesecake.defineModule(
 		var delta = this.delta;
 		var rOut = this.rOut;
 		var rIn = this.rIn;
-		var sector; (this.simulate != null) ? sector = cheesecake.sectors[this.simulate] : sector = this;
+		var sector = (this.simulate != null) ? cheesecake.sectors[this.simulate] :  this;
 		var subsectors = sector.subsectors;
 
 		//Draw sector's subsectors over it
@@ -213,17 +213,15 @@ socialCheesecake.defineModule(
 	socialCheesecake.Sector.prototype.changeColor = function(color) {
 		var sector = this;
 		if (sector._region){
-  		var context = sector._region.getContext();
-  		sector.color = color;
-  		context.fillStyle = color;
-  		context.fill();
-  		context.lineWidth = 4;
-  		context.stroke();
-  		sector._region.getContext().restore();
-  		sector._region.getContext().save();
-  		socialCheesecake.text.writeCurvedText(sector.label, sector._region.getContext(),
-  		  sector.x, sector.y, (sector.rOut + sector.rIn) / 2, sector.phi, sector.delta);
-    }
+			var context = sector._region.layer.getContext();
+			var stage = (sector instanceof socialCheesecake.Subsector) ? sector.parent.parent.stage : sector.parent.stage;
+			sector.color = color;
+			context.restore();
+			context.save();
+			stage.draw();
+			/*socialCheesecake.text.writeCurvedText(sector.label, context,
+				sector.x, sector.y, (sector.rOut + sector.rIn) / 2, sector.phi, sector.delta);*/
+		}
 	}
 	
 	/**
@@ -240,10 +238,9 @@ socialCheesecake.defineModule(
 	socialCheesecake.Sector.prototype.resize = function(options) {
 		if(!options)
 			throw "No arguments passed to the function";
-		if(options.context == null)
-			throw "context must be defined"
-		var context = options.context;
 		var sector = this;
+		var context = sector._region.layer.getContext();
+		var stage = sector.parent.stage;
 		var currentDelta = sector.delta;
 		var currentPhi = sector.phi;
 		var step = 0.05;
@@ -274,8 +271,9 @@ socialCheesecake.defineModule(
 		sector.delta = currentDelta;
 		sector.phi = currentPhi;
 
-		sector.clear();
-		sector._draw(context);
+		context.restore();
+		context.save();
+		stage.draw();
 		if(currentDelta != goalDelta) {
 			requestAnimFrame(function() {
 				sector.resize(options);
@@ -286,29 +284,24 @@ socialCheesecake.defineModule(
 	}
 	
 	socialCheesecake.Sector.prototype.focus = function() {
+		console.log("focus");
 		var sector = this;
-		var context = sector._region.getContext();
+		var context = sector._region.layer.getContext();
+		var stage = sector.parent.stage;
 		sector.rOut *= 1.05;
-		sector.clear();
-		sector._draw(context);
+		context.restore();
+		context.save();
+		stage.draw();
 	}
 	
 	socialCheesecake.Sector.prototype.unfocus = function() {
 		var sector = this;
-		var context = sector._region.getContext();
+		var context = sector._region.layer.getContext();
+		var stage = sector.parent.stage;
 		sector.rOut = sector.originalAttr.rOut;
-		sector.clear();
-		sector._draw(context);
-	}
-	
-	socialCheesecake.Sector.prototype.clear = function() {
-		var sector = this;
-		var context = sector.getRegion().getContext();
-		if(context != undefined) {
-			context.restore();
-			context.save();
-		}
-		sector.getRegion().clear();
+		context.restore();
+		context.save();
+		stage.draw();
 	}
 	
 	socialCheesecake.Sector.prototype.rotateTo = function(options) {
@@ -318,10 +311,12 @@ socialCheesecake.defineModule(
 		var delta = this.delta;
 		var step = 0.05;
 		var anchor = 0;
+		var stage = sector instanceof socialCheesecake.Subsector ? sector.parent.parent.stage : sector.parent.stage;
+		var context = sector._region.layer.getContext();
 		if(!options) throw "No arguments passed to the function";
 		if(options.step) step = options.step;
-		if(options.context == null) throw "context must be defined";
-		var context = options.context;
+		/*if(options.context == null) throw "context must be defined";
+		var context = options.context;*/
 		if(options.destination == null) throw "destination must be defined";
 		if(options.anchor){
 			if((options.anchor.toLowerCase() == "b") || (options.anchor == "beginning"))
@@ -359,11 +354,10 @@ socialCheesecake.defineModule(
 		}
 		sector.phi = currentPhi;
 
-		// clear stage
-		sector.clear();
-
-		// draw stage
-		this._draw(context);
+		// redraw
+		context.restore();
+		context.save();
+		stage.draw();
 
 		// request new frame
 		if(Math.abs(currentPhi - phiDestination) > 0.001) {

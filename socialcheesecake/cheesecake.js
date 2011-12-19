@@ -48,6 +48,7 @@ socialCheesecake.defineModule(
 					for (var actor in sector.actors){
 						sector.actors[actor].show();
 					}
+					sector.focus();
 				}
 			},
 			mouseout : {
@@ -55,6 +56,7 @@ socialCheesecake.defineModule(
 				callback : function(sector) {
 					document.body.style.cursor = "default";
 					cheesecake.grid.showAll();
+					sector.unfocus();
 				}
 			},
 			mousedown : {
@@ -77,7 +79,7 @@ socialCheesecake.defineModule(
 	
 	socialCheesecake.Cheesecake.prototype.focusAndBlurCheesecake = function(sector) {
 		var cheesecake = this;
-		var regions = cheesecake.stage.shapes;
+		var regions = cheesecake.stage.getShapes();
 		var sectorIndex;
 		for(var i in cheesecake.sectors) {
 			if(cheesecake.sectors[i] === sector) sectorIndex = i;
@@ -148,8 +150,6 @@ socialCheesecake.defineModule(
 
 		cheesecake.stage.add(greySector.getRegion());
 		cheesecake.stage.add(dummySector.getRegion());
-		var greySectorContext = greySector.getRegion().getContext();
-		var dummySectorContext = dummySector.getRegion().getContext();
 
 		//Animations
 		var greyMousedownCallback = function() {
@@ -161,7 +161,6 @@ socialCheesecake.defineModule(
 		}
 		var greyRotateToCallback = function() {
 			greySector.resize({
-				context : greySectorContext,
 				delta : 3 * Math.PI / 2,
 				anchor : "M",
 				callback : greyResizeCallback
@@ -172,21 +171,18 @@ socialCheesecake.defineModule(
 		}
 		var dummyRotateToCallback = function() {
 			dummySector.resize({
-				context : dummySectorContext,
 				anchor : "M",
 				callback : dummyResizeCallback
 			});
 		}
 
 		greySector.rotateTo({
-			context : greySectorContext,
 			destination : 5*Math.PI / 4,
 			callback : greyRotateToCallback,
 			anchor : "M"
 		});
 
 		dummySector.rotateTo({
-			context : dummySectorContext,
 			destination : Math.PI / 4 ,
 			callback : dummyRotateToCallback,
 			anchor : "M"
@@ -194,7 +190,7 @@ socialCheesecake.defineModule(
 	}
 	socialCheesecake.Cheesecake.prototype.recoverCheesecake = function() {
 		var cheesecake = this;
-		var regions = cheesecake.stage.shapes;
+		var regions = cheesecake.stage.getShapes();
 
 		//Delete the auxiliar sectors
 		for(var i = (regions.length - 1); i >= 0; i--) {
@@ -227,25 +223,21 @@ socialCheesecake.defineModule(
 		//Animate and go back to the general view
 		sector.putTogether();
 		sector.resize({
-			context : sector.getRegion().getContext(),
 			anchor : "M",
 			delta : sector.originalAttr.delta,
 			callback : function() {
 				sector.rotateTo({
-					context : sector.getRegion().getContext(),
 					destination : sector.originalAttr.phi
 				});
 			}
 		});
 		greySector.resize({
-			context : greySector.getRegion().getContext(),
 			anchor : "M",
 			delta : greySector.originalAttr.delta,
 			callback : function() {
 				greySector.rotateTo({
-				context : greySector.getRegion().getContext(),
-				destination : greySector.originalAttr.phi,
-				callback : function() {
+					destination : greySector.originalAttr.phi,
+					callback : function() {
 						cheesecake.recoverCheesecake();
 					}
 				});
