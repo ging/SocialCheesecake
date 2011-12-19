@@ -1,10 +1,5 @@
-socialCheesecake.defineModule(
-    'SocialCheesecake#Actor'
-)
-.dependsOn(
-    'SocialCheesecake#Text'  
-)
-.withCode(function() {
+var socialCheesecake = socialCheesecake || {};
+(function() {
 	socialCheesecake.Actor = function(settings) {
 		if(!settings) throw "No arguments passed to the function"
 		if(!settings.parent) throw "Actor must be associated to at least a subsector"

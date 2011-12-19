@@ -1,10 +1,5 @@
-socialCheesecake.defineModule(
-    'SocialCheesecake#Grid'
-)
-.dependsOn(
-    'SocialCheesecake#Actor'  
-)
-.withCode(function() { 
+var socialCheesecake = socialCheesecake || {};
+(function() { 
 	socialCheesecake.Grid = function (settings){
 		if (!settings) throw "No arguments passed to the function";
 		console.log(settings.actors);

@@ -1,8 +1,5 @@
-socialCheesecake.defineModule(
-  'SocialCheesecake#Text'
-).dependsOn(
-  
-).withCode(function() {
+var socialCheesecake = socialCheesecake || {};
+(function() {
   socialCheesecake.text = {
     writeCurvedText : function(text, context, x, y, r, phi, delta) {
       context.font = "bold 14px sans-serif";

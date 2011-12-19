@@ -1,11 +1,5 @@
-socialCheesecake.defineModule(
-	'SocialCheesecake#Cheesecake'
-)
-.dependsOn(
-    'SocialCheesecake#Sector',
-    'SocialCheesecake#Grid'  
-)
-.withCode(function() {
+var socialCheesecake = socialCheesecake || {};
+(function() {
 	socialCheesecake.Cheesecake = function(cheesecakeData) {
 		var jsonSectors = cheesecakeData.sectors;
 		var cheesecake = this;

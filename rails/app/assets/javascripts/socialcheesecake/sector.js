@@ -1,10 +1,5 @@
-socialCheesecake.defineModule(
-    'SocialCheesecake#Sector'
-)
-.dependsOn(
-    'SocialCheesecake#Text'  
-)
-.withCode(function() {
+var socialCheesecake = socialCheesecake || {};
+(function() {
 	socialCheesecake.Sector = function(settings) {
 		var defaultSettings = {
 			center : { x : 0,  y : 0 },
