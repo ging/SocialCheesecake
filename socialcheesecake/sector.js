@@ -119,34 +119,13 @@ socialCheesecake.defineModule(
 		socialCheesecake.text.writeCurvedText(label, context, x, y, (rOut + rIn) / 2, phi, delta);
 	}
 	
-	socialCheesecake.Sector.prototype.getRegion = function(regenerate) {
-		if((this._region == null) || (regenerate == true)) {
+	socialCheesecake.Sector.prototype.getRegion = function() {
+		if(this._region == null) {
 			var sector = this;
-			if(sector._region != null) {
-				/* TO-DO!!!
-				if(sector.parent != null){
-				var cheesecake=sector.parent;
-				var regions= cheesecake.stage.regions;
-				var regionIndex;
-				for(var j in regions){
-				if(regions[j]==sector._region){
-				regionIndex= j;
-				}
-				}
-				}
-				var canvas=sector.getRegion().getCanvas();
-				if((canvas!=null)&&(canvas.parentNode!=null)){
-				canvas.parentNode.removeChild(canvas);
-				}*/
-			}
 			sector._region = new Kinetic.Shape(function() {
 				var context = this.getContext();
 				sector._draw(context);
 			});
-			/*
-			if(regionIndex!=null){
-			regions[regionIndex]=this._region;
-			} */
 			sector._region.addEventListener('mouseover', function() {
 				sector.eventHandler('mouseover');
 			});
@@ -176,8 +155,13 @@ socialCheesecake.defineModule(
 		}
 	}
 	
+	socialCheesecake.Sector.prototype.getCheesecake = function () {
+		var sector = this;
+		return sector.parent;
+	}
+	
 	socialCheesecake.Sector.prototype.splitUp = function() {
-		var cheesecake = this.parent;
+		var cheesecake = this.getCheesecake();
 		var phi = this.phi;
 		var delta = this.delta;
 		var rOut = this.rOut;
@@ -201,7 +185,7 @@ socialCheesecake.defineModule(
 	}
 	
 	socialCheesecake.Sector.prototype.putTogether = function() {
-		var cheesecake = this.parent;
+		var cheesecake = this.getCheesecake();
 		var sector; (this.simulate != null) ? sector = cheesecake.sectors[this.simulate] : sector = this;
 		var subsectors = sector.subsectors;
 		//Clear subsectors from stage
@@ -212,15 +196,13 @@ socialCheesecake.defineModule(
 	
 	socialCheesecake.Sector.prototype.changeColor = function(color) {
 		var sector = this;
-		if (sector._region){
-			var context = sector._region.layer.getContext();
-			var stage = (sector instanceof socialCheesecake.Subsector) ? sector.parent.parent.stage : sector.parent.stage;
+		if (sector.getRegion()){
+			var context = sector.getRegion().layer.getContext();
+			var stage = sector.getCheesecake().stage;
 			sector.color = color;
 			context.restore();
 			context.save();
 			stage.draw();
-			/*socialCheesecake.text.writeCurvedText(sector.label, context,
-				sector.x, sector.y, (sector.rOut + sector.rIn) / 2, sector.phi, sector.delta);*/
 		}
 	}
 	
@@ -239,8 +221,8 @@ socialCheesecake.defineModule(
 		if(!options)
 			throw "No arguments passed to the function";
 		var sector = this;
-		var context = sector._region.layer.getContext();
-		var stage = sector.parent.stage;
+		var context = sector.getRegion().layer.getContext();
+		var stage = sector.getCheesecake().stage;
 		var currentDelta = sector.delta;
 		var currentPhi = sector.phi;
 		var step = 0.05;
@@ -284,10 +266,9 @@ socialCheesecake.defineModule(
 	}
 	
 	socialCheesecake.Sector.prototype.focus = function() {
-		console.log("focus");
 		var sector = this;
-		var context = sector._region.layer.getContext();
-		var stage = sector.parent.stage;
+		var context = sector.getRegion().layer.getContext();
+		var stage = sector.getCheesecake().stage;
 		sector.rOut *= 1.05;
 		context.restore();
 		context.save();
@@ -296,8 +277,8 @@ socialCheesecake.defineModule(
 	
 	socialCheesecake.Sector.prototype.unfocus = function() {
 		var sector = this;
-		var context = sector._region.layer.getContext();
-		var stage = sector.parent.stage;
+		var context = sector.getRegion().layer.getContext();
+		var stage = sector.getCheesecake().stage;
 		sector.rOut = sector.originalAttr.rOut;
 		context.restore();
 		context.save();
@@ -311,8 +292,8 @@ socialCheesecake.defineModule(
 		var delta = this.delta;
 		var step = 0.05;
 		var anchor = 0;
-		var stage = sector instanceof socialCheesecake.Subsector ? sector.parent.parent.stage : sector.parent.stage;
-		var context = sector._region.layer.getContext();
+		var stage = sector.getCheesecake().stage;
+		var context = sector.getRegion().layer.getContext();
 		if(!options) throw "No arguments passed to the function";
 		if(options.step) step = options.step;
 		/*if(options.context == null) throw "context must be defined";
@@ -419,7 +400,7 @@ socialCheesecake.defineModule(
 		this.delta = settings.delta;
 		this.actors = [];
 
-		var grid = this.parent.parent.grid;
+		var grid = this.getCheesecake().grid;
 		if (settings.actors){
 			for( var actor in settings.actors){
 				var actor_info = {
@@ -439,4 +420,9 @@ socialCheesecake.defineModule(
 		phi : this.phi,
 		delta : this.delta
 	});
+	
+	socialCheesecake.Subsector.prototype.getCheesecake = function () {
+		var subsector = this;
+		return subsector.parent.parent;
+	}
 });
