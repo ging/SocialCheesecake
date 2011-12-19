@@ -140,5 +140,5 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Grid.prototype.unfocusAll = function () {
 		this.unfocus(this.actors)
 	}
-});
+})();
 

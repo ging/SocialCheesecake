@@ -27,7 +27,7 @@ var socialCheesecake = socialCheesecake || {};
   }, writeCenterText:function(text, context, centerX, centerY) {
     context.fillText(text, centerX - context.measureText(text).width / 2, centerY)
   }}
-});
+})();
 var socialCheesecake = socialCheesecake || {};
 (function() {
   socialCheesecake.Sector = function(settings) {
@@ -406,7 +406,7 @@ var socialCheesecake = socialCheesecake || {};
     var subsector = this;
     return subsector.parent.parent
   }
-});
+})();
 var socialCheesecake = socialCheesecake || {};
 (function() {
   socialCheesecake.Grid = function(settings) {
@@ -536,7 +536,7 @@ var socialCheesecake = socialCheesecake || {};
   socialCheesecake.Grid.prototype.unfocusAll = function() {
     this.unfocus(this.actors)
   }
-});
+})();
 var socialCheesecake = socialCheesecake || {};
 (function() {
   socialCheesecake.Actor = function(settings) {
@@ -673,7 +673,7 @@ var socialCheesecake = socialCheesecake || {};
   socialCheesecake.Actor.prototype.getCheesecake = function() {
     return this.parents[0].parent.parent
   }
-});
+})();
 var socialCheesecake = socialCheesecake || {};
 (function() {
   socialCheesecake.Cheesecake = function(cheesecakeData) {
@@ -800,5 +800,5 @@ var socialCheesecake = socialCheesecake || {};
       }})
     }})
   }
-});
+})();
 

@@ -30,4 +30,4 @@ var socialCheesecake = socialCheesecake || {};
       context.fillText(text, centerX - context.measureText(text).width / 2, centerY);
     }
   }
-});
+})();

@@ -421,4 +421,4 @@ var socialCheesecake = socialCheesecake || {};
 		var subsector = this;
 		return subsector.parent.parent;
 	}
-});
+})();

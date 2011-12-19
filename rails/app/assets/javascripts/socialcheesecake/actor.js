@@ -141,5 +141,5 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Actor.prototype.getCheesecake = function (){
 		return this.parents[0].parent.parent;
 	}
-});  
+})();  
   

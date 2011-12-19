@@ -238,5 +238,5 @@ var socialCheesecake = socialCheesecake || {};
 			}
 		});
 	}
-});
+})();
 
