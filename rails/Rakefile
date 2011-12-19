@@ -3,8 +3,6 @@ require "rails"
 
 # configure these defaults based on Your needs :
 JS_FILES_DIR = 'app/assets/javascripts/socialcheesecake' # the javascripts base directory
-OUT_FILE_JS_EXT_PREFIX = ".min" # override with `rake ... OUT_EXT=_pack`
-OUTPUT_FILE = '../socialCheesecake.js'
 
 COMPILER_JAR_PATH = "lib/java/build/compiler.jar" # adjust the jar path !
 # only required if running under JRuby - will compile multiple files
@@ -23,12 +21,6 @@ namespace :cheesecake do
     js_files = Dir[ File.join(JS_FILES_DIR, "**/*.js") ]
     puts "matched #{js_files.size} .js file(s)"
     compile_js(js_files)
-  end
-
-  task :clean do
-    js_files = Dir[ File.join(JS_FILES_DIR, "**/*#{output_ext_prefix}.js") ]
-    puts "removing #{js_files.size} file(s)"
-    FileUtils.rm js_files
   end
 
   desc "downloads (and extracts) the latest closure compiler.jar into COMPILER_JAR_PATH path (#{COMPILER_JAR_PATH})"
