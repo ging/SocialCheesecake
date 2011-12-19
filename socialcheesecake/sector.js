@@ -197,6 +197,7 @@ socialCheesecake.defineModule(
 	socialCheesecake.Sector.prototype.changeColor = function(color) {
 		var sector = this;
 		if (sector.getRegion()){
+			console.log(sector.getRegion());
 			var context = sector.getRegion().layer.getContext();
 			var stage = sector.getCheesecake().stage;
 			sector.color = color;
