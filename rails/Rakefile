@@ -1,5 +1,4 @@
 require "bundler/gem_tasks"
-require "rails"
 
 # configure these defaults based on Your needs :
 JS_FILES_DIR = 'app/assets/javascripts/socialcheesecake' # the javascripts base directory
