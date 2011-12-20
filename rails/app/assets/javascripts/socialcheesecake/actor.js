@@ -11,6 +11,7 @@ var socialCheesecake = socialCheesecake || {};
 			}
 		}
 		this.id = settings.id;
+		this.opacity = 1;
 		this.parents = [];
 		if(settings.parent) this.parents.push(settings.parent);
 		
