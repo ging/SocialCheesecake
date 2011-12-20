@@ -38,10 +38,10 @@ var socialCheesecake = socialCheesecake || {};
 				color : "#aaffaa",
 				callback : function(sector) {
 					document.body.style.cursor = "pointer";
-					cheesecake.grid.hideAll();
-					for (var actor in sector.actors){
-						sector.actors[actor].show();
-					}
+					cheesecake.grid.fadeOutAll(1000);
+					//cheesecake.grid.hideAll();
+					cheesecake.grid.fadeIn(sector.actors,1000);
+					//cheesecake.grid.show(sector.actors);
 					sector.focus();
 				}
 			},
@@ -49,7 +49,8 @@ var socialCheesecake = socialCheesecake || {};
 				color : "#eeffee",
 				callback : function(sector) {
 					document.body.style.cursor = "default";
-					cheesecake.grid.showAll();
+					cheesecake.grid.fadeInAll(1000);
+					//cheesecake.grid.showAll();
 					sector.unfocus();
 				}
 			},
@@ -57,10 +58,10 @@ var socialCheesecake = socialCheesecake || {};
 				color : "#77ff77",
 				callback : function(sector) {
 					cheesecake.focusAndBlurCheesecake(sector);
+					//cheesecake.grid.fadeOutAll(1000);
 					cheesecake.grid.hideAll();
-					for (var actor in sector.actors){
-						sector.actors[actor].show();
-					}
+					//cheesecake.grid.fadeIn(sector.actors,1000);
+					cheesecake.grid.show(sector.actors);
 				}
 			},
 			mouseup : { color : "#aaffaa" }
