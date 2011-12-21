@@ -1,6 +1,7 @@
 var socialCheesecake = socialCheesecake || {};
 (function() {
 	socialCheesecake.Sector = function(settings) {
+		console.log(settings.auxiliar);
 		var defaultSettings = {
 			center : { x : 0,  y : 0 },
 			rIn : 0,
@@ -12,10 +13,11 @@ var socialCheesecake = socialCheesecake || {};
 			mouseover : { color : "#aaffaa" },
 			mouseout : { color : "#eeffee" },
 			mouseup : {  color : "#77ff77" },
-			mousedown : {  color : "#aaffaa" }
+			mousedown : {  color : "#aaffaa" },
+			auxiliar : false
 		}
 		for(var property in defaultSettings) {
-			if(!( property in settings)) {
+			if(!(property in settings)) {
 				settings[property] = defaultSettings[property];
 			}
 		}
@@ -41,6 +43,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.actors = [];
 		if(settings.parent != null) this.parent = settings.parent;
 		if(settings.simulate != null) this.simulate = settings.simulate;
+		this.auxiliar = settings.auxiliar;
 		
 		if(settings.subsectors != null) {
 			var rInSubsector = this.rIn;
@@ -76,7 +79,8 @@ var socialCheesecake = socialCheesecake || {};
 			mousedown : this.mousedown,
 			mouseup : this.mouseup,
 			simulate : this.simulate,
-			subsectors : this.subsectors
+			subsectors : this.subsectors,
+			auxiliar : this.auxiliar
 		};
 		this._region = null;
 	}
@@ -90,6 +94,7 @@ var socialCheesecake = socialCheesecake || {};
 		var rOut = this.rOut;
 		var color = this.color;
 		var label = this.label;
+		var actors = this.actors;
 		if(options != null) {
 			if(options.x != null) x = options.x;
 			if(options.y != null) y = options.y;
@@ -111,7 +116,9 @@ var socialCheesecake = socialCheesecake || {};
 		context.fill();
 		context.lineWidth = 4;
 		context.stroke();
-		socialCheesecake.text.writeCurvedText(label, context, x, y, (rOut + rIn) / 2, phi, delta);
+		socialCheesecake.text.writeCurvedText(label, context, x, y, 0.75*rOut, phi, delta);		
+		if(!this.auxiliar)
+		socialCheesecake.text.writeCurvedText("(" + actors.length + ")", context, x, y, 0.6*rOut, phi, delta);
 	}
 	
 	socialCheesecake.Sector.prototype.getRegion = function() {

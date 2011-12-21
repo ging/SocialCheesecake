@@ -114,7 +114,8 @@ var socialCheesecake = socialCheesecake || {};
 					document.body.style.cursor = "pointer";
 				}
 			},
-			color : "#f5f5f5"
+			color : "#f5f5f5",
+			auxiliar : true
 		};
 		var dummySettings = {
 			parent : cheesecake,
