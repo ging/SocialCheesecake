@@ -103,6 +103,8 @@ var socialCheesecake = socialCheesecake || {};
 			}
 		}
 		actor_div.setAttribute("style", newStyle);
+		this.setDivOpacity(0);
+		this.fading= "none";
 	}
 	
 	socialCheesecake.Actor.prototype.show = function() {
@@ -141,28 +143,29 @@ var socialCheesecake = socialCheesecake || {};
 		
 		var x = actor.opacity;
 		//console.log(">Fade actor "+ actor.id+" now with opacity "+ x);
+		//console.log("     >Fading value "+ this.fading);
 		
 		if (this.fading == "out"){
 			grow = -1;
 		}else if (this.fading == "in"){
 			grow = 1;
+			if (modifyDisplay) actor.show();
 		}
 		var opacity = this.opacity + grow * deltaOpacity;
 		opacity = Math.round(opacity*1000)/1000;
+		actor.setDivOpacity(opacity);
 				
 		if (((this.fading == "out") && (opacity >= 0))||
 	 			((this.fading == "in") && (opacity <= 1))){
 		  requestAnimFrame(function() {
-		  	actor.setDivOpacity(opacity);
+		  	
 				actor.fade(time, modifyDisplay);
       });
     }else{
     	//console.log("STOP FADING Actor "+ actor.id + " now with opacity "+x);
+    	//console.log("     >Fading value "+ this.fading);
     	this.fading = "none";
-    	if(modifyDisplay){
-    		if(opacity <= 0) actor.hide();
-    		if(opacity >= 0) actor.show();
-    	}
+    	if((modifyDisplay) && (opacity <= 0)) actor.hide();
     }
 	}
 	

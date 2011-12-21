@@ -13,8 +13,7 @@ var socialCheesecake = socialCheesecake || {}; (function() {
 				}else{
 					text = words[0].substring(0, delta/medium_alpha - 7) + "...";
 				}
-				medium_alpha = Math.tan(context.measureText(text).width / (text.length * r));	
-				console.log(text);			
+				medium_alpha = Math.tan(context.measureText(text).width / (text.length * r));			
 			}
 			context.translate(x, y);
 			var orientation = 0;

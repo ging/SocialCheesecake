@@ -37,18 +37,31 @@ var socialCheesecake = socialCheesecake || {};
 			mouseover : {
 				color : "#aaffaa",
 				callback : function(sector) {
+					/* FIX FOR EXECUTING MOUSEOUT BEFORE MOUSEOVER */
+					/*
+					for(var i in cheesecake.sectors){
+						cheesecake.sectors[i].getRegion().addEventListener("mouseout", undefined);
+						if(cheesecake.sectors[i]!= sector){
+						 cheesecake.sectors[i].unfocus();
+						 cheesecake.sectors[i].changeColor(cheesecake.sectors[i].mouseout.color);
+						}
+					}
+					sector.getRegion().addEventListener("mouseout", function() {
+						sector.eventHandler('mouseout');
+					});
+					*/
 					document.body.style.cursor = "pointer";
-					cheesecake.grid.fadeOutAll(300, true);
-					//cheesecake.grid.hideAll();
+					cheesecake.grid.hideAll();
 					cheesecake.grid.fadeIn(sector.actors, 300, true);
-					//cheesecake.grid.show(sector.actors);
-					sector.focus();
+					sector.focus();				
 				}
 			},
 			mouseout : {
 				color : "#eeffee",
 				callback : function(sector) {
 					document.body.style.cursor = "default";
+					console.log("-----------MOUSEOUT------------");
+					console.log("-----------"+sector.label+"-----------");
 					cheesecake.grid.fadeInAll(300, true);
 					//cheesecake.grid.showAll();
 					sector.unfocus();
