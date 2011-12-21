@@ -1,7 +1,6 @@
 var socialCheesecake = socialCheesecake || {};
 (function() {
 	socialCheesecake.Sector = function(settings) {
-		console.log(settings.auxiliar);
 		var defaultSettings = {
 			center : { x : 0,  y : 0 },
 			rIn : 0,
