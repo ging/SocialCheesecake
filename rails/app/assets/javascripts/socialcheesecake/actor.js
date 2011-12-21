@@ -121,7 +121,6 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Actor.prototype.setDivOpacity = function(opacity) {
 		opacity = (opacity > 1) ? 1 : opacity;
 		opacity = (opacity < 0) ? 0 : opacity;
-			console.log(opacity);
 		var actor = this;
 		var actor_div = this.getDiv();
 		
@@ -129,54 +128,52 @@ var socialCheesecake = socialCheesecake || {};
 		var newStyle="opacity: "+this.opacity + ";";
 		
 		if (actor_div.getAttribute("style")){
-			if (actor_div.getAttribute("style").match(/opacity\s*:\s*[a-zA-Z0-9]*;/)){
-				newStyle = actor_div.getAttribute("style").replace(/opacity\s*:\s*[a-zA-Z0-9]*;/, "opacity: "+this.opacity + ";");			
-			}else{
-				newStyle = actor_div.getAttribute("style").concat("opacity: "+this.opacity + ";");
-			}
+			newStyle = actor_div.getAttribute("style").replace(/opacity\s*:\s*[a-zA-Z0-9.]*;/g, "");
+			newStyle = newStyle.concat("opacity: "+this.opacity + ";");			
 		}
 		actor_div.setAttribute("style", newStyle);
 	}
 	
-	socialCheesecake.Actor.prototype.fade = function(type, time) {
+	socialCheesecake.Actor.prototype.fade = function(time, modifyDisplay) {
 		var actor = this;	
 		var deltaOpacity = 1000.0/ (60.0 *time);
-		var grow;
+		var grow = 0;
 		
 		var x = actor.opacity;
-		console.log(">Fade actor "+ actor.id+" now with opacity "+ x);
+		//console.log(">Fade actor "+ actor.id+" now with opacity "+ x);
 		
-		if (type == "out"){
+		if (this.fading == "out"){
 			grow = -1;
-		}else if (type =="in"){
+		}else if (this.fading == "in"){
 			grow = 1;
-		}else{
-			throw "fade type must be \"in\" or \"out\"";
 		}
-		
 		var opacity = this.opacity + grow * deltaOpacity;
 		opacity = Math.round(opacity*1000)/1000;
-
-		if (((grow == -1)&& (this.fading == "out") && (opacity >= 0))||
-	 			((grow == 1) && (this.fading == "in") && (opacity <= 1))){
+				
+		if (((this.fading == "out") && (opacity >= 0))||
+	 			((this.fading == "in") && (opacity <= 1))){
 		  requestAnimFrame(function() {
 		  	actor.setDivOpacity(opacity);
-				actor.fade(type, time);
+				actor.fade(time, modifyDisplay);
       });
     }else{
+    	//console.log("STOP FADING Actor "+ actor.id + " now with opacity "+x);
     	this.fading = "none";
+    	if(modifyDisplay){
+    		if(opacity <= 0) actor.hide();
+    		if(opacity >= 0) actor.show();
+    	}
     }
 	}
 	
-	socialCheesecake.Actor.prototype.fadeOut = function(time) {
-		console.log("fadeOut actor "+ this.id);
+	socialCheesecake.Actor.prototype.fadeOut = function(time, modifyDisplay) {
 		this.fading = "out";
-		this.fade("out", time);
+		this.fade(time, modifyDisplay);
 	}
 	
-	socialCheesecake.Actor.prototype.fadeIn = function(time) {
+	socialCheesecake.Actor.prototype.fadeIn = function(time, modifyDisplay) {
 		this.fading = "in";
-		this.fade("in", time);
+		this.fade(time, modifyDisplay);
 	}
 	
 	socialCheesecake.Actor.prototype.getCheesecake = function (){

@@ -2,7 +2,6 @@ var socialCheesecake = socialCheesecake || {};
 (function() { 
 	socialCheesecake.Grid = function (settings){
 		if (!settings) throw "No arguments passed to the function";
-		console.log(settings.actors);
 		
 		//Actors dimensions and positions
 		this.actors = [];
@@ -141,50 +140,50 @@ var socialCheesecake = socialCheesecake || {};
 		this.unfocus(this.actors);
 	}
 	
-	socialCheesecake.Grid.prototype.fadeOut = function (actor_ids, time) {
+	socialCheesecake.Grid.prototype.fadeOut = function (actor_ids, time, modifyDisplay) {
 		if (actor_ids instanceof Array) {
 			for(var i in actor_ids){
 				var actor = actor_ids[i];
 				if(actor instanceof socialCheesecake.Actor){
-					actor.fadeOut(time);
+					actor.fadeOut(time, modifyDisplay);
 				}else{
-					this.getActor(actor).fadeOut(time);
+					this.getActor(actor).fadeOut(time, modifyDisplay);
 				}				
 			}
 		} else {
 			if(actor_ids instanceof socialCheesecake.Actor){
-				actor_ids.fadeOut(time);
+				actor_ids.fadeOut(time, modifyDisplay);
 			}else{
-				this.getActor(actor_ids).fadeOut(time);
+				this.getActor(actor_ids).fadeOut(time, modifyDisplay);
 			}		
 		}
 	}
 	
-	socialCheesecake.Grid.prototype.fadeOutAll = function (time) {
-		this.fadeOut(this.actors, time);
+	socialCheesecake.Grid.prototype.fadeOutAll = function (time, modifyDisplay) {
+		this.fadeOut(this.actors, time, modifyDisplay);
 	}
 	
-	socialCheesecake.Grid.prototype.fadeIn = function (actor_ids, time) {
+	socialCheesecake.Grid.prototype.fadeIn = function (actor_ids, time, modifyDisplay) {
 		if (actor_ids instanceof Array) {
 			for(var i in actor_ids){
 				var actor = actor_ids[i];
 				if(actor instanceof socialCheesecake.Actor){
-					actor.fadeIn(time);
+					actor.fadeIn(time, modifyDisplay);
 				}else{
-					this.getActor(actor).fadeIn(time);
+					this.getActor(actor).fadeIn(time, modifyDisplay);
 				}				
 			}
 		} else {
 			if(actor_ids instanceof socialCheesecake.Actor){
-				actor_ids.fadeIn(time);
+				actor_ids.fadeIn(time, modifyDisplay);
 			}else{
-				this.getActor(actor_ids).fadeIn(time);
+				this.getActor(actor_ids).fadeIn(time, modifyDisplay);
 			}		
 		}
 	}
 	
-	socialCheesecake.Grid.prototype.fadeInAll = function (time) {
-		this.fadeIn(this.actors, time);
+	socialCheesecake.Grid.prototype.fadeInAll = function (time, modifyDisplay) {
+		this.fadeIn(this.actors, time, modifyDisplay);
 	}
 	
 })();

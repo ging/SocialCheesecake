@@ -38,9 +38,9 @@ var socialCheesecake = socialCheesecake || {};
 				color : "#aaffaa",
 				callback : function(sector) {
 					document.body.style.cursor = "pointer";
-					cheesecake.grid.fadeOutAll(1000);
+					cheesecake.grid.fadeOutAll(300, true);
 					//cheesecake.grid.hideAll();
-					cheesecake.grid.fadeIn(sector.actors,1000);
+					cheesecake.grid.fadeIn(sector.actors, 300, true);
 					//cheesecake.grid.show(sector.actors);
 					sector.focus();
 				}
@@ -49,7 +49,7 @@ var socialCheesecake = socialCheesecake || {};
 				color : "#eeffee",
 				callback : function(sector) {
 					document.body.style.cursor = "default";
-					cheesecake.grid.fadeInAll(1000);
+					cheesecake.grid.fadeInAll(300, true);
 					//cheesecake.grid.showAll();
 					sector.unfocus();
 				}
