@@ -37,8 +37,7 @@ var socialCheesecake = socialCheesecake || {};
 			mouseover : {
 				color : "#aaffaa",
 				callback : function(sector) {
-					/* FIX FOR EXECUTING MOUSEOUT BEFORE MOUSEOVER */
-					/*
+					/* FIX FOR EXECUTING MOUSEOUT BEFORE MOUSEOVER */					
 					for(var i in cheesecake.sectors){
 						cheesecake.sectors[i].getRegion().addEventListener("mouseout", undefined);
 						if(cheesecake.sectors[i]!= sector){
@@ -49,7 +48,7 @@ var socialCheesecake = socialCheesecake || {};
 					sector.getRegion().addEventListener("mouseout", function() {
 						sector.eventHandler('mouseout');
 					});
-					*/
+					
 					document.body.style.cursor = "pointer";
 					cheesecake.grid.hideAll();
 					cheesecake.grid.fadeIn(sector.actors, 300, true);
@@ -60,10 +59,7 @@ var socialCheesecake = socialCheesecake || {};
 				color : "#eeffee",
 				callback : function(sector) {
 					document.body.style.cursor = "default";
-					console.log("-----------MOUSEOUT------------");
-					console.log("-----------"+sector.label+"-----------");
 					cheesecake.grid.fadeInAll(300, true);
-					//cheesecake.grid.showAll();
 					sector.unfocus();
 				}
 			},
@@ -71,10 +67,8 @@ var socialCheesecake = socialCheesecake || {};
 				color : "#77ff77",
 				callback : function(sector) {
 					cheesecake.focusAndBlurCheesecake(sector);
-					//cheesecake.grid.fadeOutAll(1000);
 					cheesecake.grid.hideAll();
-					//cheesecake.grid.fadeIn(sector.actors,1000);
-					cheesecake.grid.show(sector.actors);
+					cheesecake.grid.fadeIn(sector.actors,300, true);
 				}
 			},
 			mouseup : { color : "#aaffaa" }

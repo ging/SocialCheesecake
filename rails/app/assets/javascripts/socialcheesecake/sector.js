@@ -11,8 +11,8 @@ var socialCheesecake = socialCheesecake || {};
 			color : "#eeffee",
 			mouseover : { color : "#aaffaa" },
 			mouseout : { color : "#eeffee" },
-			mouseup : {  color : "#77ff77" },
-			mousedown : {  color : "#aaffaa" },
+			mouseup : { color : "#77ff77" },
+			mousedown : { color : "#aaffaa" },
 			auxiliar : false
 		}
 		for(var property in defaultSettings) {
@@ -58,7 +58,32 @@ var socialCheesecake = socialCheesecake || {};
 					delta : this.delta,
 					rIn : rInSubsector,
 					rOut : rOutSubsector,
-					actors : settings.subsectors[i].actors
+					actors : settings.subsectors[i].actors,
+					mouseover : { color : "#aaffaa",
+						callback : function(subsector) {
+							/* FIX FOR EXECUTING MOUSEOUT BEFORE MOUSEOVER */					
+							for(var i in subsector.parent.subsectors){
+								subsector.parent.subsectors[i].getRegion().addEventListener("mouseout", undefined);
+								if(subsector.parent.subsectors[i]!= subsector){
+								 subsector.parent.subsectors[i].changeColor(subsector.parent.subsectors[i].mouseout.color);
+								}
+							}
+							subsector.getRegion().addEventListener("mouseout", function() {
+								subsector.eventHandler('mouseout');
+							});
+							
+							document.body.style.cursor = "pointer";
+							subsector.parent.parent.grid.hideAll();
+							subsector.parent.parent.grid.fadeIn(subsector.actors, 300, true);				
+						}
+					},
+					mouseout :{
+						color : "#eeffee",
+						callback : function(subsector) {
+							document.body.style.cursor = "default";
+							subsector.parent.parent.grid.fadeIn(subsector.parent.actors, 300, true);
+						}
+					} 
 				});
 				rInSubsector = rOutSubsector;
 				this.subsectors.push(layer);
@@ -400,6 +425,10 @@ var socialCheesecake = socialCheesecake || {};
 		this.phi = settings.phi;
 		this.delta = settings.delta;
 		this.actors = [];
+		if(settings.mousedown != null) this.mousedown = settings.mousedown;
+		if(settings.mouseup != null) this.mouseup = settings.mouseup; 
+		if(settings.mouseover != null) this.mouseover = settings.mouseover; 
+		if(settings.mouseout != null) this.mouseout = settings.mouseout;
 
 		var grid = this.getCheesecake().grid;
 		if (settings.actors){
@@ -419,7 +448,12 @@ var socialCheesecake = socialCheesecake || {};
 		rIn : this.rIn,
 		rOut : this.rOut,
 		phi : this.phi,
-		delta : this.delta
+		delta : this.delta,
+		
+		mouseover : this.mouseover,
+		mouseout : this.mouseout,
+		mouseup : this.mouseup,
+		mousedown : this.mousedown
 	});
 	
 	socialCheesecake.Subsector.prototype.getCheesecake = function () {
