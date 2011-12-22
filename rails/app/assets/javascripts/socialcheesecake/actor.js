@@ -26,8 +26,9 @@ var socialCheesecake = socialCheesecake || {};
 			actor.focus();
 			for (var subsector in actor.parents){
 				sector = actor.parents[subsector].parent;
-				sector.eventHandler("mouseover");
-				actor.parents[subsector].eventHandler("mouseover");
+				sector.focus();
+				sector.changeColor(sector.mouseover.color);
+				actor.parents[subsector].changeColor(actor.parents[subsector].mouseover.color);
 			}
 		}
 		var mouseoutCallback = function(){
@@ -35,8 +36,9 @@ var socialCheesecake = socialCheesecake || {};
 			actor.unfocus();
 			for (var subsector in actor.parents){
 				sector = actor.parents[subsector].parent;
-				sector.eventHandler("mouseout");
-				actor.parents[subsector].eventHandler("mouseout");
+				sector.unfocus();
+				sector.changeColor(sector.mouseout.color);
+				actor.parents[subsector].changeColor(sector.mouseout.color);
 			}
 		}
 		actor_div.addEventListener("mouseover", mouseoverCallback, false);
