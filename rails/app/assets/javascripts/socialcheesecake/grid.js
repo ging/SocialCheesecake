@@ -71,22 +71,23 @@ var socialCheesecake = socialCheesecake || {};
 		this.focus(this.actors);
 	}
 	
-	socialCheesecake.Grid.prototype.hide = function (actor_ids) {
+	socialCheesecake.Grid.prototype.hide = function (actor_ids, ignoreSelected) {
+		var actor;
 		if (actor_ids instanceof Array) {
 			for(var i in actor_ids){
-				var actor = actor_ids[i];
-				if(actor instanceof socialCheesecake.Actor){
-					actor.hide();
-				}else{
-					this.getActor(actor).hide();
-				}				
+				actor = actor_ids[i];
+				if (!(actor instanceof socialCheesecake.Actor)){
+					actor = this.getActor(actor);
+				}
+				if((!actor.isSelected())||(ignoreSelected)) actor.hide();
 			}
 		} else {
 			if(actor_ids instanceof socialCheesecake.Actor){
-				actor_ids.hide();
+				actor = actor_ids;
 			}else{
-				this.getActor(actor_ids).hide();
-			}		
+				actor = this.getActor(actor_ids);
+			}
+			actor.hide();
 		}
 	}
 	
@@ -140,22 +141,23 @@ var socialCheesecake = socialCheesecake || {};
 		this.unfocus(this.actors);
 	}
 	
-	socialCheesecake.Grid.prototype.fadeOut = function (actor_ids, time, modifyDisplay) {
+	socialCheesecake.Grid.prototype.fadeOut = function (actor_ids, time, modifyDisplay, ignoreSelected) {
+		var actor;
 		if (actor_ids instanceof Array) {
 			for(var i in actor_ids){
-				var actor = actor_ids[i];
-				if(actor instanceof socialCheesecake.Actor){
-					actor.fadeOut(time, modifyDisplay);
-				}else{
-					this.getActor(actor).fadeOut(time, modifyDisplay);
-				}				
+				actor = actor_ids[i];
+				if (!(actor instanceof socialCheesecake.Actor)){
+					actor = this.getActor(actor);
+				}	
+				if((!actor.isSelected())||(ignoreSelected)) actor.fadeOut(time, modifyDisplay);	
 			}
 		} else {
 			if(actor_ids instanceof socialCheesecake.Actor){
-				actor_ids.fadeOut(time, modifyDisplay);
+				actor = actor_ids;
 			}else{
-				this.getActor(actor_ids).fadeOut(time, modifyDisplay);
-			}		
+				actor = this.getActor(actor_ids);
+			}
+			if((!actor.isSelected())||(ignoreSelected)) actor.fadeOut(time, modifyDisplay);			
 		}
 	}
 	
@@ -163,22 +165,23 @@ var socialCheesecake = socialCheesecake || {};
 		this.fadeOut(this.actors, time, modifyDisplay);
 	}
 	
-	socialCheesecake.Grid.prototype.fadeIn = function (actor_ids, time, modifyDisplay) {
+	socialCheesecake.Grid.prototype.fadeIn = function (actor_ids, time, modifyDisplay, ignoreSelected) {
+		var actor;
 		if (actor_ids instanceof Array) {
 			for(var i in actor_ids){
-				var actor = actor_ids[i];
-				if(actor instanceof socialCheesecake.Actor){
-					actor.fadeIn(time, modifyDisplay);
-				}else{
-					this.getActor(actor).fadeIn(time, modifyDisplay);
-				}				
+				actor = actor_ids[i];
+				if (!(actor instanceof socialCheesecake.Actor)){
+					actor = this.getActor(actor);
+				}
+				if((!actor.isSelected())||(ignoreSelected)) actor.fadeIn(time, modifyDisplay);		
 			}
 		} else {
 			if(actor_ids instanceof socialCheesecake.Actor){
-				actor_ids.fadeIn(time, modifyDisplay);
+				actor = actor_ids;
 			}else{
-				this.getActor(actor_ids).fadeIn(time, modifyDisplay);
-			}		
+				actor = this.getActor(actor_ids);
+			}	
+			if((!actor.isSelected())||(ignoreSelected)) actor.fadeIn(time, modifyDisplay);
 		}
 	}
 	

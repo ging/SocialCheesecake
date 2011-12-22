@@ -94,9 +94,6 @@ var socialCheesecake = socialCheesecake || {};
 			}
 		}
 		
-		//Unfocus all actors
-		cheesecake.grid.unfocusAll();
-		
 		//Add auxiliar sectors
 		var greySettings = {
 			parent : cheesecake,
@@ -156,11 +153,13 @@ var socialCheesecake = socialCheesecake || {};
 
 		//Animations
 		var greyMousedownCallback = function() {
+			greySector.label = "";
 			cheesecake.unfocusAndUnblurCheesecake();
 			cheesecake.grid.showAll();
 		}
 		var greyResizeCallback = function() {
 			greySector.mousedown.callback = greyMousedownCallback;
+			greySector.label = "GO BACK";
 		}
 		var greyRotateToCallback = function() {
 			greySector.resize({
