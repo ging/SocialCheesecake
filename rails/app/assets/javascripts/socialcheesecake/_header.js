@@ -1,5 +1,5 @@
 /**
- * SocialCheesecake JavaScript Library v0.1.0
+ * @license SocialCheesecake JavaScript Library v0.1.0
  * https://github.com/adiezbal/SocialCheesecake
  * Developed by Alicia Díez (https://github.com/adiezbal)
  * Copyright 2011, Technical University of Madrid (Universidad Politécnica de Madrid)

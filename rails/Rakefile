@@ -1,4 +1,5 @@
 require "bundler/gem_tasks"
+require "rails"
 
 # configure these defaults based on Your needs :
 JS_FILES_DIR = 'app/assets/javascripts/socialcheesecake' # the javascripts base directory
@@ -17,7 +18,7 @@ COMPILER_DOWNLOAD_URI = 'http://closure-compiler.googlecode.com/files/compiler-l
 namespace :cheesecake do
 
   task :compile do
-    js_files = Dir[ File.join(JS_FILES_DIR, "**/*.js") ]
+    js_files = Dir[ File.join(JS_FILES_DIR, "**/*.js") ].sort
     puts "matched #{js_files.size} .js file(s)"
     compile_js(js_files)
   end
