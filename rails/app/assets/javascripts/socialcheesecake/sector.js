@@ -295,7 +295,7 @@ var socialCheesecake = socialCheesecake || {};
 		var sector = this;
 		var context = sector.getRegion().layer.getContext();
 		var stage = sector.getCheesecake().stage;
-		sector.rOut *= 1.05;
+		sector.rOut = sector.originalAttr.rOut * 1.05;
 		context.restore();
 		context.save();
 		stage.draw();

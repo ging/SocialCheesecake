@@ -143,7 +143,6 @@ var socialCheesecake = socialCheesecake || {};
 		var deltaOpacity = 1000.0/ (60.0 *time);
 		var grow = 0;
 		
-		var x = actor.opacity;
 		//console.log(">Fade actor "+ actor.id+" now with opacity "+ x);
 		//console.log("     >Fading value "+ this.fading);
 		
@@ -156,11 +155,11 @@ var socialCheesecake = socialCheesecake || {};
 		var opacity = this.opacity + grow * deltaOpacity;
 		opacity = Math.round(opacity*1000)/1000;
 		actor.setDivOpacity(opacity);
+		var x = actor.opacity;
 				
 		if (((this.fading == "out") && (opacity >= 0))||
 	 			((this.fading == "in") && (opacity <= 1))){
 		  requestAnimFrame(function() {
-		  	
 				actor.fade(time, modifyDisplay);
       });
     }else{
