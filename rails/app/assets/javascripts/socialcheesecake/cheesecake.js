@@ -53,8 +53,8 @@ var socialCheesecake = socialCheesecake || {};
 					mousedown : {color : "#1FA0F7"},
 					auxiliar : true
 				});
+				cheesecake.sectors[jsonSectors.length] = extraSector;
 				cheesecake.stage.add(extraSector.getRegion());
-				phi += delta;
 				i--;
 			}else{
 				var settings = {
@@ -108,9 +108,9 @@ var socialCheesecake = socialCheesecake || {};
 					mouseup : { color : "#aaffaa" }
 				};
 				cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
-				cheesecake.stage.add(cheesecake.sectors[i].getRegion());
-				phi += delta;
+				cheesecake.stage.add(cheesecake.sectors[i].getRegion());			
 			}
+			phi += delta;
 		}
 	}
 	

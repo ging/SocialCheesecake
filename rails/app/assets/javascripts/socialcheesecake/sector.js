@@ -145,13 +145,18 @@ var socialCheesecake = socialCheesecake || {};
 		context.lineWidth = 2;
 		context.strokeStyle = textAndStrokeColor;
 		context.stroke();
-		socialCheesecake.text.writeCurvedText(label, context, x, y, 0.75*rOut, phi, delta, textAndStrokeColor);		
+		socialCheesecake.text.writeCurvedText(label, context, x, y, 0.7*(rOut-rIn) + rIn, 
+			phi, delta, textAndStrokeColor);		
 		if(!this.auxiliar)
-		socialCheesecake.text.writeCurvedText("(" + actors.length + ")", context, x, y, 0.6*rOut, phi, delta, textAndStrokeColor);
+			socialCheesecake.text.writeCurvedText("(" + actors.length + ")", context, x, y, 
+				0.55*(rOut-rIn) + rIn, phi, delta, textAndStrokeColor);
 	}
 	
 	socialCheesecake.Sector.prototype.getRegion = function() {
 		if(this._region == null) {
+			console.log("getRegion!");
+			console.log(this.rOut);
+			console.log(this.rIn);
 			var sector = this;
 			sector._region = new Kinetic.Shape(function() {
 				var context = this.getContext();
@@ -199,12 +204,30 @@ var socialCheesecake = socialCheesecake || {};
 		var rIn = this.rIn;
 		var sector = (this.simulate != null) ? cheesecake.sectors[this.simulate] :  this;
 		var subsectors = sector.subsectors;
+		var parts = subsectors.length * 2 + 1;
 
 		//Draw sector's subsectors over it
 		var subsectorRIn = rIn;
-		var separation = 0;
-		if(subsectors.length > 0)
-			separation = (rOut + rIn) / subsectors.length;
+		var extraWidth = (rOut - rIn) * 0.05;
+		var separation = (rOut - rIn - (parts - subsectors.length) * extraWidth) / subsectors.length;
+		for(var i = 0; i<parts; i++){
+			if(i%2 == 0){
+				//Extra sectors
+				rIn += extraWidth;
+			}else{
+				//Actual subsectors
+				var subsectorIndex = Math.floor(i/2);
+				subsectors[subsectorIndex].rIn = rIn;
+				subsectors[subsectorIndex].rOut = rIn + separation;
+				subsectors[subsectorIndex].phi = phi;
+				subsectors[subsectorIndex].delta = delta;
+				console.log("SPLITUP: SUBSECTOR "+ subsectorIndex);
+				cheesecake.stage.add(subsectors[subsectorIndex].getRegion());
+				rIn += separation;
+			}
+			
+		}
+		/*
 		for(var i in subsectors) {
 			subsectors[i].rIn = rIn;
 			subsectors[i].rOut = rIn + separation;
@@ -212,7 +235,7 @@ var socialCheesecake = socialCheesecake || {};
 			subsectors[i].delta = delta;
 			cheesecake.stage.add(subsectors[i].getRegion());
 			rIn += separation;
-		}
+		}*/
 	}
 	
 	socialCheesecake.Sector.prototype.putTogether = function() {
