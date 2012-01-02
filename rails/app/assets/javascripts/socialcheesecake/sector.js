@@ -9,6 +9,7 @@ var socialCheesecake = socialCheesecake || {};
 			phi : 0,
 			label : "",
 			color : "#eeffee",
+			textAndStrokeColor : "#1F4A75",
 			mouseover : { color : "#aaffaa" },
 			mouseout : { color : "#eeffee" },
 			mouseup : { color : "#77ff77" },
@@ -34,6 +35,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.delta = settings.delta;
 		this.label = settings.label;
 		this.color = settings.color;
+		this.textAndStrokeColor = settings.textAndStrokeColor;
 		this.mouseover = settings.mouseover;
 		this.mouseup = settings.mouseup;
 		this.mouseout = settings.mouseout;
@@ -63,7 +65,7 @@ var socialCheesecake = socialCheesecake || {};
 						callback : function(subsector) {
 							/* FIX FOR EXECUTING MOUSEOUT BEFORE MOUSEOVER */					
 							for(var i in subsector.parent.subsectors){
-								subsector.parent.subsectors[i].getRegion().addEventListener("mouseout", undefined);
+								subsector.parent.subsectors[i].getRegion().removeEventListener("mouseout");
 								if(subsector.parent.subsectors[i]!= subsector){
 								 subsector.parent.subsectors[i].changeColor(subsector.parent.subsectors[i].mouseout.color);
 								}
@@ -97,6 +99,7 @@ var socialCheesecake = socialCheesecake || {};
 			rIn : this.rIn,
 			rOut : this.rOut,
 			color : this.color,
+			textAndStrokeColor : this.textAndStrokeColor,
 			label : this.label,
 			mouseover : this.mouseover,
 			mouseout : this.mouseout,
@@ -117,6 +120,7 @@ var socialCheesecake = socialCheesecake || {};
 		var rIn = this.rIn;
 		var rOut = this.rOut;
 		var color = this.color;
+		var textAndStrokeColor = this.textAndStrokeColor;
 		var label = this.label;
 		var actors = this.actors;
 		if(options != null) {
@@ -138,11 +142,12 @@ var socialCheesecake = socialCheesecake || {};
 		context.closePath();
 		context.fillStyle = color;
 		context.fill();
-		context.lineWidth = 4;
+		context.lineWidth = 2;
+		context.strokeStyle = textAndStrokeColor;
 		context.stroke();
-		socialCheesecake.text.writeCurvedText(label, context, x, y, 0.75*rOut, phi, delta);		
+		socialCheesecake.text.writeCurvedText(label, context, x, y, 0.75*rOut, phi, delta, textAndStrokeColor);		
 		if(!this.auxiliar)
-		socialCheesecake.text.writeCurvedText("(" + actors.length + ")", context, x, y, 0.6*rOut, phi, delta);
+		socialCheesecake.text.writeCurvedText("(" + actors.length + ")", context, x, y, 0.6*rOut, phi, delta, textAndStrokeColor);
 	}
 	
 	socialCheesecake.Sector.prototype.getRegion = function() {

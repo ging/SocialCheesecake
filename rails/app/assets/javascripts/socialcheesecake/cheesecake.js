@@ -36,7 +36,7 @@ var socialCheesecake = socialCheesecake || {};
 					phi : phi,
 					delta : delta,
 					rOut : cheesecakeData.rMax,
-					color : "#7777FF",
+					color : "#D4E4EA",
 					mouseover : {
 						color : "#1FA0F7",
 						callback : function(sector) {
@@ -44,7 +44,7 @@ var socialCheesecake = socialCheesecake || {};
 						}
 					},
 					mouseout : {
-						color : "#1FA0F7",
+						color : "#D4E4EA",
 						callback : function(sector) {
 							sector.unfocus();
 						}
@@ -73,7 +73,7 @@ var socialCheesecake = socialCheesecake || {};
 						callback : function(sector) {
 							/* FIX FOR EXECUTING MOUSEOUT BEFORE MOUSEOVER */					
 							for(var i in cheesecake.sectors){
-								cheesecake.sectors[i].getRegion().addEventListener("mouseout", undefined);
+								cheesecake.sectors[i].getRegion().removeEventListener("mouseout");
 								if(cheesecake.sectors[i]!= sector){
 								 cheesecake.sectors[i].unfocus();
 								 cheesecake.sectors[i].changeColor(cheesecake.sectors[i].mouseout.color);
@@ -154,6 +154,7 @@ var socialCheesecake = socialCheesecake || {};
 				}
 			},
 			color : "#f5f5f5",
+			textAndStrokeColor : "#666",
 			auxiliar : true
 		};
 		var dummySettings = {

@@ -1,8 +1,8 @@
 var socialCheesecake = socialCheesecake || {}; (function() {
 	socialCheesecake.text = {
-		writeCurvedText : function(text, context, x, y, r, phi, delta) {
+		writeCurvedText : function(text, context, x, y, r, phi, delta, color) {
 			context.font = "bold 14px sans-serif";
-			context.fillStyle = '#000';
+			context.fillStyle = color || "#000";
 			context.textBaseline = "middle";
 			var medium_alpha = Math.tan(context.measureText(text).width / (text.length * r));
 			while(medium_alpha * (text.length + 4) > delta) {
