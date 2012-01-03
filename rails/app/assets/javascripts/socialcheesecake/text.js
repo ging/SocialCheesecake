@@ -5,13 +5,24 @@ var socialCheesecake = socialCheesecake || {}; (function() {
 			context.fillStyle = color || "#000";
 			context.textBaseline = "middle";
 			var medium_alpha = Math.tan(context.measureText(text).width / (text.length * r));
+			var old_text = null;
+			var original_text = text;
 			while(medium_alpha * (text.length + 4) > delta) {
+				if(old_text==text){
+					console.log("WARNING: Infinite loop detected and stopped. Text '" + original_text + "' failed to be " + 
+								"correctly truncated. Proccesed serveral times as '" + text + "' and will be returned as '" + 
+								words[0].substring(0, delta/medium_alpha - 7) + "'. Space too small to even be able to truncate.")								
+					text = words[0].substring(0, delta/medium_alpha - 7);
+					break;
+				}else{
+					old_text = text;
+				}
 				words = text.split(" ");
 				if(words.length > 1){
 					words.splice(words.length - 1, 1);
 					text = words.join(" ") + "...";
 				}else{
-					text = words[0].substring(0, delta/medium_alpha - 7);// + "...";
+					text = words[0].substring(0, delta/medium_alpha - 7) + "...";
 				}
 				medium_alpha = Math.tan(context.measureText(text).width / (text.length * r));			
 			}
