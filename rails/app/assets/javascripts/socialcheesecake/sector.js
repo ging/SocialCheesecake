@@ -145,7 +145,11 @@ var socialCheesecake = socialCheesecake || {};
 		context.lineWidth = 2;
 		context.strokeStyle = textAndStrokeColor;
 		context.stroke();
-		socialCheesecake.text.writeCurvedText(label, context, x, y, 0.7*(rOut-rIn) + rIn, 
+		var textRadiusFactor = 0.7;
+		if((this.auxiliar)&&(label=="+"))
+			var textRadiusFactor = 0.5;			
+		
+		socialCheesecake.text.writeCurvedText(label, context, x, y, textRadiusFactor*(rOut-rIn) + rIn, 
 			phi, delta, textAndStrokeColor);		
 		if(!this.auxiliar)
 			socialCheesecake.text.writeCurvedText("(" + actors.length + ")", context, x, y, 
@@ -208,11 +212,24 @@ var socialCheesecake = socialCheesecake || {};
 
 		//Draw sector's subsectors over it
 		var subsectorRIn = rIn;
-		var extraWidth = (rOut - rIn) * 0.05;
+		var extraWidth = (rOut - rIn) * 0.06;
 		var separation = (rOut - rIn - (parts - subsectors.length) * extraWidth) / subsectors.length;
 		for(var i = 0; i<parts; i++){
 			if(i%2 == 0){
 				//Extra sectors
+				var extraSettings = {
+					rIn : rIn,
+					rOut : rIn + extraWidth,
+					x : cheesecake.center.x,
+					y : cheesecake.center.y,
+					delta : delta,
+					phi : phi,
+					label : "+",
+					parent : this,
+					auxiliar : true
+				}
+				var extraSector = new socialCheesecake.Subsector(extraSettings);
+				cheesecake.stage.add(extraSector.getRegion());
 				rIn += extraWidth;
 			}else{
 				//Actual subsectors
@@ -453,6 +470,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.phi = settings.phi;
 		this.delta = settings.delta;
 		this.actors = [];
+		this.auxiliar = settings.auxiliar;
 		if(settings.mousedown != null) this.mousedown = settings.mousedown;
 		if(settings.mouseup != null) this.mouseup = settings.mouseup; 
 		if(settings.mouseover != null) this.mouseover = settings.mouseover; 
@@ -481,7 +499,9 @@ var socialCheesecake = socialCheesecake || {};
 		mouseover : this.mouseover,
 		mouseout : this.mouseout,
 		mouseup : this.mouseup,
-		mousedown : this.mousedown
+		mousedown : this.mousedown,
+		
+		auxiliar : this.auxiliar
 	});
 	
 	socialCheesecake.Subsector.prototype.getCheesecake = function () {

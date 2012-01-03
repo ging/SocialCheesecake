@@ -11,7 +11,7 @@ var socialCheesecake = socialCheesecake || {}; (function() {
 					words.splice(words.length - 1, 1);
 					text = words.join(" ") + "...";
 				}else{
-					text = words[0].substring(0, delta/medium_alpha - 7) + "...";
+					text = words[0].substring(0, delta/medium_alpha - 7);// + "...";
 				}
 				medium_alpha = Math.tan(context.measureText(text).width / (text.length * r));			
 			}
