@@ -17,7 +17,7 @@ var socialCheesecake = socialCheesecake || {};
 			auxiliar : false
 		}
 		for(var property in defaultSettings) {
-			if(!(property in settings)) {
+			if(!(property in settings) || (settings[property]===undefined)) {
 				settings[property] = defaultSettings[property];
 			}
 		}
@@ -41,6 +41,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.mouseout = settings.mouseout;
 		this.mousedown = settings.mousedown;
 		this.subsectors = [];
+		this.extraSubsectors = [];
 		this.actors = [];
 		if(settings.parent != null) this.parent = settings.parent;
 		if(settings.simulate != null) this.simulate = settings.simulate;
@@ -159,9 +160,6 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Sector.prototype.getRegion = function() {
 		if(this._region == null) {
-			console.log("getRegion!");
-			console.log(this.rOut);
-			console.log(this.rIn);
 			var sector = this;
 			sector._region = new Kinetic.Shape(function() {
 				var context = this.getContext();
@@ -215,22 +213,23 @@ var socialCheesecake = socialCheesecake || {};
 		var subsectorRIn = rIn;
 		var extraWidth = (rOut - rIn) * 0.06;
 		var separation = (rOut - rIn - (parts - subsectors.length) * extraWidth) / subsectors.length;
+		var extraSettings = {
+			x : cheesecake.center.x,
+			y : cheesecake.center.y,
+			delta : delta,
+			phi : phi,
+			label : "+",
+			parent : this,
+			auxiliar : true
+		}
 		for(var i = 0; i<parts; i++){
 			if(i%2 == 0){
 				//Extra sectors
-				var extraSettings = {
-					rIn : rIn,
-					rOut : rIn + extraWidth,
-					x : cheesecake.center.x,
-					y : cheesecake.center.y,
-					delta : delta,
-					phi : phi,
-					label : "+",
-					parent : this,
-					auxiliar : true
-				}
+				extraSettings["rIn"]= rIn;
+				extraSettings["rOut"]= rIn + extraWidth;
 				var extraSector = new socialCheesecake.Subsector(extraSettings);
 				cheesecake.stage.add(extraSector.getRegion());
+				this.extraSubsectors.push(extraSector);
 				rIn += extraWidth;
 			}else{
 				//Actual subsectors
@@ -239,28 +238,22 @@ var socialCheesecake = socialCheesecake || {};
 				subsectors[subsectorIndex].rOut = rIn + separation;
 				subsectors[subsectorIndex].phi = phi;
 				subsectors[subsectorIndex].delta = delta;
-				console.log("SPLITUP: SUBSECTOR "+ subsectorIndex);
 				cheesecake.stage.add(subsectors[subsectorIndex].getRegion());
 				rIn += separation;
 			}
 			
 		}
-		/*
-		for(var i in subsectors) {
-			subsectors[i].rIn = rIn;
-			subsectors[i].rOut = rIn + separation;
-			subsectors[i].phi = phi;
-			subsectors[i].delta = delta;
-			cheesecake.stage.add(subsectors[i].getRegion());
-			rIn += separation;
-		}*/
 	}
 	
 	socialCheesecake.Sector.prototype.putTogether = function() {
 		var cheesecake = this.getCheesecake();
-		var sector; (this.simulate != null) ? sector = cheesecake.sectors[this.simulate] : sector = this;
+		var sector = (this.simulate != null) ? cheesecake.sectors[this.simulate] : this;
 		var subsectors = sector.subsectors;
+		var extraSubsectors = this.extraSubsectors;
 		//Clear subsectors from stage
+		for(var i = extraSubsectors.length ; i>0 ; i--){
+			cheesecake.stage.remove((extraSubsectors.pop()).getRegion());
+		}
 		for(var i in subsectors) {
 			cheesecake.stage.remove(subsectors[i].getRegion());
 		}
@@ -471,7 +464,9 @@ var socialCheesecake = socialCheesecake || {};
 		this.phi = settings.phi;
 		this.delta = settings.delta;
 		this.actors = [];
-		this.auxiliar = settings.auxiliar;
+		this.auxiliar = (settings.auxiliar) ? settings.auxiliar : false;
+		if(settings.color) this.color = settings.color;
+		if(settings.textAndStrokeColor) this.textAndStrokeColor = settings.textAndStrokeColor;
 		if(settings.mousedown != null) this.mousedown = settings.mousedown;
 		if(settings.mouseup != null) this.mouseup = settings.mouseup; 
 		if(settings.mouseover != null) this.mouseover = settings.mouseover; 
@@ -496,13 +491,14 @@ var socialCheesecake = socialCheesecake || {};
 		rOut : this.rOut,
 		phi : this.phi,
 		delta : this.delta,
+		auxiliar : this.auxiliar,
+		color : this.color,
+		textAndStrokeColor : this.textAndStrokeColor,
 		
 		mouseover : this.mouseover,
 		mouseout : this.mouseout,
 		mouseup : this.mouseup,
-		mousedown : this.mousedown,
-		
-		auxiliar : this.auxiliar
+		mousedown : this.mousedown
 	});
 	
 	socialCheesecake.Subsector.prototype.getCheesecake = function () {
