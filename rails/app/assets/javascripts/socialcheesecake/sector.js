@@ -145,12 +145,13 @@ var socialCheesecake = socialCheesecake || {};
 		context.lineWidth = 2;
 		context.strokeStyle = textAndStrokeColor;
 		context.stroke();
-		var textRadiusFactor = 0.7;
-		if((this.auxiliar)&&(label=="+"))
-			var textRadiusFactor = 0.5;			
-		
-		socialCheesecake.text.writeCurvedText(label, context, x, y, textRadiusFactor*(rOut-rIn) + rIn, 
-			phi, delta, textAndStrokeColor);		
+		if((this.auxiliar)&&(label=="+")){
+			socialCheesecake.text.addPlusCharacter(context, x, y, 0.5*(rOut-rIn) + rIn, 
+			phi, delta, textAndStrokeColor);
+		}else{
+			socialCheesecake.text.writeCurvedText(label, context, x, y, 0.7*(rOut-rIn) + rIn, 
+			phi, delta, textAndStrokeColor);
+		}				
 		if(!this.auxiliar)
 			socialCheesecake.text.writeCurvedText("(" + actors.length + ")", context, x, y, 
 				0.55*(rOut-rIn) + rIn, phi, delta, textAndStrokeColor);

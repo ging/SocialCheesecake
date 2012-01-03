@@ -1,5 +1,17 @@
 var socialCheesecake = socialCheesecake || {}; (function() {
 	socialCheesecake.text = {
+		addPlusCharacter : function(context, x, y, r, phi, delta, color) {
+			context.font = "bold 14px sans-serif";
+			context.fillStyle = color || "#000";
+    		context.textAlign = "center";
+			context.textBaseline = "middle";
+			text = "+";
+			context.translate(x, y);
+			context.rotate(- delta / 2 - phi - Math.PI / 2);
+			context.fillText(text[0], 0, r);
+			context.restore();
+			context.save();
+		},
 		writeCurvedText : function(text, context, x, y, r, phi, delta, color) {
 			context.font = "bold 14px sans-serif";
 			context.fillStyle = color || "#000";
