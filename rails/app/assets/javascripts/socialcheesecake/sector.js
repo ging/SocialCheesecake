@@ -8,7 +8,7 @@ var socialCheesecake = socialCheesecake || {};
 			delta : Math.PI / 2,
 			phi : 0,
 			label : "",
-			color : "#eeffee",
+			color : socialCheesecake.Cheesecake.getSectorFillColor(),
 			textAndStrokeColor : "#1F4A75",
 			mouseover : { color : "#aaffaa" },
 			mouseout : { color : "#eeffee" },
@@ -220,7 +220,17 @@ var socialCheesecake = socialCheesecake || {};
 			phi : phi,
 			label : "+",
 			parent : this,
-			auxiliar : true
+			auxiliar : true,
+			color : socialCheesecake.Cheesecake.getExtraSectorFillColor(),
+			mouseover : {
+				callback : function (sector){
+					sector.resizeWidth({
+						width : extraWidth*1.5,
+						anchor : "m",
+						step : 1 
+					});
+				} 
+			}
 		}
 		for(var i = 0; i<parts; i++){
 			if(i%2 == 0){
@@ -232,7 +242,7 @@ var socialCheesecake = socialCheesecake || {};
 				this.extraSubsectors.push(extraSector);
 				rIn += extraWidth;
 			}else{
-				//Actual subsectors
+				//Actual subsectors			
 				var subsectorIndex = Math.floor(i/2);
 				subsectors[subsectorIndex].rIn = rIn;
 				subsectors[subsectorIndex].rOut = rIn + separation;
@@ -272,17 +282,14 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	/**
-	*
-	* Options: 
-	*	delta - new delta to achieve
-	*	context - sector context to work with
-	*	step - sets the animation speed
-	*	anchor - "beginning" , "b", "B"
-	*	"middle", "m", "M"
-	*	"end", "e", "E"
-	*
-	**/
-	socialCheesecake.Sector.prototype.resize = function(options) {
+	 	* Options: 
+		*	delta - new delta to achieve (default: Math.PI/2)
+		*	step - sets the animation speed (default: 0.05)
+		*	anchor - 	"beginning" , "b", "B"
+		*						"middle", "m", "M"
+		*						"end", "e", "E"
+	 */
+	socialCheesecake.Sector.prototype.resizeDelta = function(options) {
 		if(!options)
 			throw "No arguments passed to the function";
 		var sector = this;
@@ -305,7 +312,7 @@ var socialCheesecake = socialCheesecake || {};
 			if((options.anchor.toLowerCase() == "e") || (options.anchor == "end"))
 				anchor = 1;
 		}
-
+		//Calculate new parameters
 		if(currentDelta > goalDelta) {
 			if(currentDelta - goalDelta < step) step = currentDelta - goalDelta;
 			currentDelta -= step;
@@ -317,19 +324,95 @@ var socialCheesecake = socialCheesecake || {};
 		}
 		sector.delta = currentDelta;
 		sector.phi = currentPhi;
-
+		
+		//Redraw
 		context.restore();
 		context.save();
 		stage.draw();
+		//Repeat if necessary
 		if(currentDelta != goalDelta) {
 			requestAnimFrame(function() {
-				sector.resize(options);
+				sector.resizeDelta(options);
 			});
 		} else if(options.callback) {
 			options.callback();
 		}
 	}
-	
+
+	/**
+	 	* Options: 
+		*	width - new width to achieve
+		*	step - sets the animation speed
+		*	anchor - 	"rIn" , "rin", "in", "I", "i"
+		*						"middle", "m", "M"
+		*						"rOut", "rout", "out", "O", "o"
+	 */
+	socialCheesecake.Sector.prototype.resizeWidth = function(options) {
+		var sector = this;
+		var context = sector.getRegion().layer.getContext();
+		var stage = sector.getCheesecake().stage;
+		var currentRIn = this.rIn;
+		var currentROut = this.rOut;
+		var currentWidth = (currentROut - currentRIn);
+		var step = 0.05;
+		var goalWidth = currentWidth;
+		var anchor = 1;
+		var grow = 0;
+		var error = false;
+		if(options.step) step = options.step;
+		if(options.width) goalWidth = options.width;
+		if(goalWidth < 0) throw "Width must be greater than or equal to zero";
+		if(options.anchor) {
+			if((options.anchor.toLowerCase() == "i") || (options.anchor == "in") 
+					|| (options.anchor.toLowerCase() == "rin")){
+				anchor = 1;
+			}
+			if((options.anchor.toLowerCase() == "m") || (options.anchor == "middle")){
+				anchor = 0.5;
+			}
+			if((options.anchor.toLowerCase() == "o") || (options.anchor == "out")
+					|| (options.anchor.toLowerCase() == "rout")){
+				anchor = 0;
+			}
+		}
+		//Calculate new parameters
+		if(currentWidth > goalWidth) {
+			//Make more little
+			if(currentWidth - goalWidth < step){
+				step = currentWidth - goalWidth;
+			}	
+			grow = -1;
+		} else if(currentWidth < goalWidth) {
+			//Make bigger
+			if(goalWidth - currentWidth < step)	{
+				step = goalWidth - currentWidth;
+			}
+			grow = 1;
+		}
+		currentROut = currentROut + (grow * anchor * step);
+		currentRIn = currentRIn - (grow * (1 - anchor) * step);
+		currentWidth = currentROut - currentRIn;
+		if(currentRIn <0 || currentROut <0){
+			console.log("WARNING!! Width cannot change anymore. It has reached it maximum/ minimum level.");
+			error =true;
+		}else{
+			sector.rOut = currentROut;
+			sector.rIn = currentRIn;
+			//Redraw
+			context.restore();
+			context.save();
+			stage.draw();
+		}
+		//Repeat if necessary
+		if(!error && Math.round(currentWidth *1000) != Math.round(goalWidth *1000)) {
+			requestAnimFrame(function() {
+				sector.resizeWidth(options);
+			});
+		} else if(options.callback) {
+			options.callback();
+		}
+	}
+		
 	socialCheesecake.Sector.prototype.focus = function() {
 		var sector = this;
 		var context = sector.getRegion().layer.getContext();
