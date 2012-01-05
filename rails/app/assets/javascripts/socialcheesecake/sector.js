@@ -9,11 +9,11 @@ var socialCheesecake = socialCheesecake || {};
 			phi : 0,
 			label : "",
 			color : socialCheesecake.Cheesecake.getSectorFillColor(),
-			textAndStrokeColor : "#1F4A75",
-			mouseover : { color : "#aaffaa" },
-			mouseout : { color : "#eeffee" },
-			mouseup : { color : "#77ff77" },
-			mousedown : { color : "#aaffaa" },
+			textAndStrokeColor : socialCheesecake.Cheesecake.getSectorTextAndStrokeColor(),
+			mouseover : { color : socialCheesecake.Cheesecake.getSectorHoverColor() },
+			mouseout : { color : socialCheesecake.Cheesecake.getSectorFillColor() },
+			mouseup : { color : socialCheesecake.Cheesecake.getSectorFillColor() },
+			mousedown : { color : socialCheesecake.Cheesecake.getSectorFocusColor() },
 			auxiliar : false
 		}
 		for(var property in defaultSettings) {
@@ -62,7 +62,7 @@ var socialCheesecake = socialCheesecake || {};
 					rIn : rInSubsector,
 					rOut : rOutSubsector,
 					actors : settings.subsectors[i].actors,
-					mouseover : { color : "#aaffaa",
+					mouseover : { color : socialCheesecake.Cheesecake.getSectorHoverColor(),
 						callback : function(subsector) {
 							/* FIX FOR EXECUTING MOUSEOUT BEFORE MOUSEOVER */					
 							for(var i in subsector.parent.subsectors){
@@ -81,7 +81,7 @@ var socialCheesecake = socialCheesecake || {};
 						}
 					},
 					mouseout :{
-						color : "#eeffee",
+						color : socialCheesecake.Cheesecake.getSectorFillColor(),
 						callback : function(subsector) {
 							document.body.style.cursor = "default";
 							subsector.parent.parent.grid.fadeIn(subsector.parent.actors, 300, true);
@@ -466,7 +466,9 @@ var socialCheesecake = socialCheesecake || {};
 		} else if(phiDestination < currentPhi) {
 			grow = -1;
 		}
-		if(Math.round(((2 * Math.PI) - Math.abs(phiDestination - currentPhi) ) * 1000) / 1000 >= Math.round(Math.abs(phiDestination - currentPhi) * 1000) / 1000) {
+		if(Math.round(((2 * Math.PI) - Math.abs(phiDestination - currentPhi) ) * 1000) / 1000 
+			>= Math.round(Math.abs(phiDestination - currentPhi) * 1000) / 1000) {
+				
 			if(Math.abs(phiDestination - currentPhi) < step)
 				step = Math.abs(phiDestination - currentPhi);
 			currentPhi += (grow * step);

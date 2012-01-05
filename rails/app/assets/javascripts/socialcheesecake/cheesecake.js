@@ -1,8 +1,23 @@
 var socialCheesecake = socialCheesecake || {};
 (function() {
 	//General variable settings (with dafault values)
-	var sectorFillColor = "#eeffee";
-	var extraSectorFillColor = "#D4E4EA";
+	/*  Normal */
+	var sectorFillColor = "#eeffee";					//normal, mouseout, mouseup states	
+	var sectorFocusColor = "#77ff77";					//mousedown state	
+	var sectorHoverColor = "#aaffaa";					//mouseover state
+	var sectorTextAndStrokeColor = "#1F4A75";	//text and border color
+	
+	/* Extra */
+	var extraSectorFillColor = "#D4E4EA";			//normal, mouseout, mouseup states for extra sectors
+	var extraFocusColor = "#1FA0F7";					//mousedown state for extra sectors
+	var extraHoverColor = "#1FA0F7";					//mouseover state for extra sectors
+	var extraTextAndStrokeColor = "#1F4A75";	//text and border color for extra sectors
+	
+	/* Grey */
+	var greySectorFillColor = "#f5f5f5";			//normal, mouseout, mouseup states for grey auxiliar sectors
+	var greyFocusColor = "#f5f5f5";						//mousedown state for grey auxiliar sectors
+	var greyHoverColor = "#f5f5f5";						//mouseover state for grey auxiliar sectors
+	var greyTextAndStrokeColor = "#666";			//text and border color for grey auxilar sectors
 	
 	socialCheesecake.Cheesecake = function(cheesecakeData) {
 		var jsonSectors = cheesecakeData.sectors;
@@ -42,7 +57,7 @@ var socialCheesecake = socialCheesecake || {};
 					rOut : cheesecakeData.rMax,
 					color : socialCheesecake.Cheesecake.getExtraSectorFillColor(),
 					mouseover : {
-						color : "#1FA0F7",
+						color : socialCheesecake.Cheesecake.getExtraSectorHoverColor(),
 						callback : function(sector) {
 							sector.focus();
 						}
@@ -53,8 +68,8 @@ var socialCheesecake = socialCheesecake || {};
 							sector.unfocus();
 						}
 					},
-					mouseup : {color : "#1FA0F7"},
-					mousedown : {color : "#1FA0F7"},
+					mouseup : {color : socialCheesecake.Cheesecake.getExtraSectorFillColor()},
+					mousedown : {color : socialCheesecake.Cheesecake.getExtraSectorFocusColor()},
 					auxiliar : true
 				});
 				cheesecake.sectors[jsonSectors.length] = extraSector;
@@ -73,7 +88,7 @@ var socialCheesecake = socialCheesecake || {};
 					rOut : cheesecakeData.rMax,
 					subsectors : jsonSectors[i].subsectors,
 					mouseover : {
-						color : "#aaffaa",
+						color : socialCheesecake.Cheesecake.getSectorHoverColor(),
 						callback : function(sector) {
 							/* FIX FOR EXECUTING MOUSEOUT BEFORE MOUSEOVER */					
 							for(var i in cheesecake.sectors){
@@ -94,7 +109,7 @@ var socialCheesecake = socialCheesecake || {};
 						}
 					},
 					mouseout : {
-						color : "#eeffee",
+						color : socialCheesecake.Cheesecake.getSectorFillColor(),
 						callback : function(sector) {
 							document.body.style.cursor = "default";
 							cheesecake.grid.fadeInAll(300, true);
@@ -102,14 +117,14 @@ var socialCheesecake = socialCheesecake || {};
 						}
 					},
 					mousedown : {
-						color : "#77ff77",
+						color : socialCheesecake.Cheesecake.getSectorFocusColor(),
 						callback : function(sector) {
 							cheesecake.focusAndBlurCheesecake(sector);
 							cheesecake.grid.hideAll();
 							cheesecake.grid.fadeIn(sector.actors,300, true);
 						}
 					},
-					mouseup : { color : "#aaffaa" }
+					mouseup : { color : socialCheesecake.Cheesecake.getSectorFillColor() }
 				};
 				cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
 				cheesecake.stage.add(cheesecake.sectors[i].getRegion());			
@@ -144,21 +159,21 @@ var socialCheesecake = socialCheesecake || {};
 			delta : 2 * Math.PI - sector.delta,
 			rOut : cheesecake.rMax,
 			mouseout : {
-				color : "#f5f5f5",
+				color : socialCheesecake.Cheesecake.getGreySectorFillColor(),
 				callback : function() {
 					document.body.style.cursor = "default";
 				}
 			},
-			mousedown : { color : "#f5f5f5" },
-			mouseup : { color : "#f5f5f5" },
+			mousedown : { color : socialCheesecake.Cheesecake.getGreySectorFocusColor() },
+			mouseup : { color : socialCheesecake.Cheesecake.getGreySectorFillColor() },
 			mouseover : {
-				color : "#f5f5f5",
+				color : socialCheesecake.Cheesecake.getGreySectorHoverColor(),
 				callback : function() {
 					document.body.style.cursor = "pointer";
 				}
 			},
-			color : "#f5f5f5",
-			textAndStrokeColor : "#666",
+			color : socialCheesecake.Cheesecake.getGreySectorFillColor(),
+			textAndStrokeColor : socialCheesecake.Cheesecake.getGreySectorTextAndStrokeColor(),
 			auxiliar : true
 		};
 		var dummySettings = {
@@ -289,21 +304,90 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	//Colors and text style settings
-	/** Sector Normal Fill Color (also mouseout) */
+	/** Sector Normal Fill Color (also mouseout and mouseup) */
 	socialCheesecake.Cheesecake.getSectorFillColor = function (){
 		return sectorFillColor;
 	}
 	socialCheesecake.Cheesecake.setSectorFillColor = function (newColor){
 		if(typeof newColor === "string") sectorFillColor = newColor;
 	}
-	/** Extra Sectors Normal Fill Color (also mouseout) */
+	/** Extra Sectors Normal Fill Color (also mouseout and mouseup) */
 	socialCheesecake.Cheesecake.getExtraSectorFillColor = function (){
 		return extraSectorFillColor;
 	}
 	socialCheesecake.Cheesecake.setExtraSectorFillColor = function (newColor){
 		if(typeof newColor === "string") extraSectorFillColor = newColor;
 	}
-	
+	/** Grey Sectors Normal Fill Color (also mouseout and mouseup) */
+	socialCheesecake.Cheesecake.getGreySectorFillColor = function (){
+		return greySectorFillColor;
+	}
+	socialCheesecake.Cheesecake.setGreySectorFillColor = function (newColor){
+		if(typeof newColor === "string") greySectorFillColor = newColor;
+	}
+	/** Sector Focus Fill Color (mousedown) */
+	socialCheesecake.Cheesecake.getSectorFocusColor = function (){
+		return sectorFocusColor;
+	}
+	socialCheesecake.Cheesecake.setSectorFocusColor = function (newColor){
+		if(typeof newColor === "string") sectorFocusColor = newColor;
+	}
+	/** Extra Sectors Focus Fill Color (mousedown) */
+	socialCheesecake.Cheesecake.getExtraSectorFocusColor = function (){
+		return extraFocusColor;
+	}
+	socialCheesecake.Cheesecake.setExtraSectorFocusColor = function (newColor){
+		if(typeof newColor === "string") extraFocusColor = newColor;
+	}
+	/** Grey Sectors Focus Fill Color (mousedown) */
+	socialCheesecake.Cheesecake.getGreySectorFocusColor = function (){
+		return greyFocusColor;
+	}
+	socialCheesecake.Cheesecake.setGreySectorFocusColor = function (newColor){
+		if(typeof newColor === "string") greyFocusColor = newColor;
+	}
+	/** Sector Hover Fill Color (mouseover) */
+	socialCheesecake.Cheesecake.getSectorHoverColor = function (){
+		return sectorHoverColor;
+	}
+	socialCheesecake.Cheesecake.setSectorHoverColor = function (newColor){
+		if(typeof newColor === "string") sectorHoverColor = newColor;
+	}
+	/** Extra Sectors Hover Fill Color (mouseover) */
+	socialCheesecake.Cheesecake.getExtraSectorHoverColor = function (){
+		return extraHoverColor;
+	}
+	socialCheesecake.Cheesecake.setExtraSectorHoverColor = function (newColor){
+		if(typeof newColor === "string") extraHoverColor = newColor;
+	}
+	/** Grey Sectors Hover Fill Color (mouseover) */
+	socialCheesecake.Cheesecake.getGreySectorHoverColor = function (){
+		return greyHoverColor;
+	}
+	socialCheesecake.Cheesecake.setGreySectorHoverColor = function (newColor){
+		if(typeof newColor === "string") greyHoverColor = newColor;
+	}
+	/** Sector Text and Stroke Color */
+	socialCheesecake.Cheesecake.getSectorTextAndStrokeColor = function (){
+		return sectorTextAndStrokeColor;
+	}
+	socialCheesecake.Cheesecake.setSectorTextAndStrokeColor = function (newColor){
+		if(typeof newColor === "string") sectorTextAndStrokeColor = newColor;
+	}
+	/** Extra Sectors Hover Fill Color (mouseover) */
+	socialCheesecake.Cheesecake.getExtraSectorTextAndStrokeColor = function (){
+		return extraTextAndStrokeColor;
+	}
+	socialCheesecake.Cheesecake.setExtraSectorTextAndStrokeColor = function (newColor){
+		if(typeof newColor === "string") extraTextAndStrokeColor = newColor;
+	}
+	/** Grey Sectors Hover Fill Color (mouseover) */
+	socialCheesecake.Cheesecake.getGreySectorTextAndStrokeColor = function (){
+		return greyTextAndStrokeColor;
+	}
+	socialCheesecake.Cheesecake.setGreySectorTextAndStrokeColor = function (newColor){
+		if(typeof newColor === "string") greyTextAndStrokeColor = newColor;
+	}
 	
 })();
 

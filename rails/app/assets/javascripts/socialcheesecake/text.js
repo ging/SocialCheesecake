@@ -3,7 +3,7 @@ var socialCheesecake = socialCheesecake || {}; (function() {
 		addPlusCharacter : function(context, x, y, r, phi, delta, color) {
 			context.font = "bold 14px sans-serif";
 			context.fillStyle = color || "#000";
-    		context.textAlign = "center";
+  		context.textAlign = "center";
 			context.textBaseline = "middle";
 			text = "+";
 			context.translate(x, y);
