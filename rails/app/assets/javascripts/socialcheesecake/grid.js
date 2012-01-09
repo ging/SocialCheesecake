@@ -39,13 +39,32 @@ var socialCheesecake = socialCheesecake || {};
 		return actor;
 	}
 	
+	socialCheesecake.Grid.prototype.removeActor = function(actor){
+		var actors = this.actors;
+		for(var actorIndex in actors){
+			if((actors[actorIndex].id==actor.id)&&(actor.parents.length <= 0 )){
+					actors.splice(actorIndex,1);
+			}
+		}
+	}
+	
 	socialCheesecake.Grid.prototype.getActor = function (id) {
+		var actors = this.actors;
 		for (var i in actors){
 			if (this.actors[i].id == id){
 				return this.actors[i];
 			}
 		}
 		return null
+	}
+	
+	socialCheesecake.Grid.prototype.getSelectedActors = function(){
+		var actors = this.actors;
+		var selectedActors = [];
+		for (var i in actors){
+			if(actors[i].isSelected()) selectedActors.push(actors[i]);
+		}
+		return selectedActors;
 	}
 	
 	socialCheesecake.Grid.prototype.focus = function (actor_ids) {

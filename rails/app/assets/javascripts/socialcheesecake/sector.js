@@ -76,17 +76,21 @@ var socialCheesecake = socialCheesecake || {};
 							});
 							
 							document.body.style.cursor = "pointer";
-							subsector.parent.parent.grid.hideAll();
-							subsector.parent.parent.grid.fadeIn(subsector.actors, 300, true);				
+							subsector.getCheesecake().grid.hideAll();
+							subsector.getCheesecake().grid.fadeIn(subsector.actors, 300, true);				
 						}
 					},
 					mouseout :{
 						color : socialCheesecake.Cheesecake.getSectorFillColor(),
 						callback : function(subsector) {
 							document.body.style.cursor = "default";
-							subsector.parent.parent.grid.fadeIn(subsector.parent.actors, 300, true);
+							subsector.getCheesecake().grid.fadeIn(subsector.parent.actors, 300, true);
 						}
-					} 
+					},
+					mousedown : {
+						callback : function(subsector) {
+						}
+					}
 				});
 				rInSubsector = rOutSubsector;
 				this.subsectors.push(layer);
@@ -593,6 +597,31 @@ var socialCheesecake = socialCheesecake || {};
 		return actor;
 	}
 	
+	socialCheesecake.Sector.prototype.removeActor = function (actor){
+		var actors = this.actors;
+		var actorParents;
+		var actorPresentInSector = false;
+		
+		for(var actorIndex in actors){
+			if(actors[actorIndex].id == actor.id){
+				actorParents = actor.parents;
+				//Find out if there is a subsector in this sector with this actor
+				for (var parent in actorParents){
+					for (var subsector in this.subsectors){
+						if(actorParents[parent] === this.subsectors[subsector]){
+							actorPresentInSector = true;
+							break;
+						}
+					}						
+				}
+				//If there isn't, remove the actor from the array and tell the Grid
+				if(!actorPresentInSector){
+					actors.splice(actorIndex,1);
+					this.getCheesecake().grid.removeActor(actor);
+				}
+			}
+		}
+	}
 	
 	/*SUBSECTOR*/
 	socialCheesecake.Subsector = function(settings) {
@@ -646,6 +675,25 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Subsector.prototype.getCheesecake = function () {
 		var subsector = this;
 		return subsector.parent.parent;
+	}
+	
+	socialCheesecake.Subsector.prototype.removeActor = function(actor){
+		var actors = this.actors;
+		var actorParents;
+		for(var actorIndex in actors){
+			if(actors[actorIndex].id == actor.id){
+				actorParents = actor.parents;
+				//Remove subsector from actors parents array
+				for( var parent in actorParents){
+					if (actorParents[parent] === this){
+						actorParents.splice(parent,1);
+					}
+				}
+				//Remove from actors array and tell the sector parent
+				actors.splice(actorIndex,1);
+				this.parent.removeActor(actor);
+			}
+		}
 	}
 
 })();
