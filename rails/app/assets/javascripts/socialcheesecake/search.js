@@ -11,9 +11,9 @@ var socialCheesecake = socialCheesecake || {};
 		for (var i in actors){
 			var actor = actors[i];
 			if(actor.name.toLowerCase().match(patt)){
-				actor.fadeIn(100, true);
+				actor.unfilter();
 			}else{
-				actor.fadeOut(100, true);
+				actor.filter();
 			}
 		}
 	}

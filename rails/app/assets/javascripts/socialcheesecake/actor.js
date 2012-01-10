@@ -16,6 +16,7 @@ var socialCheesecake = socialCheesecake || {};
 		this._focused = false;
 		this._selected = false;
 		this._hidden = false;
+		this._filtered = false;
 		this.fading = "none";
 		this.parents = [];
 		if(settings.parent) this.parents.push(settings.parent);
@@ -111,6 +112,7 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Actor.prototype.show = function() {
+		if(this.isFiltered()) return;
 		var actor_div = this.getDiv();
 		this._hidden = false;
 		if (actor_div.getAttribute("style")){
@@ -121,6 +123,19 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Actor.prototype.isHidden = function() {
 		return this._hidden;
+	}
+	
+	socialCheesecake.Actor.prototype.isFiltered = function() {
+		return this._filtered;
+	}
+	
+	socialCheesecake.Actor.prototype.filter = function() {
+		this._filtered = true;
+		this.fadeOut(100, true);
+	}
+	
+	socialCheesecake.Actor.prototype.unfilter = function() {
+		this._filtered = false;
 	}
 	
 	socialCheesecake.Actor.prototype.setDivOpacity = function(opacity) {
@@ -177,6 +192,7 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Actor.prototype.fadeIn = function(time, modifyDisplay) {
+		if(this.isFiltered()) return;
 		this.fading = "in";
 		this.fade(time, modifyDisplay);
 	}
