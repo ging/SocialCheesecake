@@ -89,6 +89,9 @@ var socialCheesecake = socialCheesecake || {};
 					},
 					mousedown : {
 						callback : function(subsector) {
+							var selectedActors = subsector.getCheesecake().grid.getSelectedActors();
+							console.log(selectedActors);
+							subsector.changeMembership(selectedActors);
 						}
 					}
 				});
@@ -567,14 +570,14 @@ var socialCheesecake = socialCheesecake || {};
 		}
 	}
 	
-	socialCheesecake.Sector.prototype.addActor = function(actor_info , subsector){
+	socialCheesecake.Sector.prototype.addActor = function(actorInfo , subsector){
 		var actors = this.actors;
 		var actor;
 		
 		//Check if the actor is already in the array
 		var actorAlreadyDeclared = false;
 		for (var i in actors){
-			if (actors[i].id == actor_info.id){
+			if (actors[i].id == actorInfo.id){
 				actorAlreadyDeclared = true;
 				actor = actors[i];
 				//Check if the subsector has already been declared a parent of the actor
@@ -588,9 +591,9 @@ var socialCheesecake = socialCheesecake || {};
 		// If the actor was not in the array, ask the parent or the grid for it
 		if(!actorAlreadyDeclared){		
 			if (this == subsector){
-				actor = this.parent.addActor(actor_info, subsector);
+				actor = this.parent.addActor(actorInfo, subsector);
 			}else{
-				actor = this.parent.grid.addActor(actor_info, subsector);
+				actor = this.parent.grid.addActor(actorInfo, subsector);
 			}
 			actors.push(actor);
 		}
@@ -617,7 +620,6 @@ var socialCheesecake = socialCheesecake || {};
 				//If there isn't, remove the actor from the array and tell the Grid
 				if(!actorPresentInSector){
 					actors.splice(actorIndex,1);
-					this.getCheesecake().grid.removeActor(actor);
 				}
 			}
 		}
@@ -693,6 +695,32 @@ var socialCheesecake = socialCheesecake || {};
 				actors.splice(actorIndex,1);
 				this.parent.removeActor(actor);
 			}
+		}
+	}
+	
+	socialCheesecake.Subsector.prototype.changeMembership = function(actors){
+		var actualActors = this.actors;
+		var actorInfo;
+		var isMember = false;
+		
+		console.log("Actores que tiene el subsector");
+		console.log(actualActors);
+		console.log("Actores que cambiar");
+		console.log(actors);
+		for(var i in actors){
+			for ( var j in actualActors){
+				if (actualActors[j].id == actors[i].id){
+					isMember = true;
+					this.removeActor(actors[i]);
+					break;
+				}
+			}
+			if(!isMember){
+				actorInfo = { id : actors[i].id};
+				console.log(actorInfo);
+				this.addActor(actorInfo, this);
+			}
+			isMember = false;
 		}
 	}
 

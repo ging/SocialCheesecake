@@ -196,7 +196,8 @@ var socialCheesecake = socialCheesecake || {};
 				callback : function() {
 					document.body.style.cursor = "pointer";
 				}
-			}
+			},
+			auxiliar : true
 		};
 		var greySector = new socialCheesecake.Sector(greySettings);
 		cheesecake.auxiliarSectors.push(greySector);
