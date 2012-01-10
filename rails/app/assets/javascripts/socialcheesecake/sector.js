@@ -704,10 +704,6 @@ var socialCheesecake = socialCheesecake || {};
 		var actorInfo;
 		var isMember = false;
 		
-		console.log("Actores que tiene el subsector");
-		console.log(actualActors);
-		console.log("Actores que cambiar");
-		console.log(actors);
 		for(var i in actors){
 			for ( var j in actualActors){
 				if (actualActors[j].id == actors[i].id){

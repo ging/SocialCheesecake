@@ -40,6 +40,7 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.searchEngine = new socialCheesecake.SearchEngine({
 			parent : this
 		});
+		cheesecake.changes = {};
 
 		var phi = 0;
 		var delta = 2 * Math.PI / (jsonSectors.length + 1);
@@ -305,6 +306,44 @@ var socialCheesecake = socialCheesecake || {};
 				});
 			}
 		});
+	}
+	
+	/**
+	 * actorId 		- actor which changes one of its parents
+	 */
+	socialCheesecake.Cheesecake.prototype.updateActorMembership = function (actorId){
+		var changes = this.changes;
+		var grid = this.grid;
+		var changesInActors;
+		var alreadyChanged = false;
+		var actorParents = grid.getActor(actorId).parents;
+		var actorSubsectors = [];
+		
+		for(var parent in actorParents){
+			actorSubsectors.push(actorParents[parent].id);
+		}
+		
+		if(changes.actors != undefined){
+			changesInActors = changes.actors
+			for( var actor in changesInActors){
+				if(changesInActors[actor].id == actorId){
+					alreadyChanged = true;
+					changesInActors[actor].subsectors = actorSubsectors;
+				}
+			}
+			if(!alreadyChanged){
+				changesInActors.push({
+					id : actorId,
+					subsectors : actorSubsectors
+				});
+			}
+		}else{
+			changes.actors = [];
+			changes.actors.push({
+				id : actorId,
+				subsectors : actorSubsectors
+			});
+		}
 	}
 	
 	//Colors and text style settings
