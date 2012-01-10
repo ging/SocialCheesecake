@@ -37,6 +37,9 @@ var socialCheesecake = socialCheesecake || {};
 			grid_id : cheesecakeData.grid.id,
 			divIdPrefix : cheesecakeData.grid.divIdPrefix || "actor_"
 		});
+		cheesecake.searchEngine = new socialCheesecake.SearchEngine({
+			parent : this
+		});
 
 		var phi = 0;
 		var delta = 2 * Math.PI / (jsonSectors.length + 1);

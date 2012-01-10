@@ -30,10 +30,8 @@ var socialCheesecake = socialCheesecake || {};
 		}
 		// If the actor was not in the array, create it and add it to the array
 		if(!actorAlreadyDeclared){
-			actor = new socialCheesecake.Actor({
-				id : actor_info.id, 
-				parent: subsector
-			});
+			actor_info.parent = subsector;
+			actor = new socialCheesecake.Actor(actor_info);
 			actors.push(actor);
 		}
 		return actor;

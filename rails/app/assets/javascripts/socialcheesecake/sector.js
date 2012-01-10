@@ -647,9 +647,10 @@ var socialCheesecake = socialCheesecake || {};
 
 		var grid = this.getCheesecake().grid;
 		if (settings.actors){
-			for( var actor in settings.actors){
+			for(var actor in settings.actors){
 				var actor_info = {
-					id : settings.actors[actor][0]
+					id : settings.actors[actor][0],
+					name : settings.actors[actor][1]
 				}
 				this.addActor(actor_info ,this);
 			}

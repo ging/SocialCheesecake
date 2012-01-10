@@ -11,6 +11,7 @@ var socialCheesecake = socialCheesecake || {};
 			}
 		}
 		this.id = settings.id;
+		this.name = settings.name;
 		this.opacity = 1;
 		this._focused = false;
 		this._selected = false;
