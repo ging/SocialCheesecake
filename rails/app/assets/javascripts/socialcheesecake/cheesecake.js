@@ -41,11 +41,8 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.searchEngine = new socialCheesecake.SearchEngine({
 			parent : this
 		});
+		cheesecake.matchActorsNumber = cheesecakeData.match || true;
 		cheesecake.changes = {};
-
-		var deltaExtra = Math.PI / 8;
-		var deltaSector = (2 * Math.PI - deltaExtra) / jsonSectors.length;
-		var phi = ((5 * Math.PI) / 4) - (deltaExtra / 2);
 		
 		var extraSector = new socialCheesecake.Sector({
 			parent : cheesecake,
@@ -54,8 +51,6 @@ var socialCheesecake = socialCheesecake || {};
 				y : cheesecakeData.center.y
 			},
 			label: "+",
-			phi : phi,
-			delta : deltaExtra,
 			rOut : cheesecakeData.rMax,
 			color : socialCheesecake.Cheesecake.getExtraSectorFillColor(),
 			mouseover : {
@@ -76,8 +71,6 @@ var socialCheesecake = socialCheesecake || {};
 			textAndStrokeColor : socialCheesecake.Cheesecake.getExtraSectorTextAndStrokeColor()
 		});
 		cheesecake.sectors[jsonSectors.length] = extraSector;
-		cheesecake.stage.add(extraSector.getRegion());
-		phi += deltaExtra;
 		
 		for(var i = 0; i < jsonSectors.length; i++) {			
 			var settings = {
@@ -87,8 +80,6 @@ var socialCheesecake = socialCheesecake || {};
 					y : cheesecakeData.center.y
 				},
 				label : jsonSectors[i].name,
-				phi : phi,
-				delta : deltaSector,
 				rOut : cheesecakeData.rMax,
 				subsectors : jsonSectors[i].subsectors,
 				mouseover : {
@@ -132,8 +123,15 @@ var socialCheesecake = socialCheesecake || {};
 				textAndStrokeColor : socialCheesecake.Cheesecake.getSectorTextAndStrokeColor()
 			};
 			cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
-			cheesecake.stage.add(cheesecake.sectors[i].getRegion());
-			phi += deltaSector;
+		}
+		cheesecake.calculatePortions();
+		cheesecake.draw();
+	}
+	
+	socialCheesecake.Cheesecake.prototype.draw = function(){
+		var sectors = this.sectors;
+		for (var sector in sectors){
+			this.stage.add(sectors[sector].getRegion());
 		}
 	}
 	
@@ -263,9 +261,7 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.auxiliarSectors.pop();
 
 		// Add the former sectors and actors
-		for(var i in cheesecake.sectors) {
-			cheesecake.stage.add(cheesecake.sectors[i].getRegion());
-		}
+		cheesecake.draw();
 		cheesecake.grid.fadeInAll(300, true);
 	}
 	socialCheesecake.Cheesecake.prototype.unfocusAndUnblurCheesecake = function() {
@@ -343,6 +339,50 @@ var socialCheesecake = socialCheesecake || {};
 				id : actorId,
 				subsectors : actorSubsectors
 			});
+		}
+	}
+	
+	socialCheesecake.Cheesecake.prototype.calculatePortions = function (){
+		var sectors = this.sectors;
+		var match = this.matchActorsNumber;
+		var deltaExtra = Math.PI / 8;
+		var deltaSector;
+		var minDeltaSector = Math.PI / 6;
+		var phi = ((5 * Math.PI) / 4) - (deltaExtra / 2);
+		var sectorActors;
+		var totalActors = 0;
+		var emptySectors = 0;
+		
+		sectors[sectors.length-1].phi = phi;
+		sectors[sectors.length-1].delta = deltaExtra;
+		sectors[sectors.length-1].originalAttr.phi = sectors[sectors.length-1].phi;
+		sectors[sectors.length-1].originalAttr.delta = sectors[sectors.length-1].delta;
+		phi += deltaExtra;
+		
+		if (match){
+			for (var i = 0; i < sectors.length -1; i++){
+				totalActors += (sectors[i].actors.length);
+				if( sectors[i].actors.length == 0) emptySectors++;
+			}
+			for (var i = 0; i < sectors.length -1; i++){
+				sectorActors = sectors[i].actors.length;
+				deltaSector = (sectorActors / totalActors)* (2*Math.PI - deltaExtra - emptySectors*minDeltaSector);
+				if(deltaSector == 0) deltaSector = minDeltaSector;
+				sectors[i].phi = phi;
+				sectors[i].delta = deltaSector;
+				sectors[i].originalAttr.phi = sectors[i].phi;
+				sectors[i].originalAttr.delta = sectors[i].delta;
+				phi += deltaSector;
+			}
+		}else{
+			deltaSector = (2 * Math.PI - deltaExtra) / (sectors.length-1);
+			for (var i = 0; i < sectors.length -1; i++){
+				sectors[i].phi = phi;
+				sectors[i].delta = deltaSector;
+				sectors[i].originalAttr.phi = sectors[i].phi;
+				sectors[i].originalAttr.delta = sectors[i].delta;
+				phi += deltaSector;
+			}
 		}
 	}
 	

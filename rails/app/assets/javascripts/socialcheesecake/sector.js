@@ -5,7 +5,7 @@ var socialCheesecake = socialCheesecake || {};
 			center : { x : 0,  y : 0 },
 			rIn : 0,
 			rOut : 300,
-			delta : Math.PI / 2,
+			delta : Math.PI /2 ,
 			phi : 0,
 			label : "",
 			color : socialCheesecake.Cheesecake.getSectorFillColor(),
@@ -54,7 +54,7 @@ var socialCheesecake = socialCheesecake || {};
 			var separation = (this.rOut - this.rIn) / settings.subsectors.length;
 			for(var i in settings.subsectors) {
 				var rOutSubsector = rInSubsector + separation;
-				var layer = new socialCheesecake.Subsector({
+				var subsector = new socialCheesecake.Subsector({
 					id : settings.subsectors[i].id,
 					label : settings.subsectors[i].name,
 					parent : this,
@@ -98,7 +98,7 @@ var socialCheesecake = socialCheesecake || {};
 					}
 				});
 				rInSubsector = rOutSubsector;
-				this.subsectors.push(layer);
+				this.subsectors.push(subsector);
 			}
 		}
 		this.originalAttr = {
@@ -133,16 +133,7 @@ var socialCheesecake = socialCheesecake || {};
 		var textAndStrokeColor = this.textAndStrokeColor;
 		var label = this.label;
 		var actors = this.actors;
-		if(options != null) {
-			if(options.x != null) x = options.x;
-			if(options.y != null) y = options.y;
-			if(options.phi != null) phi = options.phi;
-			if(options.delta != null)  delta = options.delta;
-			if(options.rIn != null)  rIn = options.rIn;
-			if(options.rOut != null) rOut = options.rOut;
-			if(options.color != null)  color = options.color;
-			if(options.label != null) label = options.label;
-		}
+		
 		context.restore();
 		context.save();
 		context.beginPath();
