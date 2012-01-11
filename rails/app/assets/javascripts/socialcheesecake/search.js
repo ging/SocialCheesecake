@@ -16,5 +16,11 @@ var socialCheesecake = socialCheesecake || {};
 				actor.filter();
 			}
 		}
+		
+		if(this.parent.highlightedSector){
+			this.parent.grid.fadeIn(this.parent.highlightedSector.actors, 100, true);
+		}else{
+			this.parent.grid.fadeIn(this.parent.grid.actors, 100, true);	
+		}
 	}
 })();

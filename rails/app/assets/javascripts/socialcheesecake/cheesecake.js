@@ -29,6 +29,7 @@ var socialCheesecake = socialCheesecake || {};
 		};
 		cheesecake.rMax = cheesecakeData.rMax;
 		cheesecake.sectors = [];
+		cheesecake.highlightedSector = null;
 		cheesecake.auxiliarSectors = [];
 		cheesecake.stage = new Kinetic.Stage(cheesecakeData.container.id, 
 			cheesecakeData.container.width, cheesecakeData.container.height);
