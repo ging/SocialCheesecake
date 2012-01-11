@@ -21,8 +21,9 @@ var socialCheesecake = socialCheesecake || {};
 				settings[property] = defaultSettings[property];
 			}
 		}
-		if(settings.phi < 0 || settings.phi > 2 * Math.PI) {
-			throw "Phi must be greater or equal to 0 and less than 2*pi";
+		settings.phi %= 2*Math.PI;
+		while(settings.phi <0){
+			settings.phi += 2*Math.PI;
 		}
 		if(settings.delta <= 0 || settings.delta > 2 * Math.PI) {
 			throw "Delta must be greater than 0 and less than 2*pi";

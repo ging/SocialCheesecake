@@ -43,98 +43,97 @@ var socialCheesecake = socialCheesecake || {};
 		});
 		cheesecake.changes = {};
 
-		var phi = 0;
-		var delta = 2 * Math.PI / (jsonSectors.length + 1);
-		var actors = [];
-		var extraSectorAdded =false;
-		for(var i = 0; i < jsonSectors.length; i++) {
-			if((!extraSectorAdded)&&(phi >= Math.PI)){
-				extraSectorAdded = true;
-				var extraSector = new socialCheesecake.Sector({
-					parent : cheesecake,
-					center : {
-						x : cheesecakeData.center.x,
-						y : cheesecakeData.center.y
-					},
-					label: "+",
-					phi : phi,
-					delta : delta,
-					rOut : cheesecakeData.rMax,
-					color : socialCheesecake.Cheesecake.getExtraSectorFillColor(),
-					mouseover : {
-						color : socialCheesecake.Cheesecake.getExtraSectorHoverColor(),
-						callback : function(sector) {
-							sector.focus();
-						}
-					},
-					mouseout : {
-						color : socialCheesecake.Cheesecake.getExtraSectorFillColor(),
-						callback : function(sector) {
-							sector.unfocus();
-						}
-					},
-					mouseup : {color : socialCheesecake.Cheesecake.getExtraSectorFillColor()},
-					mousedown : {color : socialCheesecake.Cheesecake.getExtraSectorFocusColor()},
-					auxiliar : true
-				});
-				cheesecake.sectors[jsonSectors.length] = extraSector;
-				cheesecake.stage.add(extraSector.getRegion());
-				i--;
-			}else{
-				var settings = {
-					parent : cheesecake,
-					center : {
-						x : cheesecakeData.center.x,
-						y : cheesecakeData.center.y
-					},
-					label : jsonSectors[i].name,
-					phi : phi,
-					delta : delta,
-					rOut : cheesecakeData.rMax,
-					subsectors : jsonSectors[i].subsectors,
-					mouseover : {
-						color : socialCheesecake.Cheesecake.getSectorHoverColor(),
-						callback : function(sector) {
-							/* FIX FOR EXECUTING MOUSEOUT BEFORE MOUSEOVER */					
-							for(var i in cheesecake.sectors){
-								cheesecake.sectors[i].getRegion().removeEventListener("mouseout");
-								if(cheesecake.sectors[i]!= sector){
-								 cheesecake.sectors[i].unfocus();
-								 cheesecake.sectors[i].changeColor(cheesecake.sectors[i].mouseout.color);
-								}
+		var deltaExtra = Math.PI / 8;
+		var deltaSector = (2 * Math.PI - deltaExtra) / jsonSectors.length;
+		var phi = ((5 * Math.PI) / 4) - (deltaExtra / 2);
+		
+		var extraSector = new socialCheesecake.Sector({
+			parent : cheesecake,
+			center : {
+				x : cheesecakeData.center.x,
+				y : cheesecakeData.center.y
+			},
+			label: "+",
+			phi : phi,
+			delta : deltaExtra,
+			rOut : cheesecakeData.rMax,
+			color : socialCheesecake.Cheesecake.getExtraSectorFillColor(),
+			mouseover : {
+				color : socialCheesecake.Cheesecake.getExtraSectorHoverColor(),
+				callback : function(sector) {
+					sector.focus();
+				}
+			},
+			mouseout : {
+				color : socialCheesecake.Cheesecake.getExtraSectorFillColor(),
+				callback : function(sector) {
+					sector.unfocus();
+				}
+			},
+			mouseup : {color : socialCheesecake.Cheesecake.getExtraSectorFillColor()},
+			mousedown : {color : socialCheesecake.Cheesecake.getExtraSectorFocusColor()},
+			auxiliar : true,
+			textAndStrokeColor : socialCheesecake.Cheesecake.getExtraSectorTextAndStrokeColor()
+		});
+		cheesecake.sectors[jsonSectors.length] = extraSector;
+		cheesecake.stage.add(extraSector.getRegion());
+		phi += deltaExtra;
+		
+		for(var i = 0; i < jsonSectors.length; i++) {			
+			var settings = {
+				parent : cheesecake,
+				center : {
+					x : cheesecakeData.center.x,
+					y : cheesecakeData.center.y
+				},
+				label : jsonSectors[i].name,
+				phi : phi,
+				delta : deltaSector,
+				rOut : cheesecakeData.rMax,
+				subsectors : jsonSectors[i].subsectors,
+				mouseover : {
+					color : socialCheesecake.Cheesecake.getSectorHoverColor(),
+					callback : function(sector) {
+						/* FIX FOR EXECUTING MOUSEOUT BEFORE MOUSEOVER */					
+						for(var i in cheesecake.sectors){
+							cheesecake.sectors[i].getRegion().removeEventListener("mouseout");
+							if(cheesecake.sectors[i]!= sector){
+							 cheesecake.sectors[i].unfocus();
+							 cheesecake.sectors[i].changeColor(cheesecake.sectors[i].mouseout.color);
 							}
-							sector.getRegion().addEventListener("mouseout", function() {
-								sector.eventHandler('mouseout');
-							});
-							
-							document.body.style.cursor = "pointer";
-							cheesecake.grid.hideAll();
-							cheesecake.grid.fadeIn(sector.actors, 300, true);
-							sector.focus();				
 						}
-					},
-					mouseout : {
-						color : socialCheesecake.Cheesecake.getSectorFillColor(),
-						callback : function(sector) {
-							document.body.style.cursor = "default";
-							cheesecake.grid.fadeInAll(300, true);
-							sector.unfocus();
-						}
-					},
-					mousedown : {
-						color : socialCheesecake.Cheesecake.getSectorFocusColor(),
-						callback : function(sector) {
-							cheesecake.focusAndBlurCheesecake(sector);
-							cheesecake.grid.hideAll();
-							cheesecake.grid.fadeIn(sector.actors,300, true);
-						}
-					},
-					mouseup : { color : socialCheesecake.Cheesecake.getSectorFillColor() }
-				};
-				cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
-				cheesecake.stage.add(cheesecake.sectors[i].getRegion());			
-			}
-			phi += delta;
+						sector.getRegion().addEventListener("mouseout", function() {
+							sector.eventHandler('mouseout');
+						});
+						
+						document.body.style.cursor = "pointer";
+						cheesecake.grid.hideAll();
+						cheesecake.grid.fadeIn(sector.actors, 300, true);
+						sector.focus();				
+					}
+				},
+				mouseout : {
+					color : socialCheesecake.Cheesecake.getSectorFillColor(),
+					callback : function(sector) {
+						document.body.style.cursor = "default";
+						cheesecake.grid.fadeInAll(300, true);
+						sector.unfocus();
+					}
+				},
+				mousedown : {
+					color : socialCheesecake.Cheesecake.getSectorFocusColor(),
+					callback : function(sector) {
+						cheesecake.focusAndBlurCheesecake(sector);
+						cheesecake.grid.hideAll();
+						cheesecake.grid.fadeIn(sector.actors,300, true);
+					}
+				},
+				mouseup : { color : socialCheesecake.Cheesecake.getSectorFillColor() },
+				textAndStrokeColor : socialCheesecake.Cheesecake.getSectorTextAndStrokeColor()
+			};
+			cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
+			cheesecake.stage.add(cheesecake.sectors[i].getRegion());
+			phi += deltaSector;
 		}
 	}
 	
