@@ -54,18 +54,20 @@
 	    			center: {x : 220, y : 220},
 	    			sectors: [
 	    				{name:"John Connor Lider de la revolucion" ,  subsectors : [
-	    					{name : "Cassidy", 
+	    					{id : 0, 
+	    					  name : "Cassidy", 
 	    						actors: [
 	    							[0], 
 	    							[1],
 	    							[2]
 	    						]
 	    					},
-	    					{name : "Cassidy2"}
+	    					{id : 1, name : "Cassidy2"}
 	    				]}, 
 	    				{ name:"3,14159265358979323846264338327950288419716939937510" , subsectors : [
-	    					{name : "Abc"}, 
-	    					{name : "Cassidy2",  
+	    					{id : 2, name : "Abc"}, 
+	    					{id : 3, 
+	    					  name : "Cassidy2",  
 	    						actors: [ 
 	    							[3],
 	    							[4]
@@ -73,33 +75,28 @@
 	    					}
 	    				]}, 
 	    				{ name:"Luke I am your father", subsectors : [
-	    					{name : "Luke I am your father"}
+	    					{id : 4, name : "Luke I am your father"}
 	    				]},
 	    				{ name:"Olivia",subsectors : [
-	    					{name : "Dunham"},
-	    					{name : "FBI"}
+	    					{id : 5, name : "Dunham"},
+	    					{id : 6, name : "FBI"}
 	    				]},
 	    				{ name:"Altivia",subsectors : [
-	    					{name : "Dunham"},
-	    					{name : "FBI"}
+	    					{id : 7, name : "Dunham"},
+	    					{id : 8, name : "FBI"}
 	    				]},
 	    				{ name:"Walter",subsectors : [
-	    					{name : "Bishop"},
-	    					{name : "Craziness",
+	    					{id : 9, name : "Bishop"},
+	    					{id : 10, name : "Craziness",
 								actors: [[3]]
 							}]
 	    				},
 	    				{ name:"Nina",subsectors : [
-	    					{name : "Massive Dynamic"}
+	    					{id : 11, name : "Massive Dynamic"}
 	    				]}
 	    			]
 	    		};
 				cheese = new socialCheesecake.Cheesecake(cheesecakeData);
-				/*
-				 new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png",
-				 width: 64, height: 64, x : 500, y : 80});
-				 new socialCheesecake.Actor({parent : cheese, imgSrc: "images/youngAlberto.png",
-				 width: 64, height: 64, x : 600, y : 80}); */
 			};
 
 		</script>

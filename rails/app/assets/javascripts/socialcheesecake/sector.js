@@ -27,6 +27,7 @@ var socialCheesecake = socialCheesecake || {};
 		if(settings.delta <= 0 || settings.delta > 2 * Math.PI) {
 			throw "Delta must be greater than 0 and less than 2*pi";
 		}
+		if(settings.id) this.id = settings.id;
 		this.x = settings.center.x;
 		this.y = settings.center.y;
 		this.rOut = settings.rOut;
@@ -53,6 +54,7 @@ var socialCheesecake = socialCheesecake || {};
 			for(var i in settings.subsectors) {
 				var rOutSubsector = rInSubsector + separation;
 				var layer = new socialCheesecake.Subsector({
+					id : settings.subsectors[i].id,
 					label : settings.subsectors[i].name,
 					parent : this,
 					x : this.x,
@@ -90,7 +92,6 @@ var socialCheesecake = socialCheesecake || {};
 					mousedown : {
 						callback : function(subsector) {
 							var selectedActors = subsector.getCheesecake().grid.getSelectedActors();
-							console.log(selectedActors);
 							subsector.changeMembership(selectedActors);
 						}
 					}
@@ -627,6 +628,7 @@ var socialCheesecake = socialCheesecake || {};
 	
 	/*SUBSECTOR*/
 	socialCheesecake.Subsector = function(settings) {
+		this.id = settings.id;
 		if(settings.parent != null) this.parent = settings.parent;		
 		this.label = "";
 		if(settings.label != null) this.label = settings.label;
@@ -658,6 +660,7 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Subsector.prototype = new socialCheesecake.Sector({
+		id : this.id,
 		parent : this.parent,
 		center : {  x : this.x, y : this.y },
 		label : this.label,
@@ -714,9 +717,9 @@ var socialCheesecake = socialCheesecake || {};
 			}
 			if(!isMember){
 				actorInfo = { id : actors[i].id};
-				console.log(actorInfo);
 				this.addActor(actorInfo, this);
 			}
+			this.getCheesecake().updateActorMembership(actors[i].id);
 			isMember = false;
 		}
 	}

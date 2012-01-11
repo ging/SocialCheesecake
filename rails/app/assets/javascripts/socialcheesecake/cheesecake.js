@@ -347,6 +347,10 @@ var socialCheesecake = socialCheesecake || {};
 		}
 	}
 	
+	socialCheesecake.Cheesecake.prototype.getChanges = function (){
+		return this.changes;
+	}
+	
 	//Colors and text style settings
 	/** Sector Normal Fill Color (also mouseout and mouseup) */
 	socialCheesecake.Cheesecake.getSectorFillColor = function (){

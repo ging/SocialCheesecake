@@ -50,11 +50,13 @@ var socialCheesecake = socialCheesecake || {};
 			if( actor.isSelected()){
 				// Deactivate actor
 				actor._selected = false;
+				actor.unfocus();
 				actor_div.addEventListener("mouseover", mouseoverCallback, false);
 				actor_div.addEventListener("mouseout", mouseoutCallback, false);
 			}else{
 				//Activate actor
 				actor._selected = true;
+				actor.focus();
 				actor_div.removeEventListener("mouseover", mouseoverCallback, false);
 				actor_div.removeEventListener("mouseout", mouseoutCallback, false);
 			}

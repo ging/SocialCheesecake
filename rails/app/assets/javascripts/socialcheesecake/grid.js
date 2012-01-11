@@ -65,6 +65,15 @@ var socialCheesecake = socialCheesecake || {};
 		return selectedActors;
 	}
 	
+	socialCheesecake.Grid.prototype.getShownActors = function(){
+		var actors = this.actors;
+		var shownActors = [];
+		for (var i in actors){
+			if((!actors[i].isHidden())&&(!actors[i].isFiltered())) shownActors.push(actors[i]);
+		}
+		return shownActors;
+	}
+	
 	socialCheesecake.Grid.prototype.focus = function (actor_ids) {
 		if (actor_ids instanceof Array) {
 			for(var i in actor_ids){
