@@ -357,7 +357,8 @@ var socialCheesecake = socialCheesecake || {};
 		var phi = ((5 * Math.PI) / 4) - (deltaExtra / 2);
 		var sectorActors;
 		var totalActors = 0;
-		var emptySectors = 0;
+		var littleSectors = 0;
+		var percentages = [];
 		
 		sectors[sectors.length-1].phi = phi;
 		sectors[sectors.length-1].delta = deltaExtra;
@@ -365,15 +366,22 @@ var socialCheesecake = socialCheesecake || {};
 		sectors[sectors.length-1].originalAttr.delta = sectors[sectors.length-1].delta;
 		phi += deltaExtra;
 		
-		if (match){
+		if(this.grid.actors.length == 0) match =false;
+		if(match){
+			//Calculate total number of actors
 			for (var i = 0; i < sectors.length -1; i++){
 				totalActors += (sectors[i].actors.length);
-				if( sectors[i].actors.length == 0) emptySectors++;
 			}
+			//Calculate percentage of actors of each sector
 			for (var i = 0; i < sectors.length -1; i++){
 				sectorActors = sectors[i].actors.length;
-				deltaSector = (sectorActors / totalActors)* (2*Math.PI - deltaExtra - emptySectors*minDeltaSector);
-				if(deltaSector == 0) deltaSector = minDeltaSector;
+				percentages[i] = sectorActors / totalActors;
+				if( percentages[i] <= 0.1) littleSectors++;
+			}
+			//Assign width
+			for (var i = 0; i < sectors.length -1; i++){
+				deltaSector = (percentages[i])* (2*Math.PI - deltaExtra - littleSectors*minDeltaSector);
+				if(percentages[i] <= 0.1) deltaSector = minDeltaSector;
 				sectors[i].phi = phi;
 				sectors[i].delta = deltaSector;
 				sectors[i].originalAttr.phi = sectors[i].phi;

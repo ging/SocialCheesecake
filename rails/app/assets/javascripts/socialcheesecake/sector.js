@@ -716,6 +716,7 @@ var socialCheesecake = socialCheesecake || {};
 			this.getCheesecake().updateActorMembership(actors[i].id);
 			isMember = false;
 		}
+		this.getCheesecake().calculatePortions();
 	}
 
 })();
