@@ -58,7 +58,6 @@ var socialCheesecake = socialCheesecake || {};
 				color : socialCheesecake.Cheesecake.getExtraSectorHoverColor(),
 				callback : function(sector) {
 					sector.focus();
-					sector.getCheesecake().setHighlightedSector(sector);
 				}
 			},
 			mouseout : {
@@ -417,7 +416,7 @@ var socialCheesecake = socialCheesecake || {};
 		if(this.highlightedSector != sector){
 			this.highlightedSector = sector;
 			if(this.highlightedSectorCallback){
-				this.highlightedSectorCallback(sector);
+				this.highlightedSectorCallback(this);
 			}
 		}
 	}
