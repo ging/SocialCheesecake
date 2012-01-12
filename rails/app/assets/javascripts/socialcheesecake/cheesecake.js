@@ -273,6 +273,8 @@ var socialCheesecake = socialCheesecake || {};
 		var cheesecake = this;
 		var auxiliarSectors = this.auxiliarSectors;
 		var sector;
+		var sectorNewDelta;
+		var sectorNewPhi;
 		var greySector;
 
 		//Localize the dummy and grey sectors
@@ -285,23 +287,25 @@ var socialCheesecake = socialCheesecake || {};
 		}
 
 		//Animate and go back to the general view
+		sectorNewDelta = cheesecake.sectors[sector.simulate].delta;
+		sectorNewPhi = cheesecake.sectors[sector.simulate].phi;
 		this.setHighlightedSector(null);
 		sector.putTogether();
 		sector.resizeDelta({
 			anchor : "M",
-			delta : sector.originalAttr.delta,
+			delta : sectorNewDelta,
 			callback : function() {
 				sector.rotateTo({
-					destination : sector.originalAttr.phi
+					destination : sectorNewPhi
 				});
 			}
 		});
 		greySector.resizeDelta({
 			anchor : "M",
-			delta : greySector.originalAttr.delta,
+			delta : (2*Math.PI) - sectorNewDelta,
 			callback : function() {
 				greySector.rotateTo({
-					destination : greySector.originalAttr.phi,
+					destination : sectorNewPhi + sectorNewDelta,
 					callback : function() {
 						cheesecake.recoverCheesecake();
 					}
@@ -357,8 +361,9 @@ var socialCheesecake = socialCheesecake || {};
 		var phi = ((5 * Math.PI) / 4) - (deltaExtra / 2);
 		var sectorActors;
 		var totalActors = 0;
+		var consideredActors = 0;
 		var littleSectors = 0;
-		var percentages = [];
+		var isLittle = [];
 		
 		sectors[sectors.length-1].phi = phi;
 		sectors[sectors.length-1].delta = deltaExtra;
@@ -370,18 +375,26 @@ var socialCheesecake = socialCheesecake || {};
 		if(match){
 			//Calculate total number of actors
 			for (var i = 0; i < sectors.length -1; i++){
-				totalActors += (sectors[i].actors.length);
+				totalActors += (sectors[i].actors.length);				
 			}
+			consideredActors = totalActors;
 			//Calculate percentage of actors of each sector
 			for (var i = 0; i < sectors.length -1; i++){
-				sectorActors = sectors[i].actors.length;
-				percentages[i] = sectorActors / totalActors;
-				if( percentages[i] <= 0.1) littleSectors++;
+				sectorActors = sectors[i].actors.length;			
+				if( sectorActors / totalActors <= 0.1){ 
+					isLittle[i] = true;
+					littleSectors++;
+					consideredActors -= sectors[i].actors.length;
+				}
 			}
 			//Assign width
 			for (var i = 0; i < sectors.length -1; i++){
-				deltaSector = (percentages[i])* (2*Math.PI - deltaExtra - littleSectors*minDeltaSector);
-				if(percentages[i] <= 0.1) deltaSector = minDeltaSector;
+				if(isLittle[i]){
+					deltaSector = minDeltaSector;
+				}else{
+					deltaSector = (sectors[i].actors.length / consideredActors)* 
+						(2*Math.PI - deltaExtra - littleSectors*minDeltaSector);
+				}
 				sectors[i].phi = phi;
 				sectors[i].delta = deltaSector;
 				sectors[i].originalAttr.phi = sectors[i].phi;
