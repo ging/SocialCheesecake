@@ -30,6 +30,7 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.rMax = cheesecakeData.rMax;
 		cheesecake.sectors = [];
 		cheesecake.highlightedSector = null;
+		cheesecake.highlightedSectorCallback = cheesecakeData.highlightedSectorCallback || undefined;
 		cheesecake.auxiliarSectors = [];
 		cheesecake.stage = new Kinetic.Stage(cheesecakeData.container.id, 
 			cheesecakeData.container.width, cheesecakeData.container.height);
@@ -57,6 +58,7 @@ var socialCheesecake = socialCheesecake || {};
 				color : socialCheesecake.Cheesecake.getExtraSectorHoverColor(),
 				callback : function(sector) {
 					sector.focus();
+					sector.getCheesecake().setHighlightedSector(sector);
 				}
 			},
 			mouseout : {
@@ -100,7 +102,8 @@ var socialCheesecake = socialCheesecake || {};
 						document.body.style.cursor = "pointer";
 						cheesecake.grid.hideAll();
 						cheesecake.grid.fadeIn(sector.actors, 300, true);
-						sector.focus();				
+						sector.focus();
+						sector.getCheesecake().setHighlightedSector(sector);
 					}
 				},
 				mouseout : {
@@ -109,6 +112,7 @@ var socialCheesecake = socialCheesecake || {};
 						document.body.style.cursor = "default";
 						cheesecake.grid.fadeInAll(300, true);
 						sector.unfocus();
+						sector.getCheesecake().setHighlightedSector(null);
 					}
 				},
 				mousedown : {
@@ -149,6 +153,7 @@ var socialCheesecake = socialCheesecake || {};
 				cheesecake.stage.remove(regions[i]);
 			}
 		}
+		this.setHighlightedSector(sector);
 		
 		//Add auxiliar sectors
 		var greySettings = {
@@ -280,6 +285,7 @@ var socialCheesecake = socialCheesecake || {};
 		}
 
 		//Animate and go back to the general view
+		this.setHighlightedSector(null);
 		sector.putTogether();
 		sector.resizeDelta({
 			anchor : "M",
@@ -382,6 +388,15 @@ var socialCheesecake = socialCheesecake || {};
 				sectors[i].originalAttr.phi = sectors[i].phi;
 				sectors[i].originalAttr.delta = sectors[i].delta;
 				phi += deltaSector;
+			}
+		}
+	}
+	
+	socialCheesecake.Cheesecake.prototype.setHighlightedSector = function(sector){
+		if(this.highlightedSector != sector){
+			this.highlightedSector = sector;
+			if(this.highlightedSectorCallback){
+				this.highlightedSectorCallback(sector);
 			}
 		}
 	}

@@ -80,7 +80,8 @@ var socialCheesecake = socialCheesecake || {};
 							
 							document.body.style.cursor = "pointer";
 							subsector.getCheesecake().grid.hideAll();
-							subsector.getCheesecake().grid.fadeIn(subsector.actors, 300, true);				
+							subsector.getCheesecake().grid.fadeIn(subsector.actors, 300, true);
+							subsector.getCheesecake().setHighlightedSector(subsector);
 						}
 					},
 					mouseout :{
@@ -88,6 +89,7 @@ var socialCheesecake = socialCheesecake || {};
 						callback : function(subsector) {
 							document.body.style.cursor = "default";
 							subsector.getCheesecake().grid.fadeIn(subsector.parent.actors, 300, true);
+							subsector.getCheesecake().setHighlightedSector(subsector.parent);
 						}
 					},
 					mousedown : {
