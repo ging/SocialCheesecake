@@ -350,10 +350,15 @@ var socialCheesecake = socialCheesecake || {};
 		var step = 0.05;
 		var goalDelta = Math.PI / 2;
 		var anchor = 1;
+		
 		if(options.step) step = options.step;
 		if(options.delta) {
 			goalDelta = options.delta;
 		}
+		console.log("resizing delta of sector "+ sector.label);
+		console.log("current delta "+ currentDelta);
+		console.log("delta to achieve "+ goalDelta);
+		
 		if(options.anchor) {
 			if((options.anchor.toLowerCase() == "b") || (options.anchor == "beginning"))
 				anchor = 0;
