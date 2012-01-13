@@ -77,7 +77,7 @@ var socialCheesecake = socialCheesecake || {};
 							subsector.getRegion().addEventListener("mouseout", function() {
 								subsector.eventHandler('mouseout');
 							});
-							
+							/* END of FIX */							
 							document.body.style.cursor = "pointer";
 							subsector.getCheesecake().grid.hideAll();
 							subsector.getCheesecake().grid.fadeIn(subsector.actors, 300, true);

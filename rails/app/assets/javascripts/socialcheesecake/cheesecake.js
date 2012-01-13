@@ -97,7 +97,7 @@ var socialCheesecake = socialCheesecake || {};
 						sector.getRegion().addEventListener("mouseout", function() {
 							sector.eventHandler('mouseout');
 						});
-						
+						/* END of FIX */
 						document.body.style.cursor = "pointer";
 						cheesecake.grid.hideAll();
 						cheesecake.grid.fadeIn(sector.actors, 300, true);
