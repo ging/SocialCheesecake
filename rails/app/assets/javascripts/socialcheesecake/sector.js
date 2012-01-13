@@ -338,6 +338,8 @@ var socialCheesecake = socialCheesecake || {};
 		*	anchor - 	"beginning" , "b", "B"
 		*						"middle", "m", "M"
 		*						"end", "e", "E"
+		* priority - true to terminate other resizeDelta methods running
+		* callback - function to execute at the end of the animation
 	 */
 	socialCheesecake.Sector.prototype.resizeDelta = function(options) {
 		if(!options)
@@ -350,14 +352,13 @@ var socialCheesecake = socialCheesecake || {};
 		var step = 0.05;
 		var goalDelta = Math.PI / 2;
 		var anchor = 1;
+		var goOn = true;
+		var grow = 0;
 		
 		if(options.step) step = options.step;
 		if(options.delta) {
 			goalDelta = options.delta;
 		}
-		console.log("resizing delta of sector "+ sector.label);
-		console.log("current delta "+ currentDelta);
-		console.log("delta to achieve "+ goalDelta);
 		
 		if(options.anchor) {
 			if((options.anchor.toLowerCase() == "b") || (options.anchor == "beginning"))
@@ -372,10 +373,19 @@ var socialCheesecake = socialCheesecake || {};
 			if(currentDelta - goalDelta < step) step = currentDelta - goalDelta;
 			currentDelta -= step;
 			currentPhi += anchor * step;
+			grow = -1;
 		} else if(currentDelta < goalDelta) {
 			if(goalDelta - currentDelta < step) step = goalDelta - currentDelta;
 			currentDelta += step;
 			currentPhi -= anchor * step;
+			grow = 1;
+		}
+		if(options.priority) sector.growDelta =grow;
+		if((sector.growDelta !=null)&&(grow != sector.growDelta)){
+			goOn = false;
+		}else{
+			goOn = true;
+			sector.growDelta = grow;
 		}
 		sector.delta = currentDelta;
 		sector.phi = currentPhi;
@@ -385,12 +395,15 @@ var socialCheesecake = socialCheesecake || {};
 		context.save();
 		stage.draw();
 		//Repeat if necessary
-		if(currentDelta != goalDelta) {
+		if(goOn && (Math.round(currentDelta*1000) != Math.round(goalDelta*1000))) {
 			requestAnimFrame(function() {
 				sector.resizeDelta(options);
 			});
-		} else if(options.callback) {
-			options.callback();
+		}else{
+			sector.growDelta = undefined;
+			if(options.callback) {
+				options.callback();
+			}
 		}
 	}
 
@@ -402,6 +415,7 @@ var socialCheesecake = socialCheesecake || {};
 		*						"middle", "m", "M"
 		*						"rOut", "rout", "out", "O", "o"
 		* priority - true to terminate other resizeWidth methods running
+		* callback - function to execute at the end of the animation
 	 */
 	socialCheesecake.Sector.prototype.resizeWidth = function(options) {
 		var sector = this;

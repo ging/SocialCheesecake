@@ -101,9 +101,14 @@ var socialCheesecake = socialCheesecake || {};
 						document.body.style.cursor = "pointer";
 						cheesecake.grid.hideAll();
 						cheesecake.grid.fadeIn(sector.actors, 300, true);
-						sector.focus();
+						sector.focus();/*
+						if(cheesecake.highlightedSector != null){
+							cheesecake.fanInSector(cheesecake.highlightedSector,false, 
+								function(){sector.getCheesecake().fanInSector(sector, true);});
+						}else{
+							sector.getCheesecake().fanInSector(sector, true);
+						}*/
 						sector.getCheesecake().setHighlightedSector(sector);
-						//sector.getCheesecake().fanInSector(sector, true);
 					}
 				},
 				mouseout : {
@@ -431,8 +436,9 @@ var socialCheesecake = socialCheesecake || {};
 	 * sector - sector to open or to close
 	 * open - true: expand sector
 	 * 			- false: shrink sector
+	 * resizeDeltaCallback - callback to execute at the end of the animation
 	 */	
-	socialCheesecake.Cheesecake.prototype.fanInSector = function (sector, open){
+	socialCheesecake.Cheesecake.prototype.fanInSector = function (sector, open, resizeDeltaCallback){
 		var sectors = this.sectors;
 		var minDelta = Math.PI/5;
 		var prevSectorIndex = 0;
@@ -440,28 +446,26 @@ var socialCheesecake = socialCheesecake || {};
 		var deltaToChange = 0;
 		
 		if(open && (sector.delta >= minDelta)) return; 
-		
+		console.log("fan in sector "+sector.label);
+		console.log(resizeDeltaCallback);
 		//Find the sector's neighbours
 		for(var i= 0; i<sectors.length; i++){
 			if(sectors[i]=== sector){
 				prevSectorIndex = i-1;
 				laterSectorIndex = (i+1);
-				//console.log("current "+i)
 			}
 		}
 		if(prevSectorIndex < 0) prevSectorIndex = sectors.length -1;
 		if(laterSectorIndex >= sectors.length) laterSectorIndex = 0;
-		
+
 		//Animate the three sectors
 		if(open){
 			deltaToChange = (minDelta - sector.delta)/2;
 			sector.resizeDelta({
 				anchor: "m",
-				delta: minDelta
+				delta: minDelta,
+				callback : resizeDeltaCallback
 			});
-			console.log("delta to change "+ deltaToChange);
-			console.log("delta of prev "+ sectors[prevSectorIndex].delta);
-			console.log("delta of later "+ sectors[laterSectorIndex].delta);
 			sectors[prevSectorIndex].resizeDelta({
 				anchor: "b",
 				delta : (sectors[prevSectorIndex].delta - deltaToChange)
@@ -473,15 +477,19 @@ var socialCheesecake = socialCheesecake || {};
 		}else{
 			sector.resizeDelta({
 				anchor: "m",
-				delta: sector.originalAttr.delta
+				delta: sector.originalAttr.delta,
+				priority : true,
+				callback : resizeDeltaCallback
 			});
 			sectors[prevSectorIndex].resizeDelta({
 				anchor: "b",
-				delta : sectors[prevSectorIndex].originalAttr.delta
+				delta : sectors[prevSectorIndex].originalAttr.delta,
+				priority : true
 			});
 			sectors[laterSectorIndex].resizeDelta({
 				anchor: "e",
-				delta : sectors[laterSectorIndex].originalAttr.delta
+				delta : sectors[laterSectorIndex].originalAttr.delta,
+				priority : true
 			});
 		}
 	}
