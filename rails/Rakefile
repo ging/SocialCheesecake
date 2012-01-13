@@ -63,11 +63,11 @@ namespace :cheesecake do
 
   def compile_js(files)
     unless File.exist?(compiler_jar_path)
-      Rake::Task["javascript:download_jar"].invoke
+      Rake::Task["cheesecake:download_jar"].invoke
     end
     unless File.exist?(compiler_jar_path)
       puts "#{compiler_jar_path} not found !"
-      raise "try to run `rake javascript:download_jar` manually to download the compiler jar"
+      raise "try to run `rake cheesecake:download_jar` manually to download the compiler jar"
     end
 
     files = [ files ] unless files.is_a?(Array)
