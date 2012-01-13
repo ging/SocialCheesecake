@@ -131,6 +131,10 @@ var socialCheesecake = socialCheesecake || {};
 		return this._filtered;
 	}
 	
+	socialCheesecake.Actor.prototype.isVisible = function() {
+		return !(this.isHidden() || this.isFiltered());
+	}
+	
 	socialCheesecake.Actor.prototype.filter = function() {
 		this._filtered = true;
 		this.fadeOut(100, true);
