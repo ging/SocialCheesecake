@@ -19,6 +19,9 @@ var socialCheesecake = socialCheesecake || {};
 	var greyHoverColor = "#f5f5f5";						//mouseover state for grey auxiliar sectors
 	var greyTextAndStrokeColor = "#666";			//text and border color for grey auxilar sectors
 	
+	/* Number of actors to animate */
+	var maxVisibleActors = 30;
+	
 	socialCheesecake.Cheesecake = function(cheesecakeData) {
 		var jsonSectors = cheesecakeData.sectors;
 		var cheesecake = this;
@@ -44,6 +47,8 @@ var socialCheesecake = socialCheesecake || {};
 		});
 		cheesecake.matchActorsNumber = cheesecakeData.match || true;
 		cheesecake.changes = {};
+		if(cheesecakeData.maxVisibleActors != undefined) 
+			socialCheesecake.Cheesecake.setMaxVisibleActors(cheesecakeData.maxVisibleActors);
 		
 		var extraSector = new socialCheesecake.Sector({
 			parent : cheesecake,
@@ -98,6 +103,7 @@ var socialCheesecake = socialCheesecake || {};
 							sector.eventHandler('mouseout');
 						});
 						/* END of FIX */
+						console.log("Showing "+ cheesecake.grid.getShownActors().length);
 						document.body.style.cursor = "pointer";
 						cheesecake.grid.hideAll();
 						cheesecake.grid.fadeIn(sector.actors, 300, true);
@@ -115,6 +121,7 @@ var socialCheesecake = socialCheesecake || {};
 					color : socialCheesecake.Cheesecake.getSectorFillColor(),
 					callback : function(sector) {
 						document.body.style.cursor = "default";
+						cheesecake.grid.hide(sector.actors);
 						cheesecake.grid.fadeInAll(300, true);
 						sector.unfocus();
 						sector.getCheesecake().setHighlightedSector(null);
@@ -577,6 +584,13 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	socialCheesecake.Cheesecake.setGreySectorTextAndStrokeColor = function (newColor){
 		if(typeof newColor === "string") greyTextAndStrokeColor = newColor;
+	}
+	/** Number of actors to animate */
+	socialCheesecake.Cheesecake.getMaxVisibleActors = function(){
+		return maxVisibleActors;
+	}
+	socialCheesecake.Cheesecake.setMaxVisibleActors = function(number){
+		if(typeof number === "number") maxVisibleActors = number;
 	}
 	
 })();

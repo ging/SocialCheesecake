@@ -15,7 +15,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.opacity = 1;
 		this._focused = false;
 		this._selected = false;
-		this._hidden = false;
+		this._hidden = true;
 		this._filtered = false;
 		this.fading = "none";
 		this.parents = [];
@@ -116,11 +116,16 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Actor.prototype.show = function() {
 		if(this.isFiltered()) return;
 		var actor_div = this.getDiv();
+		var newStyle=" display: inline;";
 		this._hidden = false;
 		if (actor_div.getAttribute("style")){
-			var newStyle = actor_div.getAttribute("style").replace(/display\s*:\s*none;/, "");
-			actor_div.setAttribute("style", newStyle);
+			if (actor_div.getAttribute("style").match(/display\s*:\s*[a-z]*;/)){
+				newStyle = actor_div.getAttribute("style").replace(/display\s*:\s*[a-z]*;/, "display: inline;");	
+			}else{
+				newStyle = actor_div.getAttribute("style").concat("display: inline;");
+			}		
 		}
+		actor_div.setAttribute("style", newStyle);
 	}
 	
 	socialCheesecake.Actor.prototype.isHidden = function() {
@@ -165,9 +170,6 @@ var socialCheesecake = socialCheesecake || {};
 		var deltaOpacity = 1000.0/ (60.0 *time);
 		var grow = 0;
 		
-		//console.log(">Fade actor "+ actor.id+" now with opacity "+ x);
-		//console.log("     >Fading value "+ this.fading);
-		
 		if (this.fading == "out"){
 			grow = -1;
 		}else if (this.fading == "in"){
@@ -185,8 +187,6 @@ var socialCheesecake = socialCheesecake || {};
 				actor.fade(time, modifyDisplay);
       });
     }else{
-    	//console.log("STOP FADING Actor "+ actor.id + " now with opacity "+x);
-    	//console.log("     >Fading value "+ this.fading);
     	this.fading = "none";
     	if((modifyDisplay) && (opacity <= 0)) actor.hide();
     }
