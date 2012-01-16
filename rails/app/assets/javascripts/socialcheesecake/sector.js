@@ -67,17 +67,7 @@ var socialCheesecake = socialCheesecake || {};
 					actors : settings.subsectors[i].actors,
 					mouseover : { color : socialCheesecake.Cheesecake.getSectorHoverColor(),
 						callback : function(subsector) {
-							/* FIX FOR EXECUTING MOUSEOUT BEFORE MOUSEOVER */					
-							for(var i in subsector.parent.subsectors){
-								subsector.parent.subsectors[i].getRegion().removeEventListener("mouseout");
-								if(subsector.parent.subsectors[i]!= subsector){
-								 subsector.parent.subsectors[i].changeColor(subsector.parent.subsectors[i].mouseout.color);
-								}
-							}
-							subsector.getRegion().addEventListener("mouseout", function() {
-								subsector.eventHandler('mouseout');
-							});
-							/* END of FIX */							
+							console.log("Mouseover sector "+ subsector.label);
 							document.body.style.cursor = "pointer";
 							subsector.getCheesecake().grid.hideAll();
 							subsector.getCheesecake().grid.fadeIn(subsector.actors, 300, true);
@@ -87,6 +77,7 @@ var socialCheesecake = socialCheesecake || {};
 					mouseout :{
 						color : socialCheesecake.Cheesecake.getSectorFillColor(),
 						callback : function(subsector) {
+							console.log("mouseout sector "+subsector.label);
 							document.body.style.cursor = "default";
 							subsector.getCheesecake().grid.fadeIn(subsector.parent.actors, 300, true);
 							subsector.getCheesecake().setHighlightedSector(subsector.parent);

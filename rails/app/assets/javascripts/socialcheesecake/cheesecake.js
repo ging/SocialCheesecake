@@ -8,9 +8,9 @@ var socialCheesecake = socialCheesecake || {};
 	var sectorTextAndStrokeColor = "#1F4A75";	//text and border color
 	
 	/* Extra */
-	var extraSectorFillColor = "#D4E4EA";			//normal, mouseout, mouseup states for extra sectors
+	var extraSectorFillColor = "#e5e5e5";			//normal, mouseout, mouseup states for extra sectors
 	var extraFocusColor = "#1FA0F7";					//mousedown state for extra sectors
-	var extraHoverColor = "#1FA0F7";					//mouseover state for extra sectors
+	var extraHoverColor = "#D4E4EA";					//mouseover state for extra sectors
 	var extraTextAndStrokeColor = "#1F4A75";	//text and border color for extra sectors
 	
 	/* Grey */
@@ -91,18 +91,6 @@ var socialCheesecake = socialCheesecake || {};
 				mouseover : {
 					color : socialCheesecake.Cheesecake.getSectorHoverColor(),
 					callback : function(sector) {
-						/* FIX FOR EXECUTING MOUSEOUT BEFORE MOUSEOVER */				
-						for(var i in cheesecake.sectors){
-							cheesecake.sectors[i].getRegion().removeEventListener("mouseout");
-							if(cheesecake.sectors[i]!= sector){
-							 cheesecake.sectors[i].unfocus();
-							 cheesecake.sectors[i].changeColor(cheesecake.sectors[i].mouseout.color);
-							}
-						}
-						sector.getRegion().addEventListener("mouseout", function() {
-							sector.eventHandler('mouseout');
-						});
-						/* END of FIX */
 						//console.log("Showing "+ cheesecake.grid.getShownActors().length);
 						document.body.style.cursor = "pointer";
 						cheesecake.grid.hideAll();
@@ -272,15 +260,16 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Cheesecake.prototype.recoverCheesecake = function() {
 		var cheesecake = this;
 		var regions = cheesecake.stage.getShapes();
-
+		console.log(regions);
 		//Delete the auxiliar sectors
 		for(var i = (regions.length - 1); i >= 0; i--) {
 			if(!regions[i].permanent) {
 				cheesecake.stage.remove(regions[i]);
+				cheesecake.auxiliarSectors.pop();
 			}
 		}
-		cheesecake.auxiliarSectors.pop();
-
+		cheesecake.stage.layers.actors.clear();
+		
 		// Add the former sectors and actors
 		cheesecake.draw();
 		cheesecake.grid.fadeInAll(300, true);
