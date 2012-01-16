@@ -103,17 +103,20 @@ var socialCheesecake = socialCheesecake || {};
 							sector.eventHandler('mouseout');
 						});
 						/* END of FIX */
-						console.log("Showing "+ cheesecake.grid.getShownActors().length);
+						//console.log("Showing "+ cheesecake.grid.getShownActors().length);
 						document.body.style.cursor = "pointer";
 						cheesecake.grid.hideAll();
 						cheesecake.grid.fadeIn(sector.actors, 300, true);
-						sector.focus();/*
+						sector.focus();
 						if(cheesecake.highlightedSector != null){
-							cheesecake.fanInSector(cheesecake.highlightedSector,false, 
-								function(){sector.getCheesecake().fanInSector(sector, true);});
+							cheesecake.highlightedSector.fan(false, 
+								function(){
+									sector.fan(true);
+								}
+							);
 						}else{
-							sector.getCheesecake().fanInSector(sector, true);
-						}*/
+							sector.fan(true);
+						}
 						sector.getCheesecake().setHighlightedSector(sector);
 					}
 				},
@@ -125,7 +128,7 @@ var socialCheesecake = socialCheesecake || {};
 						cheesecake.grid.fadeInAll(300, true);
 						sector.unfocus();
 						sector.getCheesecake().setHighlightedSector(null);
-						//sector.getCheesecake().fanInSector(sector, false);
+						sector.fan(false);
 					}
 				},
 				mousedown : {
@@ -438,68 +441,7 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Cheesecake.prototype.getChanges = function (){
 		return this.changes;
 	}
-	
-	/**
-	 * sector - sector to open or to close
-	 * open - true: expand sector
-	 * 			- false: shrink sector
-	 * resizeDeltaCallback - callback to execute at the end of the animation
-	 */	
-	socialCheesecake.Cheesecake.prototype.fanInSector = function (sector, open, resizeDeltaCallback){
-		var sectors = this.sectors;
-		var minDelta = Math.PI/5;
-		var prevSectorIndex = 0;
-		var laterSectorIndex = 0;
-		var deltaToChange = 0;
-		
-		if(open && (sector.delta >= minDelta)) return; 
-		console.log("fan in sector "+sector.label);
-		console.log(resizeDeltaCallback);
-		//Find the sector's neighbours
-		for(var i= 0; i<sectors.length; i++){
-			if(sectors[i]=== sector){
-				prevSectorIndex = i-1;
-				laterSectorIndex = (i+1);
-			}
-		}
-		if(prevSectorIndex < 0) prevSectorIndex = sectors.length -1;
-		if(laterSectorIndex >= sectors.length) laterSectorIndex = 0;
 
-		//Animate the three sectors
-		if(open){
-			deltaToChange = (minDelta - sector.delta)/2;
-			sector.resizeDelta({
-				anchor: "m",
-				delta: minDelta,
-				callback : resizeDeltaCallback
-			});
-			sectors[prevSectorIndex].resizeDelta({
-				anchor: "b",
-				delta : (sectors[prevSectorIndex].delta - deltaToChange)
-			});
-			sectors[laterSectorIndex].resizeDelta({
-				anchor: "e",
-				delta : (sectors[laterSectorIndex].delta - deltaToChange)
-			});
-		}else{
-			sector.resizeDelta({
-				anchor: "m",
-				delta: sector.originalAttr.delta,
-				priority : true,
-				callback : resizeDeltaCallback
-			});
-			sectors[prevSectorIndex].resizeDelta({
-				anchor: "b",
-				delta : sectors[prevSectorIndex].originalAttr.delta,
-				priority : true
-			});
-			sectors[laterSectorIndex].resizeDelta({
-				anchor: "e",
-				delta : sectors[laterSectorIndex].originalAttr.delta,
-				priority : true
-			});
-		}
-	}
 	//Colors and text style settings
 	/** Sector Normal Fill Color (also mouseout and mouseup) */
 	socialCheesecake.Cheesecake.getSectorFillColor = function (){

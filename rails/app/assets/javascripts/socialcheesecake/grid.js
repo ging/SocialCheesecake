@@ -201,8 +201,8 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Grid.prototype.fadeIn = function (actor_ids, time, modifyDisplay, ignoreSelected) {
 		var actor;
 		var maxActors = Math.min(actor_ids.length, socialCheesecake.Cheesecake.getMaxVisibleActors());
-		console.log("Fading in");
-		console.log("Showing "+ this.getShownActors().length);
+		//console.log("Fading in");
+		//console.log("Showing "+ this.getShownActors().length);
 		if (actor_ids instanceof Array) {
 			for(var i = 0; this.getShownActors().length < maxActors ; i++){
 				actor = actor_ids[i];
@@ -219,7 +219,7 @@ var socialCheesecake = socialCheesecake || {};
 			}	
 			if((!actor.isSelected())||(ignoreSelected)) actor.fadeIn(time, modifyDisplay);
 		}
-		console.log("Showing "+ this.getShownActors().length);
+		//console.log("Showing "+ this.getShownActors().length);
 	}
 	
 	socialCheesecake.Grid.prototype.fadeInAll = function (time, modifyDisplay) {

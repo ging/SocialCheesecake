@@ -510,6 +510,33 @@ var socialCheesecake = socialCheesecake || {};
 		stage.draw();
 	}
 	
+	/**
+	 * open - true: expand sector
+	 * 			- false: shrink sector
+	 * resizeDeltaCallback - callback to execute at the end of the animation
+	 */	
+	socialCheesecake.Sector.prototype.fan = function(open, resizeDeltaCallback){
+		var sector = this;
+		var minDelta = Math.PI/5;
+
+		if(open && (sector.delta >= minDelta)) return; 
+		if(open){
+			sector.getRegion().moveToTop();
+			sector.resizeDelta({
+				anchor: "m",
+				delta: minDelta,
+				callback : resizeDeltaCallback
+			});
+		}else{
+			sector.resizeDelta({
+				anchor: "m",
+				delta: sector.originalAttr.delta,
+				priority : true,
+				callback : resizeDeltaCallback
+			});
+		}
+	}
+	
 	socialCheesecake.Sector.prototype.rotateTo = function(options) {
 		// update stage
 		var sector = this;
@@ -521,8 +548,6 @@ var socialCheesecake = socialCheesecake || {};
 		var context = sector.getRegion().layer.getContext();
 		if(!options) throw "No arguments passed to the function";
 		if(options.step) step = options.step;
-		/*if(options.context == null) throw "context must be defined";
-		var context = options.context;*/
 		if(options.destination == null) throw "destination must be defined";
 		if(options.anchor){
 			if((options.anchor.toLowerCase() == "b") || (options.anchor == "beginning"))
