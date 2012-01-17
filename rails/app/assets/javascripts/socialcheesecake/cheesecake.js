@@ -47,7 +47,7 @@ var socialCheesecake = socialCheesecake || {};
 		});
 		cheesecake.matchActorsNumber = cheesecakeData.match || true;
 		cheesecake.changes = {};
-		cheesecake.onChange = function(){};
+		cheesecake.onChange = function(cheesecake){};
 		if(cheesecakeData.maxVisibleActors != undefined) 
 			socialCheesecake.Cheesecake.setMaxVisibleActors(cheesecakeData.maxVisibleActors);
 		if(cheesecakeData.onChange)
@@ -359,7 +359,7 @@ var socialCheesecake = socialCheesecake || {};
 			});
 		}
 		//Execute onChange Callback
-		onChange();
+		onChange(this);
 	}
 	
 	socialCheesecake.Cheesecake.prototype.calculatePortions = function (){
