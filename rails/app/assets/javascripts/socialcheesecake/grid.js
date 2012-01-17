@@ -8,10 +8,12 @@ var socialCheesecake = socialCheesecake || {};
 		this.parent = settings.parent;
 		this.id = settings.grid_id;
 		this.divIdPrefix = settings.divIdPrefix;
+		this.visibleActors = [];
 	}
   
 	socialCheesecake.Grid.prototype.addActor = function (actor_info, subsector) {
 		var actors = this.actors;
+		var visibleActors = this.visibleActors;
 		var maxVisibleActors = socialCheesecake.Cheesecake.getMaxVisibleActors();
 		var actor;
 		
@@ -34,7 +36,10 @@ var socialCheesecake = socialCheesecake || {};
 			actor_info.parent = subsector;
 			actor = new socialCheesecake.Actor(actor_info);
 			actors.push(actor);
-			if(actors.length <= maxVisibleActors ) actor.show();
+			if(actors.length <= maxVisibleActors ){
+				actor.show();
+				visibleActors.push(actor);
+			}
 		}
 		return actor;
 	}
@@ -68,12 +73,12 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Grid.prototype.getShownActors = function(){
-		var actors = this.actors;
+		/*var actors = this.actors;
 		var shownActors = [];
 		for (var i in actors){
 			if((!actors[i].isHidden())&&(!actors[i].isFiltered())) shownActors.push(actors[i]);
-		}
-		return shownActors;
+		}*/
+		return this.visibleActors;
 	}
 	
 	socialCheesecake.Grid.prototype.focus = function (actor_ids) {
@@ -102,14 +107,20 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Grid.prototype.hide = function (actor_ids, ignoreSelected) {
 		var actor;
-		var maxActors = Math.min(actor_ids.length, socialCheesecake.Cheesecake.getMaxVisibleActors());
+		var visibleActors = this.visibleActors;
+		var visibleActorIndex = -1;
 		if (actor_ids instanceof Array) {
-			for(var i = 0; i< maxActors ; i++){
+			for(var i in actor_ids){
 				actor = actor_ids[i];
 				if (!(actor instanceof socialCheesecake.Actor)){
 					actor = this.getActor(actor);
 				}
-				if((!actor.isSelected())||(ignoreSelected)) actor.hide();
+				if((!actor.isSelected())||(ignoreSelected)){
+					console.log("hiding actor "+actor.id);
+					actor.hide();
+					visibleActorIndex = visibleActors.indexOf(actor);
+					if(visibleActorIndex >= 0) visibleActors.splice(visibleActorIndex,1);
+				}
 			}
 		} else {
 			if(actor_ids instanceof socialCheesecake.Actor){
@@ -118,11 +129,13 @@ var socialCheesecake = socialCheesecake || {};
 				actor = this.getActor(actor_ids);
 			}
 			actor.hide();
+			visibleActorIndex = visibleActors.indexOf(actor);
+			if(visibleActorIndex >= 0) visibleActors.splice(visibleActorIndex,1);
 		}
 	}
 	
 	socialCheesecake.Grid.prototype.hideAll = function () {
-		this.hide(this.actors);		
+		this.hide(this.visibleActors);		
 	}
 	
 	socialCheesecake.Grid.prototype.show = function (actor_ids) {
@@ -200,24 +213,33 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Grid.prototype.fadeIn = function (actor_ids, time, modifyDisplay, ignoreSelected) {
 		var actor;
+		var visibleActors = this.visibleActors;
 		var maxActors = Math.min(actor_ids.length, socialCheesecake.Cheesecake.getMaxVisibleActors());
 		//console.log("Fading in");
 		//console.log("Showing "+ this.getShownActors().length);
 		if (actor_ids instanceof Array) {
 			for(var i = 0; this.getShownActors().length < maxActors ; i++){
+				console.log(this.getShownActors().length);
+				console.log(this.visibleActors.length);
 				actor = actor_ids[i];
 				if (!(actor instanceof socialCheesecake.Actor)){
 					actor = this.getActor(actor);
 				}
-				if((!actor.isSelected())||(ignoreSelected)) actor.fadeIn(time, modifyDisplay);		
+				if((!actor.isSelected())||(ignoreSelected)){
+					actor.fadeIn(time, modifyDisplay);
+					visibleActors.push(actor);
+				}		
 			}
-		} else {
+		} else if(this.getShownActors().length < maxActors){
 			if(actor_ids instanceof socialCheesecake.Actor){
 				actor = actor_ids;
 			}else{
 				actor = this.getActor(actor_ids);
 			}	
-			if((!actor.isSelected())||(ignoreSelected)) actor.fadeIn(time, modifyDisplay);
+			if((!actor.isSelected())||(ignoreSelected)){
+				actor.fadeIn(time, modifyDisplay);
+				visibleActors.push(actor);
+			}
 		}
 		//console.log("Showing "+ this.getShownActors().length);
 	}
