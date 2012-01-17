@@ -109,19 +109,19 @@ var socialCheesecake = socialCheesecake || {};
 		var actor;
 		var visibleActors = this.visibleActors;
 		var visibleActorIndex = -1;
+
 		if (actor_ids instanceof Array) {
+			console.log("You are going to hide "+ actor_ids.length+ " actors");
 			for(var i in actor_ids){
 				actor = actor_ids[i];
 				if (!(actor instanceof socialCheesecake.Actor)){
 					actor = this.getActor(actor);
 				}
 				if((!actor.isSelected())||(ignoreSelected)){
-					console.log("hiding actor "+actor.id);
 					actor.hide();
-					visibleActorIndex = visibleActors.indexOf(actor);
-					if(visibleActorIndex >= 0) visibleActors.splice(visibleActorIndex,1);
+					visibleActors[visibleActors.indexOf(actor)] = false;
 				}
-			}
+			}			
 		} else {
 			if(actor_ids instanceof socialCheesecake.Actor){
 				actor = actor_ids;
@@ -129,9 +129,14 @@ var socialCheesecake = socialCheesecake || {};
 				actor = this.getActor(actor_ids);
 			}
 			actor.hide();
-			visibleActorIndex = visibleActors.indexOf(actor);
-			if(visibleActorIndex >= 0) visibleActors.splice(visibleActorIndex,1);
+			visibleActors[visibleActors.indexOf(actor)] = false;
 		}
+		visibleActorIndex = visibleActors.indexOf(false);
+		while(visibleActorIndex >= 0){
+			visibleActors.splice(visibleActorIndex,1);
+			visibleActorIndex = visibleActors.indexOf(false);
+		}
+		console.log("Visible actors "+ this.visibleActors.length);
 	}
 	
 	socialCheesecake.Grid.prototype.hideAll = function () {
@@ -180,6 +185,11 @@ var socialCheesecake = socialCheesecake || {};
 				this.getActor(actor_ids).unfocus();
 			}		
 		}
+		visibleActorIndex = visibleActors.indexOf(false);
+		while(visibleActorIndex >= 0){
+			visibleActors.splice(visibleActorIndex,1);
+			visibleActorIndex = visibleActors.indexOf(false);
+		}
 	}
 	
 	socialCheesecake.Grid.prototype.unfocusAll = function () {
@@ -188,14 +198,19 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Grid.prototype.fadeOut = function (actor_ids, time, modifyDisplay, ignoreSelected) {
 		var actor;
-		var maxActors = Math.min(actor_ids.length, socialCheesecake.Cheesecake.getMaxVisibleActors());
+		var visibleActors = this.visibleActors;
+		var visibleActorIndex = -1;
+		
 		if (actor_ids instanceof Array) {
-			for(var i = 0; i< maxActors ; i++){
+			for(var i in actor_ids){
 				actor = actor_ids[i];
 				if (!(actor instanceof socialCheesecake.Actor)){
 					actor = this.getActor(actor);
 				}	
-				if((!actor.isSelected())||(ignoreSelected)) actor.fadeOut(time, modifyDisplay);	
+				if((!actor.isSelected())||(ignoreSelected)){
+					actor.fadeOut(time, modifyDisplay);
+					visibleActors[visibleActors.indexOf(actor)] = false;
+				}
 			}
 		} else {
 			if(actor_ids instanceof socialCheesecake.Actor){
@@ -203,34 +218,35 @@ var socialCheesecake = socialCheesecake || {};
 			}else{
 				actor = this.getActor(actor_ids);
 			}
-			if((!actor.isSelected())||(ignoreSelected)) actor.fadeOut(time, modifyDisplay);			
+			if((!actor.isSelected())||(ignoreSelected)){
+				actor.fadeOut(time, modifyDisplay);
+				visibleActors[visibleActors.indexOf(actor)] = false;
+			}
 		}
 	}
 	
 	socialCheesecake.Grid.prototype.fadeOutAll = function (time, modifyDisplay) {
-		this.fadeOut(this.actors, time, modifyDisplay);
+		this.fadeOut(this.visibleActors, time, modifyDisplay);
 	}
 	
 	socialCheesecake.Grid.prototype.fadeIn = function (actor_ids, time, modifyDisplay, ignoreSelected) {
 		var actor;
 		var visibleActors = this.visibleActors;
 		var maxActors = Math.min(actor_ids.length, socialCheesecake.Cheesecake.getMaxVisibleActors());
-		//console.log("Fading in");
-		//console.log("Showing "+ this.getShownActors().length);
+		console.log("Fading in");
+		console.log("Showing "+ this.getShownActors().length);
 		if (actor_ids instanceof Array) {
-			for(var i = 0; this.getShownActors().length < maxActors ; i++){
-				console.log(this.getShownActors().length);
-				console.log(this.visibleActors.length);
+			for(var i = 0; visibleActors.length < maxActors ; i++){
 				actor = actor_ids[i];
 				if (!(actor instanceof socialCheesecake.Actor)){
 					actor = this.getActor(actor);
 				}
 				if((!actor.isSelected())||(ignoreSelected)){
 					actor.fadeIn(time, modifyDisplay);
-					visibleActors.push(actor);
+					if(visibleActors.indexOf(actor) == -1) visibleActors.push(actor);
 				}		
 			}
-		} else if(this.getShownActors().length < maxActors){
+		} else if(visibleActors.length < maxActors){
 			if(actor_ids instanceof socialCheesecake.Actor){
 				actor = actor_ids;
 			}else{
@@ -238,10 +254,10 @@ var socialCheesecake = socialCheesecake || {};
 			}	
 			if((!actor.isSelected())||(ignoreSelected)){
 				actor.fadeIn(time, modifyDisplay);
-				visibleActors.push(actor);
+				if(visibleActors.indexOf(actor) == -1) visibleActors.push(actor);
 			}
 		}
-		//console.log("Showing "+ this.getShownActors().length);
+		console.log("Showing "+ this.getShownActors().length);
 	}
 	
 	socialCheesecake.Grid.prototype.fadeInAll = function (time, modifyDisplay) {
