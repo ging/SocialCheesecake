@@ -67,7 +67,6 @@ var socialCheesecake = socialCheesecake || {};
 					actors : settings.subsectors[i].actors,
 					mouseover : { color : socialCheesecake.Cheesecake.getSectorHoverColor(),
 						callback : function(subsector) {
-							console.log("Mouseover sector "+ subsector.label);
 							document.body.style.cursor = "pointer";
 							subsector.getCheesecake().grid.hideAll();
 							subsector.getCheesecake().grid.fadeIn(subsector.actors, 300, true);
@@ -77,7 +76,6 @@ var socialCheesecake = socialCheesecake || {};
 					mouseout :{
 						color : socialCheesecake.Cheesecake.getSectorFillColor(),
 						callback : function(subsector) {
-							console.log("mouseout sector "+subsector.label);
 							document.body.style.cursor = "default";
 							subsector.getCheesecake().grid.fadeIn(subsector.parent.actors, 300, true);
 							subsector.getCheesecake().setHighlightedSector(subsector.parent);

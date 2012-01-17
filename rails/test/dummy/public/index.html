@@ -95,7 +95,8 @@
 	    					{id : 11, name : "Massive Dynamic"}
 	    				]}
 	    			],
-  			   highlightedSectorCallback : function(sector){ 
+  			   onChange : function(){
+  			     console.log("Cambio detectado"); 
   			   }
 	    		};
 				cheese = new socialCheesecake.Cheesecake(cheesecakeData);

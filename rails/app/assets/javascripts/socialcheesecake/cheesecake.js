@@ -47,8 +47,11 @@ var socialCheesecake = socialCheesecake || {};
 		});
 		cheesecake.matchActorsNumber = cheesecakeData.match || true;
 		cheesecake.changes = {};
+		cheesecake.onChange = function(){};
 		if(cheesecakeData.maxVisibleActors != undefined) 
 			socialCheesecake.Cheesecake.setMaxVisibleActors(cheesecakeData.maxVisibleActors);
+		if(cheesecakeData.onChange)
+			cheesecake.onChange = cheesecakeData.onChange;
 		
 		var extraSector = new socialCheesecake.Sector({
 			parent : cheesecake,
@@ -260,7 +263,6 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Cheesecake.prototype.recoverCheesecake = function() {
 		var cheesecake = this;
 		var regions = cheesecake.stage.getShapes();
-		console.log(regions);
 		//Delete the auxiliar sectors
 		for(var i = (regions.length - 1); i >= 0; i--) {
 			if(!regions[i].permanent) {
@@ -329,6 +331,7 @@ var socialCheesecake = socialCheesecake || {};
 		var alreadyChanged = false;
 		var actorParents = grid.getActor(actorId).parents;
 		var actorSubsectors = [];
+		var onChange = this.onChange;
 		
 		for(var parent in actorParents){
 			actorSubsectors.push(actorParents[parent].id);
@@ -355,6 +358,8 @@ var socialCheesecake = socialCheesecake || {};
 				subsectors : actorSubsectors
 			});
 		}
+		//Execute onChange Callback
+		onChange();
 	}
 	
 	socialCheesecake.Cheesecake.prototype.calculatePortions = function (){
