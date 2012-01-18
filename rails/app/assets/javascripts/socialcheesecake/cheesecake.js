@@ -224,7 +224,7 @@ var socialCheesecake = socialCheesecake || {};
 		var greyMousedownCallback = function() {
 			greySector.label = "";
 			cheesecake.unfocusAndUnblurCheesecake();
-			cheesecake.grid.showAll();
+			//cheesecake.grid.showAll();
 		}
 		var greyResizeCallback = function() {
 			greySector.mousedown.callback = greyMousedownCallback;

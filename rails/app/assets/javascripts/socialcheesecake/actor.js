@@ -109,7 +109,6 @@ var socialCheesecake = socialCheesecake || {};
 			}
 		}
 		actor_div.setAttribute("style", newStyle);
-		this.setDivOpacity(0);
 		this.fading= "none";
 	}
 	
@@ -177,7 +176,6 @@ var socialCheesecake = socialCheesecake || {};
 			grow = -1;
 		}else if (this.fading == "in"){
 			grow = 1;
-			if (modifyDisplay) actor.show();
 		}
 		var opacity = this.opacity + grow * deltaOpacity;
 		opacity = Math.round(opacity*1000)/1000;
@@ -196,13 +194,18 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Actor.prototype.fadeOut = function(time, modifyDisplay) {
 		this.fading = "out";
+		actor.setDivOpacity(1);
 		this.fade(time, modifyDisplay);
 	}
 	
 	socialCheesecake.Actor.prototype.fadeIn = function(time, modifyDisplay) {
-		if(this.isFiltered()) return;
-		this.fading = "in";
-		this.fade(time, modifyDisplay);
+		var actor = this;
+		
+		if(actor.isFiltered()) return;
+		actor.fading = "in";
+		actor.setDivOpacity(0);
+		if (modifyDisplay) actor.show();
+		actor.fade(time, modifyDisplay);
 	}
 	
 	socialCheesecake.Actor.prototype.getCheesecake = function (){
