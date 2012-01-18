@@ -114,9 +114,11 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Actor.prototype.show = function() {
-		if(this.isFiltered()) return;
 		var actor_div = this.getDiv();
 		var newStyle=" display: inline;";
+		
+		if(this.isFiltered()) return;
+		
 		this._hidden = false;
 		if (actor_div.getAttribute("style")){
 			if (actor_div.getAttribute("style").match(/display\s*:\s*[a-z]*;/)){
@@ -167,6 +169,7 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Actor.prototype.fade = function(time, modifyDisplay) {
 		var actor = this;	
+		var time = (time) ? time : 300;
 		var deltaOpacity = 1000.0/ (60.0 *time);
 		var grow = 0;
 		
@@ -179,7 +182,6 @@ var socialCheesecake = socialCheesecake || {};
 		var opacity = this.opacity + grow * deltaOpacity;
 		opacity = Math.round(opacity*1000)/1000;
 		actor.setDivOpacity(opacity);
-		var x = actor.opacity;
 				
 		if (((this.fading == "out") && (opacity >= 0))||
 	 			((this.fading == "in") && (opacity <= 1))){

@@ -94,7 +94,6 @@ var socialCheesecake = socialCheesecake || {};
 				mouseover : {
 					color : socialCheesecake.Cheesecake.getSectorHoverColor(),
 					callback : function(sector) {
-						console.log("Showing "+ cheesecake.grid.getShownActors().length);
 						document.body.style.cursor = "pointer";
 						cheesecake.grid.hideAll();
 						cheesecake.grid.fadeIn(sector.actors, 300, true);
