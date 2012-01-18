@@ -23,48 +23,57 @@ var socialCheesecake = socialCheesecake || {};
 		
 		var actor = this;
 		var actor_div = actor.getDiv();
-		var mouseoverCallback = function(){
+		
+		actor_div.addEventListener("mouseover", function(){
 			var sector;
-			actor.focus();
+			if( !actor.isSelected() ){				
+				actor.focus();
+			}
 			for (var subsector in actor.parents){
 				sector = actor.parents[subsector].parent;
 				sector.focus();
 				sector.changeColor(sector.mouseover.color);
 				actor.parents[subsector].changeColor(actor.parents[subsector].mouseover.color);
 			}
-		}
-		var mouseoutCallback = function(){
+		}, false);
+		actor_div.addEventListener("mouseout", function(){
 			var sector;
-			actor.unfocus();
+			if( !actor.isSelected() ){
+				actor.unfocus();
+			}
 			for (var subsector in actor.parents){
 				sector = actor.parents[subsector].parent;
 				sector.unfocus();
 				sector.changeColor(sector.mouseout.color);
 				actor.parents[subsector].changeColor(sector.mouseout.color);
 			}
-		}
-		actor_div.addEventListener("mouseover", mouseoverCallback, false);
-		actor_div.addEventListener("mouseout", mouseoutCallback, false);
+		}, false);
 		actor_div.addEventListener("mousedown", function(){
 			var sector;
 			if( actor.isSelected()){
 				// Deactivate actor
-				actor._selected = false;
-				actor.unfocus();
-				actor_div.addEventListener("mouseover", mouseoverCallback, false);
-				actor_div.addEventListener("mouseout", mouseoutCallback, false);
+				actor.unselect();
 			}else{
 				//Activate actor
-				actor._selected = true;
-				actor.focus();
-				actor_div.removeEventListener("mouseover", mouseoverCallback, false);
-				actor_div.removeEventListener("mouseout", mouseoutCallback, false);
+				actor.select();
 			}
-		});
+		}, false);
 	}
 	
 	socialCheesecake.Actor.prototype.isSelected = function() {
 		return this._selected;
+	}
+	
+	socialCheesecake.Actor.prototype.select = function() {
+		var actor = this;
+		actor._selected = true;
+		actor.focus();
+	}
+	
+	socialCheesecake.Actor.prototype.unselect = function() {
+		var actor = this;
+		actor._selected = false;
+		actor.unfocus();
 	}
 	
 	socialCheesecake.Actor.prototype.focus = function() {

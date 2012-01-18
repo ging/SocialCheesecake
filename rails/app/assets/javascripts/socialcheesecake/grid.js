@@ -67,13 +67,61 @@ var socialCheesecake = socialCheesecake || {};
 		var actors = this.visibleActors;
 		var selectedActors = [];
 		for (var i in actors){
-			if(actors[i].isSelected()) selectedActors.push(actors[i]);
+			if(actors[i] && actors[i].isSelected()) selectedActors.push(actors[i]);
 		}
 		return selectedActors;
 	}
 	
 	socialCheesecake.Grid.prototype.getShownActors = function(){
 		return this.visibleActors;
+	}
+	
+	socialCheesecake.Grid.prototype.select = function (actor_ids) {
+		var actor;
+		
+		if (actor_ids instanceof Array) {
+			for(var i in actor_ids){
+				actor = actor_ids[i];
+				if(!(actor instanceof socialCheesecake.Actor)){
+					actor = this.getActor(actor);
+				}
+				actor.select();
+			}
+		} else {
+			actor = actor_ids;
+			if(!(actor_ids instanceof socialCheesecake.Actor)){
+				actor = this.getActor(actor_ids);
+			}
+			actor.select();
+		}
+	}
+	
+	socialCheesecake.Grid.prototype.selectAll = function () {
+		this.select(this.visibleActors);
+	}
+	
+	socialCheesecake.Grid.prototype.unselect = function (actor_ids) {
+		var actor;
+		
+		if (actor_ids instanceof Array) {
+			for(var i in actor_ids){
+				actor = actor_ids[i];
+				if(!(actor instanceof socialCheesecake.Actor)){
+					actor = this.getActor(actor);
+				}
+				actor.unselect();
+			}
+		} else {
+			actor = actor_ids;
+			if(!(actor_ids instanceof socialCheesecake.Actor)){
+				actor = this.getActor(actor_ids);
+			}
+			actor.unselect();
+		}
+	}
+	
+	socialCheesecake.Grid.prototype.unselectAll = function () {
+		this.unselect(this.visibleActors);
 	}
 	
 	socialCheesecake.Grid.prototype.focus = function (actor_ids) {

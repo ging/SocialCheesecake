@@ -19,15 +19,17 @@
 		        height: 64px;
 		        float: left;
 		        margin: 5px;
+		        display: none;
 		    }
 		    #grid .actor.focused {
 		        border: 2px solid #00F;
-				background-color: #006;
-				margin: 3px;
+				    background-color: #006;
+				    margin: 3px;
 		    }
 		    #grid .actor img {
 		        width: 64px;
 		        height: 64px;
+		        border: 2px solid black;
 		    }
 		</style>
 		<script src="assets/application.js"></script>
@@ -110,7 +112,7 @@
 			</div>
 			<div class="actor" id="actor_1"><img src="assets/beatriz.png">
 			</div>
-			<div class="actor" id="actor_2"><img src="assets/youngAlberto.png">
+			<div class="actor" id="actor_2"><img src="assets/rails.png">
 			</div>
 			<div class="actor" id="actor_3"><img src="assets/beatriz.png">
 			</div>
@@ -124,10 +126,12 @@
 			<button type="button" onclick="cheese.grid.actors[0].show()">show 0</button>
 			<button type="button" onclick="cheese.grid.actors[0].fadeOut(1000)">fadeOut 0</button>
 			<button type="button" onclick="cheese.grid.actors[0].fadeIn(1000)">fadeIn 0</button>
+			<button type="button" onclick="cheese.grid.actors[0].unselect()">unselect 0</button>
 			<button type="button" onclick="cheese.grid.focusAll()">Focus all!</button>
 			<button type="button" onclick="cheese.grid.unfocusAll()">Unfocus all!</button>
 			<button type="button" onclick="cheese.grid.hideAll()">Hide all!</button>
 			<button type="button" onclick="cheese.grid.showAll()">Show all!</button>
+			<button type="button" onclick="cheese.grid.unselectAll()">Unselect all!</button>
 		</div>
 	</body>
 </html>
