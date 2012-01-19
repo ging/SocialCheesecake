@@ -159,6 +159,7 @@ var socialCheesecake = socialCheesecake || {};
 				cheesecake.stage.remove(regions[i]);
 			}
 		}
+		cheesecake.stage.layers.actors.clear();
 		this.setHighlightedSector(sector);
 		
 		//Add auxiliar sectors
@@ -224,7 +225,6 @@ var socialCheesecake = socialCheesecake || {};
 		var greyMousedownCallback = function() {
 			greySector.label = "";
 			cheesecake.unfocusAndUnblurCheesecake();
-			//cheesecake.grid.showAll();
 		}
 		var greyResizeCallback = function() {
 			greySector.mousedown.callback = greyMousedownCallback;

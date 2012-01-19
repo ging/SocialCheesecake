@@ -12,6 +12,7 @@ var socialCheesecake = socialCheesecake || {};
 		}
 		this.id = settings.id;
 		this.name = settings.name;
+		this.extraInfo = (settings.extraInfo) ? settings.extraInfo : undefined;
 		this.opacity = 1;
 		this._focused = false;
 		this._selected = false;
