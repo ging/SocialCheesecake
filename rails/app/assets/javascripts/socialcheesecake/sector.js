@@ -679,7 +679,8 @@ var socialCheesecake = socialCheesecake || {};
 			for(var actor in settings.actors){
 				var actor_info = {
 					id : settings.actors[actor][0],
-					name : settings.actors[actor][1]
+					name : settings.actors[actor][1],
+					extraInfo : settings.actors[actor][2]
 				}
 				this.addActor(actor_info ,this);
 			}
