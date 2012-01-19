@@ -329,6 +329,8 @@ var socialCheesecake = socialCheesecake || {};
 		var changesInActors;
 		var alreadyChanged = false;
 		var actorParents = grid.getActor(actorId).parents;
+		var actorName = grid.getActor(actorId).name;
+		var actorExtraInfo = grid.getActor(actorId).extraInfo;
 		var actorSubsectors = [];
 		var onChange = this.onChange;
 		
@@ -347,14 +349,18 @@ var socialCheesecake = socialCheesecake || {};
 			if(!alreadyChanged){
 				changesInActors.push({
 					id : actorId,
-					subsectors : actorSubsectors
+					subsectors : actorSubsectors,
+					name : actorName,
+					extraInfo : actorExtraInfo
 				});
 			}
 		}else{
 			changes.actors = [];
 			changes.actors.push({
 				id : actorId,
-				subsectors : actorSubsectors
+				subsectors : actorSubsectors,
+				name : actorName,
+				extraInfo : actorExtraInfo
 			});
 		}
 		//Execute onChange Callback
