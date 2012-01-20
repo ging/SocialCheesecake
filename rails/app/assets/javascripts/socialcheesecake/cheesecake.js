@@ -46,8 +46,8 @@ var socialCheesecake = socialCheesecake || {};
 			parent : this
 		});
 		cheesecake.matchActorsNumber = cheesecakeData.match || true;
-		cheesecake.initialState = {};
-		cheesecake.changes = {};
+		cheesecake._initialState = {};
+		cheesecake._changes = {};
 		cheesecake.onChange = function(cheesecake){};
 		if(cheesecakeData.maxVisibleActors != undefined) 
 			socialCheesecake.Cheesecake.setMaxVisibleActors(cheesecakeData.maxVisibleActors);
@@ -136,7 +136,7 @@ var socialCheesecake = socialCheesecake || {};
 			cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
 		}
 		cheesecake.calculatePortions();
-		cheesecake.setInitialState();
+		cheesecake._setInitialState();
 		cheesecake.draw();
 	}
 	
@@ -332,7 +332,7 @@ var socialCheesecake = socialCheesecake || {};
 	 * actorId 		- actor which changes one of its parents
 	 */
 	socialCheesecake.Cheesecake.prototype.updateActorMembership = function (actor){
-		var changes = this.changes;
+		var changes = this._changes;
 		var grid = this.grid;
 		var changesInActors;
 		var alreadyChanged = false;
@@ -442,15 +442,15 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Cheesecake.prototype.getChanges = function (){
-		return this.changes;
+		return this._changes;
 	}
 	
 	socialCheesecake.Cheesecake.prototype.getInitialState = function (){
-		return this.initialState;
+		return this._initialState;
 	}
 	
-	socialCheesecake.Cheesecake.prototype.setInitialState = function (){
-		var state = this.initialState;
+	socialCheesecake.Cheesecake.prototype._setInitialState = function (){
+		var state = this._initialState;
 		var actors = this.grid.actors;
 		
 		state.actors = [];
