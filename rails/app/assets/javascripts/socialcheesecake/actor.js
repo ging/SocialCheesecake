@@ -61,6 +61,16 @@ var socialCheesecake = socialCheesecake || {};
 		}, false);
 	}
 	
+	socialCheesecake.Actor.prototype.getParentsIds = function() {
+		var parents = this.parents;
+		var parentsIds = [];
+		
+		for(var i in parents){
+			parentsIds.push(parents[i].id);
+		}
+		return parentsIds;
+	}
+	
 	socialCheesecake.Actor.prototype.isSelected = function() {
 		return this._selected;
 	}

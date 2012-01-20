@@ -747,7 +747,7 @@ var socialCheesecake = socialCheesecake || {};
 				actorInfo = { id : actors[i].id};
 				this.addActor(actorInfo, this);
 			}
-			this.getCheesecake().updateActorMembership(actors[i].id);
+			this.getCheesecake().updateActorMembership(actors[i]);
 			isMember = false;
 		}
 		this.getCheesecake().calculatePortions();

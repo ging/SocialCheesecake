@@ -46,6 +46,7 @@ var socialCheesecake = socialCheesecake || {};
 			parent : this
 		});
 		cheesecake.matchActorsNumber = cheesecakeData.match || true;
+		cheesecake.initialState = {};
 		cheesecake.changes = {};
 		cheesecake.onChange = function(cheesecake){};
 		if(cheesecakeData.maxVisibleActors != undefined) 
@@ -135,6 +136,7 @@ var socialCheesecake = socialCheesecake || {};
 			cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
 		}
 		cheesecake.calculatePortions();
+		cheesecake.setInitialState();
 		cheesecake.draw();
 	}
 	
@@ -323,33 +325,29 @@ var socialCheesecake = socialCheesecake || {};
 	/**
 	 * actorId 		- actor which changes one of its parents
 	 */
-	socialCheesecake.Cheesecake.prototype.updateActorMembership = function (actorId){
+	socialCheesecake.Cheesecake.prototype.updateActorMembership = function (actor){
 		var changes = this.changes;
 		var grid = this.grid;
 		var changesInActors;
 		var alreadyChanged = false;
-		var actorParents = grid.getActor(actorId).parents;
-		var actorName = grid.getActor(actorId).name;
-		var actorExtraInfo = grid.getActor(actorId).extraInfo;
-		var actorSubsectors = [];
+		var actorId = actor.id;
+		var actorParents = actor.getParentsIds();
+		var actorName = actor.name;
+		var actorExtraInfo = actor.extraInfo;
 		var onChange = this.onChange;
-		
-		for(var parent in actorParents){
-			actorSubsectors.push(actorParents[parent].id);
-		}
 		
 		if(changes.actors != undefined){
 			changesInActors = changes.actors
-			for( var actor in changesInActors){
-				if(changesInActors[actor].id == actorId){
+			for( var a in changesInActors){
+				if(changesInActors[a].id == actorId){
 					alreadyChanged = true;
-					changesInActors[actor].subsectors = actorSubsectors;
+					changesInActors[a].subsectors = actorParents;
 				}
 			}
 			if(!alreadyChanged){
 				changesInActors.push({
 					id : actorId,
-					subsectors : actorSubsectors,
+					subsectors : actorParents,
 					name : actorName,
 					extraInfo : actorExtraInfo
 				});
@@ -358,7 +356,7 @@ var socialCheesecake = socialCheesecake || {};
 			changes.actors = [];
 			changes.actors.push({
 				id : actorId,
-				subsectors : actorSubsectors,
+				subsectors : actorParents,
 				name : actorName,
 				extraInfo : actorExtraInfo
 			});
@@ -439,6 +437,25 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Cheesecake.prototype.getChanges = function (){
 		return this.changes;
+	}
+	
+	socialCheesecake.Cheesecake.prototype.getInitialState = function (){
+		return this.initialState;
+	}
+	
+	socialCheesecake.Cheesecake.prototype.setInitialState = function (){
+		var state = this.initialState;
+		var actors = this.grid.actors;
+		
+		state.actors = [];
+		for( var actor in actors ){
+			state.actors.push({ 
+				id: actors[actor].id ,
+				subsectors : actors[actor].getParentsIds(),
+				name : actors[actor].name,
+				extraInfo : actors[actor].extraInfo
+			})
+		}		
 	}
 
 	//Colors and text style settings
