@@ -214,7 +214,7 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Actor.prototype.fadeOut = function(time, modifyDisplay) {
 		this.fading = "out";
-		actor.setDivOpacity(1);
+		this.setDivOpacity(1);
 		this.fade(time, modifyDisplay);
 	}
 	

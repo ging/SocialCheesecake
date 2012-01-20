@@ -82,10 +82,12 @@ var socialCheesecake = socialCheesecake || {};
 		if (actor_ids instanceof Array) {
 			for(var i in actor_ids){
 				actor = actor_ids[i];
-				if(!(actor instanceof socialCheesecake.Actor)){
-					actor = this.getActor(actor);
+				if (actor){
+					if(!(actor instanceof socialCheesecake.Actor)){
+						actor = this.getActor(actor);
+					}
+					actor.select();
 				}
-				actor.select();
 			}
 		} else {
 			actor = actor_ids;
@@ -106,10 +108,12 @@ var socialCheesecake = socialCheesecake || {};
 		if (actor_ids instanceof Array) {
 			for(var i in actor_ids){
 				actor = actor_ids[i];
-				if(!(actor instanceof socialCheesecake.Actor)){
-					actor = this.getActor(actor);
+				if (actor){
+					if(!(actor instanceof socialCheesecake.Actor)){
+						actor = this.getActor(actor);
+					}
+					actor.unselect();
 				}
-				actor.unselect();
 			}
 		} else {
 			actor = actor_ids;
@@ -130,10 +134,12 @@ var socialCheesecake = socialCheesecake || {};
 		if (actor_ids instanceof Array) {
 			for(var i in actor_ids){
 				actor = actor_ids[i];
-				if(!(actor instanceof socialCheesecake.Actor)){
-					actor = this.getActor(actor);
+				if (actor){
+					if(!(actor instanceof socialCheesecake.Actor)){
+						actor = this.getActor(actor);
+					}
+					actor.focus();
 				}
-				actor.focus();
 			}
 		} else {
 			actor = actor_ids;
@@ -152,16 +158,18 @@ var socialCheesecake = socialCheesecake || {};
 		var actor;
 		var visibleActors = this.visibleActors;
 		var visibleActorIndex = -1;
-
+		
 		if (actor_ids instanceof Array) {
 			for(var i in actor_ids){
 				actor = actor_ids[i];
-				if (!(actor instanceof socialCheesecake.Actor)){
-					actor = this.getActor(actor);
-				}
-				if((!actor.isSelected())||(ignoreSelected)){
-					actor.hide();
-					visibleActors[visibleActors.indexOf(actor)] = false;
+				if (actor){
+					if (!(actor instanceof socialCheesecake.Actor)){
+						actor = this.getActor(actor);
+					}
+					if((!actor.isSelected())||(ignoreSelected)){
+						actor.hide();
+						visibleActors[visibleActors.indexOf(actor)] = false;
+					}
 				}
 			}			
 		} else {
@@ -192,13 +200,15 @@ var socialCheesecake = socialCheesecake || {};
 		if (actor_ids instanceof Array) {
 			for(var i = 0; visibleActors.length < maxActors ; i++){
 				actor = actor_ids[i];
-				if (!(actor instanceof socialCheesecake.Actor)){
-					actor = this.getActor(actor);
+					if (actor){
+					if (!(actor instanceof socialCheesecake.Actor)){
+						actor = this.getActor(actor);
+					}
+					if((!actor.isSelected())||(ignoreSelected)){
+						actor.show();
+						if(visibleActors.indexOf(actor) == -1) visibleActors.push(actor);
+					}
 				}
-				if((!actor.isSelected())||(ignoreSelected)){
-					actor.show();
-					if(visibleActors.indexOf(actor) == -1) visibleActors.push(actor);
-				}	
 			}
 		} else if(visibleActors.length < maxActors){
 			if(actor_ids instanceof socialCheesecake.Actor){
@@ -223,10 +233,12 @@ var socialCheesecake = socialCheesecake || {};
 		if (actor_ids instanceof Array) {
 			for(var i in actor_ids){
 				actor = actor_ids[i];
-				if(!(actor instanceof socialCheesecake.Actor)){
-					actor = this.getActor(actor);
-				}
-				actor.unfocus();				
+					if (actor){
+					if(!(actor instanceof socialCheesecake.Actor)){
+						actor = this.getActor(actor);
+					}
+					actor.unfocus();
+				}				
 			}
 		} else {
 			actor = actor_ids;
@@ -249,12 +261,14 @@ var socialCheesecake = socialCheesecake || {};
 		if (actor_ids instanceof Array) {
 			for(var i in actor_ids){
 				actor = actor_ids[i];
-				if (!(actor instanceof socialCheesecake.Actor)){
-					actor = this.getActor(actor);
-				}	
-				if((!actor.isSelected())||(ignoreSelected)){
-					actor.fadeOut(time, modifyDisplay);
-					visibleActors[visibleActors.indexOf(actor)] = false;
+				if (actor){
+					if (!(actor instanceof socialCheesecake.Actor)){
+						actor = this.getActor(actor);
+					}	
+					if((!actor.isSelected())||(ignoreSelected)){
+						actor.fadeOut(time, modifyDisplay);
+						visibleActors[visibleActors.indexOf(actor)] = false;
+					}
 				}
 			}
 		} else {
@@ -286,13 +300,15 @@ var socialCheesecake = socialCheesecake || {};
 		if (actor_ids instanceof Array) {
 			for(var i = 0; visibleActors.length < maxActors ; i++){
 				actor = actor_ids[i];
-				if (!(actor instanceof socialCheesecake.Actor)){
-					actor = this.getActor(actor);
+				if (actor){
+					if (!(actor instanceof socialCheesecake.Actor)){
+						actor = this.getActor(actor);
+					}
+					if((!actor.isSelected())||(ignoreSelected)){
+						actor.fadeIn(time, modifyDisplay);
+						if(visibleActors.indexOf(actor) == -1) visibleActors.push(actor);
+					}	
 				}
-				if((!actor.isSelected())||(ignoreSelected)){
-					actor.fadeIn(time, modifyDisplay);
-					if(visibleActors.indexOf(actor) == -1) visibleActors.push(actor);
-				}		
 			}
 		} else if(visibleActors.length < maxActors){
 			if(actor_ids instanceof socialCheesecake.Actor){
