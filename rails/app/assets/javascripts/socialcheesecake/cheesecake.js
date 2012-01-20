@@ -264,6 +264,7 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Cheesecake.prototype.recoverCheesecake = function() {
 		var cheesecake = this;
 		var regions = cheesecake.stage.getShapes();
+		var lastSector = this.highlightedSector;
 		//Delete the auxiliar sectors
 		for(var i = (regions.length - 1); i >= 0; i--) {
 			if(!regions[i].permanent) {
@@ -275,6 +276,12 @@ var socialCheesecake = socialCheesecake || {};
 		
 		// Add the former sectors and actors
 		cheesecake.draw();
+		if(lastSector){
+			lastSector.color = lastSector.originalAttr.color;
+			lastSector.fan(false);
+			lastSector.unfocus();
+			this.setHighlightedSector(null);
+		}
 		cheesecake.grid.fadeInAll(300, true);
 	}
 	socialCheesecake.Cheesecake.prototype.unfocusAndUnblurCheesecake = function() {
@@ -297,7 +304,6 @@ var socialCheesecake = socialCheesecake || {};
 		//Animate and go back to the general view
 		sectorNewDelta = cheesecake.sectors[sector.simulate].delta;
 		sectorNewPhi = cheesecake.sectors[sector.simulate].phi;
-		this.setHighlightedSector(null);
 		sector.putTogether();
 		sector.resizeDelta({
 			anchor : "M",
