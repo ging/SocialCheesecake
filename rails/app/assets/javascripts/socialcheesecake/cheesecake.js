@@ -385,17 +385,15 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Cheesecake.prototype.calculatePortions = function (){
 		var sectors = this.sectors;
-		var match = this.matchActorsNumber;
+		var match = false; //this.matchActorsNumber;
 		var deltaExtra = Math.PI / 8;
 		var deltaSector;
-		var minDeltaSector = (sectors.length < 13) ? Math.PI / 6 : Math.PI / 8;
+		var minDeltaSector = Math.PI / 8;
 		var phi = ((5 * Math.PI) / 4) - (deltaExtra / 2);
 		var sectorActors;
 		var totalSectors = sectors.length;
 		var totalActors = 0;
-		var consideredActors = 0;
-		var littleSectors = 0;
-		var isLittle = [];
+		var totalAngle = 2*Math.PI;
 		
 		//Begin with the extra Sector, if exists
 		if (sectors[sectors.length-1].auxiliar){
@@ -403,35 +401,25 @@ var socialCheesecake = socialCheesecake || {};
 			sectors[sectors.length-1].delta = deltaExtra;
 			sectors[sectors.length-1].originalAttr.phi = sectors[sectors.length-1].phi;
 			sectors[sectors.length-1].originalAttr.delta = sectors[sectors.length-1].delta;
-			phi += (deltaExtra/2);
+			phi += deltaExtra;
 			totalSectors = sectors.length -1;
+			totalAngle -= deltaExtra;
 		}
-		
-		if(this.grid.actors.length == 0) match =false;
 		if(match){
-			//Calculate total number of actors
-			for (var i = 0; i < totalSectors; i++){
-				totalActors += (sectors[i].actors.length);				
-			}
-			consideredActors = totalActors;
-			//Calculate percentage of actors of each sector
-			for (var i = 0; i < totalSectors; i++){
-				sectorActors = sectors[i].actors.length;			
-				if( sectorActors / totalActors <= 0.1){ 
-					isLittle[i] = true;
-					littleSectors++;
-					consideredActors -= sectors[i].actors.length;
-					console.log("Sector "+ sectors[i].label + " considered little");
+			//Calculate total number of actors, number of empty sectors and minimum number of actors
+			for( var i = 0; i < totalSectors; i++){
+				totalActors += sectors[i].actors.length;
+				if(sectors[i].actors.length <= 0){
+					totalActors += 1;
 				}
 			}
-			//Assign width
-			for (var i = 0; i < totalSectors; i++){
-				if(isLittle[i]){
-					deltaSector = minDeltaSector;
-				}else{
-					deltaSector = (sectors[i].actors.length / consideredActors)* 
-						(2*Math.PI - deltaExtra - littleSectors*minDeltaSector);
+			//Assign delta to each sector
+			for( var i = 0; i < totalSectors; i++){
+				sectorActors = sectors[i].actors.length;
+				if( sectorActors <= 0){
+					sectorActors = 1;					
 				}
+				deltaSector = (sectorActors/ totalActors)*totalAngle;
 				sectors[i].phi = phi;
 				sectors[i].delta = deltaSector;
 				sectors[i].originalAttr.phi = sectors[i].phi;
@@ -439,8 +427,8 @@ var socialCheesecake = socialCheesecake || {};
 				phi += deltaSector;
 			}
 		}else{
-			deltaSector = (2 * Math.PI - deltaExtra) / (sectors.length-1);
-			for (var i = 0; i < totalSectors; i++){
+			deltaSector = totalAngle / totalSectors;
+			for(var i = 0; i < totalSectors; i++){
 				sectors[i].phi = phi;
 				sectors[i].delta = deltaSector;
 				sectors[i].originalAttr.phi = sectors[i].phi;
@@ -448,6 +436,7 @@ var socialCheesecake = socialCheesecake || {};
 				phi += deltaSector;
 			}
 		}
+		
 	}
 	
 	socialCheesecake.Cheesecake.prototype.setHighlightedSector = function(sector){
