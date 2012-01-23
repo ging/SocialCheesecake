@@ -89,6 +89,7 @@ var socialCheesecake = socialCheesecake || {};
 					x : cheesecakeData.center.x,
 					y : cheesecakeData.center.y
 				},
+				id : jsonSectors[i].id,
 				label : jsonSectors[i].name,
 				rOut : cheesecakeData.rMax,
 				subsectors : jsonSectors[i].subsectors,
@@ -439,6 +440,34 @@ var socialCheesecake = socialCheesecake || {};
 				this.highlightedSectorCallback(this);
 			}
 		}
+	}
+	
+	socialCheesecake.Cheesecake.prototype.getSectorById = function(id){
+		var sectors = this.sectors;
+		var sector;
+		for (var i in sectors){
+			if (sectors[i].id == id){
+				sector = sectors[i];
+				break;
+			}
+		}
+		return sector;
+	}
+	
+	socialCheesecake.Cheesecake.prototype.getSubsectorById = function(id){
+		var sectors = this.sectors;
+		var subsectors;
+		var subsector;
+		for (var i in sectors){
+			subsectors = sectors[i].subsectors;
+			for (var j in subsectors){
+				if (subsectors[j].id == id){
+					subsector = subsectors[j];
+					break;
+				}
+			}
+		}
+		return subsector;
 	}
 	
 	socialCheesecake.Cheesecake.prototype.getChanges = function (){
