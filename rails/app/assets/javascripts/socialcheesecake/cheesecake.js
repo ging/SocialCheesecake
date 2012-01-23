@@ -54,35 +54,37 @@ var socialCheesecake = socialCheesecake || {};
 		if(cheesecakeData.onChange)
 			cheesecake.onChange = cheesecakeData.onChange;
 		
-		var extraSector = new socialCheesecake.Sector({
-			parent : cheesecake,
-			center : {
-				x : cheesecakeData.center.x,
-				y : cheesecakeData.center.y
-			},
-			label: "+",
-			rOut : cheesecakeData.rMax,
-			color : socialCheesecake.Cheesecake.getExtraSectorFillColor(),
-			mouseover : {
-				color : socialCheesecake.Cheesecake.getExtraSectorHoverColor(),
-				callback : function(sector) {
-					sector.focus();
-				}
-			},
-			mouseout : {
+		if(jsonSectors.length < 16){
+			var extraSector = new socialCheesecake.Sector({
+				parent : cheesecake,
+				center : {
+					x : cheesecakeData.center.x,
+					y : cheesecakeData.center.y
+				},
+				label: "+",
+				rOut : cheesecakeData.rMax,
 				color : socialCheesecake.Cheesecake.getExtraSectorFillColor(),
-				callback : function(sector) {
-					sector.unfocus();
-				}
-			},
-			mouseup : {color : socialCheesecake.Cheesecake.getExtraSectorFillColor()},
-			mousedown : {color : socialCheesecake.Cheesecake.getExtraSectorFocusColor()},
-			auxiliar : true,
-			textAndStrokeColor : socialCheesecake.Cheesecake.getExtraSectorTextAndStrokeColor()
-		});
-		cheesecake.sectors[jsonSectors.length] = extraSector;
-		
-		for(var i = 0; i < jsonSectors.length; i++) {			
+				mouseover : {
+					color : socialCheesecake.Cheesecake.getExtraSectorHoverColor(),
+					callback : function(sector) {
+						sector.focus();
+					}
+				},
+				mouseout : {
+					color : socialCheesecake.Cheesecake.getExtraSectorFillColor(),
+					callback : function(sector) {
+						sector.unfocus();
+					}
+				},
+				mouseup : {color : socialCheesecake.Cheesecake.getExtraSectorFillColor()},
+				mousedown : {color : socialCheesecake.Cheesecake.getExtraSectorFocusColor()},
+				auxiliar : true,
+				textAndStrokeColor : socialCheesecake.Cheesecake.getExtraSectorTextAndStrokeColor()
+			});
+			cheesecake.sectors[jsonSectors.length] = extraSector;
+		}
+		var minNumSectors = Math.min(jsonSectors.length, 16);
+		for(var i = 0; i < minNumSectors; i++) {			
 			var settings = {
 				parent : cheesecake,
 				center : {
@@ -356,7 +358,8 @@ var socialCheesecake = socialCheesecake || {};
 					id : actorId,
 					subsectors : actorParents,
 					name : actorName,
-					extraInfo : actorExtraInfo
+					extraInfo : actorExtraInfo,
+					justAdded : false
 				});
 			}
 		}else{
@@ -365,7 +368,8 @@ var socialCheesecake = socialCheesecake || {};
 				id : actorId,
 				subsectors : actorParents,
 				name : actorName,
-				extraInfo : actorExtraInfo
+				extraInfo : actorExtraInfo,
+				justAdded : false
 			});
 		}
 		//Execute onChange Callback
@@ -377,38 +381,44 @@ var socialCheesecake = socialCheesecake || {};
 		var match = this.matchActorsNumber;
 		var deltaExtra = Math.PI / 8;
 		var deltaSector;
-		var minDeltaSector = Math.PI / 6;
+		var minDeltaSector = (sectors.length < 13) ? Math.PI / 6 : Math.PI / 8;
 		var phi = ((5 * Math.PI) / 4) - (deltaExtra / 2);
 		var sectorActors;
+		var totalSectors = sectors.length;
 		var totalActors = 0;
 		var consideredActors = 0;
 		var littleSectors = 0;
 		var isLittle = [];
 		
-		sectors[sectors.length-1].phi = phi;
-		sectors[sectors.length-1].delta = deltaExtra;
-		sectors[sectors.length-1].originalAttr.phi = sectors[sectors.length-1].phi;
-		sectors[sectors.length-1].originalAttr.delta = sectors[sectors.length-1].delta;
-		phi += deltaExtra;
+		//Begin with the extra Sector, if exists
+		if (sectors[sectors.length-1].auxiliar){
+			sectors[sectors.length-1].phi = phi;
+			sectors[sectors.length-1].delta = deltaExtra;
+			sectors[sectors.length-1].originalAttr.phi = sectors[sectors.length-1].phi;
+			sectors[sectors.length-1].originalAttr.delta = sectors[sectors.length-1].delta;
+			phi += (deltaExtra/2);
+			totalSectors = sectors.length -1;
+		}
 		
 		if(this.grid.actors.length == 0) match =false;
 		if(match){
 			//Calculate total number of actors
-			for (var i = 0; i < sectors.length -1; i++){
+			for (var i = 0; i < totalSectors; i++){
 				totalActors += (sectors[i].actors.length);				
 			}
 			consideredActors = totalActors;
 			//Calculate percentage of actors of each sector
-			for (var i = 0; i < sectors.length -1; i++){
+			for (var i = 0; i < totalSectors; i++){
 				sectorActors = sectors[i].actors.length;			
 				if( sectorActors / totalActors <= 0.1){ 
 					isLittle[i] = true;
 					littleSectors++;
 					consideredActors -= sectors[i].actors.length;
+					console.log("Sector "+ sectors[i].label + " considered little");
 				}
 			}
 			//Assign width
-			for (var i = 0; i < sectors.length -1; i++){
+			for (var i = 0; i < totalSectors; i++){
 				if(isLittle[i]){
 					deltaSector = minDeltaSector;
 				}else{
@@ -423,7 +433,7 @@ var socialCheesecake = socialCheesecake || {};
 			}
 		}else{
 			deltaSector = (2 * Math.PI - deltaExtra) / (sectors.length-1);
-			for (var i = 0; i < sectors.length -1; i++){
+			for (var i = 0; i < totalSectors; i++){
 				sectors[i].phi = phi;
 				sectors[i].delta = deltaSector;
 				sectors[i].originalAttr.phi = sectors[i].phi;
