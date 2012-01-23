@@ -37,6 +37,7 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.auxiliarSectors = [];
 		cheesecake.stage = new Kinetic.Stage(cheesecakeData.container.id, 
 			cheesecakeData.container.width, cheesecakeData.container.height);
+		cheesecake.stage.add(new Kinetic.Layer());
 		cheesecake.grid = new socialCheesecake.Grid({
 			parent : this,
 			grid_id : cheesecakeData.grid.id,
@@ -111,6 +112,8 @@ var socialCheesecake = socialCheesecake || {};
 						}else{
 							sector.fan(true);
 						}
+						console.log("mouseover");
+						console.log(sector)
 						sector.getCheesecake().setHighlightedSector(sector);
 					}
 				},
@@ -123,6 +126,8 @@ var socialCheesecake = socialCheesecake || {};
 						sector.unfocus();
 						sector.getCheesecake().setHighlightedSector(null);
 						sector.fan(false);
+						console.log("mouseout ");
+						console.log(sector);
 					}
 				},
 				mousedown : {
@@ -145,14 +150,17 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Cheesecake.prototype.draw = function(){
 		var sectors = this.sectors;
+		var stageLayer = this.stage.layers[0];
 		for (var sector in sectors){
-			this.stage.add(sectors[sector].getRegion());
+			stageLayer.add(sectors[sector].getRegion());
 		}
+		this.stage.draw();
 	}
 	
 	socialCheesecake.Cheesecake.prototype.focusAndBlurCheesecake = function(sector) {
 		var cheesecake = this;
-		var regions = cheesecake.stage.getShapes();
+		var stageLayer = this.stage.layers[0];
+		var regions = stageLayer.getShapes();
 		var sectorIndex;
 		for(var i in cheesecake.sectors) {
 			if(cheesecake.sectors[i] === sector) sectorIndex = i;
@@ -161,10 +169,10 @@ var socialCheesecake = socialCheesecake || {};
 			throw "sector doesn't belong to this cheesecake"
 		for(var i = (regions.length - 1); i >= 0; i--) {
 			if(!regions[i].permanent) {
-				cheesecake.stage.remove(regions[i]);
+				stageLayer.remove(regions[i]);
 			}
 		}
-		cheesecake.stage.layers.actors.clear();
+		stageLayer.clear();
 		this.setHighlightedSector(sector);
 		
 		//Add auxiliar sectors
@@ -223,8 +231,8 @@ var socialCheesecake = socialCheesecake || {};
 		var dummySector = new socialCheesecake.Sector(dummySettings)
 		cheesecake.auxiliarSectors.push(dummySector);
 
-		cheesecake.stage.add(greySector.getRegion());
-		cheesecake.stage.add(dummySector.getRegion());
+		stageLayer.add(greySector.getRegion());
+		stageLayer.add(dummySector.getRegion());
 
 		//Animations
 		var greyMousedownCallback = function() {
@@ -266,16 +274,18 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	socialCheesecake.Cheesecake.prototype.recoverCheesecake = function() {
 		var cheesecake = this;
-		var regions = cheesecake.stage.getShapes();
 		var lastSector = this.highlightedSector;
+		var stageLayer = this.stage.layers[0];
+		var regions = stageLayer.getShapes();
+
 		//Delete the auxiliar sectors
 		for(var i = (regions.length - 1); i >= 0; i--) {
 			if(!regions[i].permanent) {
-				cheesecake.stage.remove(regions[i]);
+				stageLayer.remove(regions[i]);
 				cheesecake.auxiliarSectors.pop();
 			}
 		}
-		cheesecake.stage.layers.actors.clear();
+		stageLayer.clear();
 		
 		// Add the former sectors and actors
 		cheesecake.draw();
