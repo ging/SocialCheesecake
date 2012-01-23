@@ -1,9 +1,9 @@
 /**
- * KineticJS JavaScript Library v3.6.0
+ * KineticJS JavaScript Library v3.6.2
  * http://www.kineticjs.com/
  * Copyright 2012, Eric Rowell
  * Licensed under the MIT or GPL Version 2 licenses.
- * Date: Jan 18 2012
+ * Date: Jan 21 2012
  *
  * Copyright (C) 2012 by Eric Rowell
  *
@@ -57,9 +57,11 @@ Kinetic.Link = function(shape){
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
 
-Kinetic.Layer = function(){
+Kinetic.Layer = function(name){
+    this.name = name;
     this.shapeIndexCounter = 0;
     this.isListening = true;
+    this.shapeNames = {};
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
     this.canvas.style.position = 'absolute';
@@ -76,8 +78,7 @@ Kinetic.Layer = function(){
  */
 Kinetic.Layer.prototype.listen = function(isListening){
     this.isListening = isListening;
-    
-}
+};
 /*
  * clear layer
  */
@@ -120,13 +121,11 @@ Kinetic.Layer.prototype.draw = function(){
     }
 };
 /*
- * add shape
+ * add link to data structure
  */
-Kinetic.Layer.prototype.add = function(shape){
-    shape.id = Kinetic.GLOBALS.shapeIdCounter++;
+Kinetic.Layer.prototype.addLink = function(link){
+    var shape = link.shape;
     shape.layer = this;
-    
-    var link = new Kinetic.Link(shape);
     // add link to array
     this.links.push(link);
     // add link to hash
@@ -149,10 +148,37 @@ Kinetic.Layer.prototype.add = function(shape){
     }
 };
 /*
- * remove a shape from layer
+ * add shape
+ */
+Kinetic.Layer.prototype.add = function(shape){
+    if (shape.name) {
+        this.shapeNames[shape.name] = shape;
+    }
+    shape.id = Kinetic.GLOBALS.shapeIdCounter++;
+    var link = new Kinetic.Link(shape);
+    this.addLink(link);
+};
+/*
+ * get shape by name
+ */
+Kinetic.Layer.prototype.getShape = function(name){
+    return this.shapeNames[name];
+};
+/*
+ * remove a shape from layer (link + shape deconstructor)
  */
 Kinetic.Layer.prototype.remove = function(shape){
     var link = shape.link;
+    this.removeLink(link);
+    this.shape = null;
+    this.link = null;
+};
+/*
+ * remove link from layer.  this does not deconstruct
+ * the link or the shape
+ */
+Kinetic.Layer.prototype.removeLink = function(link){
+    link.shape.layer = undefined;
     this.unlink(link);
     this.links.splice(link.index, 1);
     this.linkHash[link.id] = undefined;
@@ -160,7 +186,8 @@ Kinetic.Layer.prototype.remove = function(shape){
 };
 
 /*
- * unlink link
+ * unlink link.  This is different from removeLink because it
+ * keeps the link in the layer data structure
  */
 Kinetic.Layer.prototype.unlink = function(link){
     // set head if needed
@@ -207,6 +234,7 @@ Kinetic.Stage = function(containerId, width, height){
     this.dblClickWindow = 400;
     this.targetShape = {};
     this.clickStart = false;
+    this.layerNames = {};
     
     // desktop flags
     this.mousePos = null;
@@ -348,6 +376,10 @@ Kinetic.Stage.prototype.setSize = function(width, height){
         layer.getCanvas().height = height;
         layer.draw();
     }
+    
+    // set stage dimensions
+    this.width = width;
+    this.height = height;
 };
 /*
  * scale stage
@@ -424,12 +456,21 @@ Kinetic.Stage.prototype.addEventListener = function(type, handler){
  * add layer to stage
  */
 Kinetic.Stage.prototype.add = function(layer){
+    if (layer.name) {
+        this.layerNames[layer.name] = layer;
+    }
     layer.canvas.width = this.width;
     layer.canvas.height = this.height;
     layer.stage = this;
     this.layers.push(layer);
     layer.draw();
     this.container.appendChild(layer.canvas);
+};
+/*
+ * get layer by name
+ */
+Kinetic.Stage.prototype.getLayer = function(name){
+    return this.layerNames[name];
 };
 /*
  * handle incoming event
@@ -745,22 +786,16 @@ Kinetic.Stage.prototype.getContainerPosition = function(){
 Kinetic.Stage.prototype.getContainer = function(){
     return this.container;
 };
-/*
- * get all shapes
- */
-Kinetic.Stage.prototype.getShapes = function(){
 
-};
 ///////////////////////////////////////////////////////////////////////
 ////  Shape
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
 
-Kinetic.Shape = function(drawFunc){
+Kinetic.Shape = function(drawFunc, name){
     this.isListening = true;
     this.drawFunc = drawFunc;
-    this.layerKey = "actors";
-    
+    this.name = name;
     this.x = 0;
     this.y = 0;
     this.scale = {
@@ -818,12 +853,6 @@ Kinetic.Shape.prototype.getContext = function(){
  */
 Kinetic.Shape.prototype.getCanvas = function(){
     return this.tempLayer.getCanvas();
-};
-/*
- * get layer
- */
-Kinetic.Shape.prototype.getLayer = function(){
-    return this.layer;
 };
 /*
  * get stage
@@ -1116,31 +1145,121 @@ Kinetic.Shape.prototype.moveToTop = function(){
     }
 };
 /*
+ * move shape up
+ */
+Kinetic.Shape.prototype.moveUp = function(){
+    var link = this.link;
+    var index = link.index;
+    var layer = this.layer;
+    var nextLink = layer.linkHash[link.nextId];
+    
+    // only do something if there's a link above
+    if (nextLink) {
+        // swap links
+        this.layer.links.splice(index, 1);
+        this.layer.links.splice(index + 1, 0, link);
+        
+        layer.setLinkIndices();
+        
+        nextLink.prevId = link.prevId;
+        link.nextId = nextLink.nextId;
+        
+        if (link.prevId !== undefined) {
+            layer.linkHash[link.prevId].nextId = nextLink.id;
+        }
+        if (nextLink.nextId !== undefined) {
+            layer.linkHash[nextLink.nextId].prevId = link.id;
+        }
+        
+        // link to eachother
+        link.prevId = nextLink.id;
+        nextLink.nextId = link.id;
+        
+        // handle tail and head reassignment
+        if (link.id == layer.headId) {
+            layer.headId = nextLink.id;
+        }
+        if (nextLink.id == layer.tailId) {
+            layer.tailId = link.id;
+        }
+    }
+};
+/*
+ * move shape down
+ */
+Kinetic.Shape.prototype.moveDown = function(){
+    var link = this.link;
+    var index = link.index;
+    var layer = this.layer;
+    var prevLink = layer.linkHash[link.prevId];
+    
+    // only do something if there's a link above
+    if (prevLink) {
+        // swap links
+        this.layer.links.splice(index, 1);
+        this.layer.links.splice(index - 1, 0, link);
+        
+        layer.setLinkIndices();
+        
+        link.prevId = prevLink.prevId;
+        prevLink.nextId = link.nextId;
+        
+        if (link.nextId !== undefined) {
+            layer.linkHash[link.nextId].prevId = prevLink.id;
+        }
+        if (prevLink.prevId !== undefined) {
+            layer.linkHash[prevLink.prevId].nextId = link.id;
+        }
+        
+        // link to eachother
+        link.nextId = prevLink.id;
+        prevLink.prevId = link.id;
+        
+        // handle tail and head reassignment
+        if (prevLink.id == layer.headId) {
+            layer.headId = link.id;
+        }
+        if (link.id == layer.tailId) {
+            layer.tailId = prevLink.id;
+        }
+    }
+};
+/*
+ * move shape to bottom
+ */
+Kinetic.Shape.prototype.moveToBottom = function(){
+    var link = this.link;
+    var index = link.index;
+    var layer = this.layer;
+    this.layer.links.splice(index, 1);
+    this.layer.links.unshift(link);
+    
+    layer.setLinkIndices();
+    
+    if (this.isListening) {
+        // alter link structure if more than one link in the layer
+        if (link.nextId !== undefined || link.prevId !== undefined) {
+            layer.unlink(link);
+            var head = layer.linkHash[layer.headId];
+            head.prevId = link.id;
+            link.nextId = head.id;
+            layer.headId = link.id;
+        }
+    }
+};
+/*
  * get shape layer
  */
 Kinetic.Shape.prototype.getLayer = function(){
     return this.layer;
 };
-///////////////////////////////////////////////////////////////////////
-////  Extenders
-///////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////
-
-Kinetic.ExtendShape = function(obj, draw){
-    var shape = new Kinetic.Shape(draw);
-    
-    // copy methods and properties
-    for (var key in shape) {
-        obj[key] = shape[key];
-    }
+/*
+ * move shape to another layer
+ */
+Kinetic.Shape.prototype.moveToLayer = function(newLayer){
+    var layer = this.layer;
+    var link = this.link;
+    layer.unlink(link);
+    layer.removeLink(link);
+    newLayer.addLink(link);
 };
-
-Kinetic.ExtendLayer = function(obj, draw){
-    var layer = new Kinetic.Layer(draw);
-    
-    // copy methods and properties
-    for (var key in layer) {
-        obj[key] = layer[key];
-    }
-};
-

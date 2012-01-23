@@ -65,12 +65,14 @@ var socialCheesecake = socialCheesecake || {};
 					rIn : rInSubsector,
 					rOut : rOutSubsector,
 					actors : settings.subsectors[i].actors,
-					mouseover : { color : socialCheesecake.Cheesecake.getSectorHoverColor(),
+					mouseover : { 
+						color : socialCheesecake.Cheesecake.getSectorHoverColor(),
 						callback : function(subsector) {
 							document.body.style.cursor = "pointer";
 							subsector.getCheesecake().grid.hideAll();
 							subsector.getCheesecake().grid.fadeIn(subsector.actors, 300, true);
 							subsector.getCheesecake().setHighlightedSector(subsector);
+							subsector.getCheesecake().stage.mainLayer.draw();
 						}
 					},
 					mouseout :{
@@ -84,7 +86,7 @@ var socialCheesecake = socialCheesecake || {};
 					mousedown : {
 						callback : function(subsector) {
 							var selectedActors = subsector.getCheesecake().grid.getSelectedActors();
-							subsector.changeMembership(selectedActors);
+							if(selectedActors.length > 0) subsector.changeMembership(selectedActors);
 						}
 					}
 				});
@@ -192,7 +194,7 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Sector.prototype.splitUp = function() {
 		var cheesecake = this.getCheesecake();
-		var stageLayer = cheesecake.stage.layers[0];
+		var mainLayer = cheesecake.stage.mainLayer;
 		var phi = this.phi;
 		var delta = this.delta;
 		var rOut = this.rOut;
@@ -243,10 +245,10 @@ var socialCheesecake = socialCheesecake || {};
 			subsectors[i].rOut = rIn + sectorWidth;
 			subsectors[i].phi = phi;
 			subsectors[i].delta = delta;
-			stageLayer.add(subsectors[i].getRegion());
+			mainLayer.add(subsectors[i].getRegion());
 			rIn += sectorWidth;
 		}
-		//Add extra subsectors 
+		//Add extra subsectors
 		rIn = 0;
 		for(var i = 0; i< parts- subsectors.length; i++){			
 			if(i == 0){
@@ -289,38 +291,36 @@ var socialCheesecake = socialCheesecake || {};
 				extraSettings["rOut"]= rIn + extraWidth;
 				var extraSector = new socialCheesecake.Subsector(extraSettings); 
 			}
-			stageLayer.add(extraSector.getRegion());
+			mainLayer.add(extraSector.getRegion());
 			this.extraSubsectors.push(extraSector);
 			rIn += extraWidth + sectorWidth;
 		}
-		stageLayer.draw();
+		mainLayer.draw();
 	}
 	
 	socialCheesecake.Sector.prototype.putTogether = function() {
 		var cheesecake = this.getCheesecake();
-		var stageLayer = cheesecake.stage.layers[0];
+		var mainLayer = cheesecake.stage.mainLayer;
 		var sector = (this.simulate != null) ? cheesecake.sectors[this.simulate] : this;
 		var subsectors = sector.subsectors;
 		var extraSubsectors = this.extraSubsectors;
 		//Clear subsectors from stage
 		for(var i = extraSubsectors.length ; i>0 ; i--){
-			stageLayer.remove((extraSubsectors.pop()).getRegion());
+			mainLayer.remove((extraSubsectors.pop()).getRegion());
 		}
 		for(var i in subsectors) {
-			stageLayer.remove(subsectors[i].getRegion());
+			mainLayer.remove(subsectors[i].getRegion());
 		}
 	}
 	
 	socialCheesecake.Sector.prototype.changeColor = function(color) {
 		var sector = this;
-		if (sector.getRegion().layer){
-			var context = sector.getRegion().layer.getContext();
-			var stage = sector.getCheesecake().stage;
-			sector.color = color;
-			context.restore();
-			context.save();
-			stage.draw();
-		}
+		var stage = sector.getCheesecake().stage;
+		var context = stage.mainLayer.getContext();
+		sector.color = color;
+		context.restore();
+		context.save();
+		stage.draw();
 	}
 	
 	/**
@@ -337,8 +337,8 @@ var socialCheesecake = socialCheesecake || {};
 		if(!options)
 			throw "No arguments passed to the function";
 		var sector = this;
-		var context = sector.getRegion().layer.getContext();
 		var stage = sector.getCheesecake().stage;
+		var context = stage.mainLayer.getContext();
 		var currentDelta = sector.delta;
 		var currentPhi = sector.phi;
 		var step = 0.05;
@@ -411,8 +411,8 @@ var socialCheesecake = socialCheesecake || {};
 	 */
 	socialCheesecake.Sector.prototype.resizeWidth = function(options) {
 		var sector = this;
-		var context = sector.getRegion().layer.getContext();
 		var stage = sector.getCheesecake().stage;
+		var context = stage.mainLayer.getContext();
 		var currentRIn = this.rIn;
 		var currentROut = this.rOut;
 		var currentWidth = (currentROut - currentRIn);
@@ -484,8 +484,8 @@ var socialCheesecake = socialCheesecake || {};
 		
 	socialCheesecake.Sector.prototype.focus = function() {
 		var sector = this;
-		var context = sector.getRegion().layer.getContext();
 		var stage = sector.getCheesecake().stage;
+		var context = stage.mainLayer.getContext();
 		sector.rOut = sector.originalAttr.rOut * 1.05;
 		context.restore();
 		context.save();
@@ -494,8 +494,8 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Sector.prototype.unfocus = function() {
 		var sector = this;
-		var context = sector.getRegion().layer.getContext();
 		var stage = sector.getCheesecake().stage;
+		var context = stage.mainLayer.getContext();
 		sector.rOut = sector.originalAttr.rOut;
 		context.restore();
 		context.save();
@@ -537,7 +537,7 @@ var socialCheesecake = socialCheesecake || {};
 		var step = 0.05;
 		var anchor = 0;
 		var stage = sector.getCheesecake().stage;
-		var context = sector.getRegion().layer.getContext();
+		var context = stage.mainLayer.getContext();
 		if(!options) throw "No arguments passed to the function";
 		if(options.step) step = options.step;
 		if(options.destination == null) throw "destination must be defined";
