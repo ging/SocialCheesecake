@@ -388,7 +388,6 @@ var socialCheesecake = socialCheesecake || {};
 		var sectors = this.sectors;
 		var match = this.matchActorsNumber;
 		var deltaExtra = Math.PI / 8;
-		var averageDelta;
 		var minDeltaSector = Math.PI / 8;
 		var phi = ((5 * Math.PI) / 4) - (deltaExtra / 2);
 		var sectorActors = [];
@@ -409,7 +408,6 @@ var socialCheesecake = socialCheesecake || {};
 			totalAngle -= deltaExtra;
 		}
 		if(!match){
-			averageDelta = totalAngle / totalSectors;
 			unusedAngle = 0;
 		}else{
 			unusedAngle = totalAngle - totalSectors * minDeltaSector
@@ -418,10 +416,14 @@ var socialCheesecake = socialCheesecake || {};
 			sectorActors[i] = sectors[i].actors.length;
 			totalActors += sectorActors[i];
 			sectorPortions[i] = minDeltaSector;
-			if(!match) sectorPortions[i] = averageDelta;
+			if(!match) sectorPortions[i] = totalAngle / totalSectors;
 		}
 		for(var i = 0; i < totalSectors; i++) {
-			sectorPortions[i] += (sectorActors[i] / totalActors) * unusedAngle;
+			if(totalActors!=0){
+				sectorPortions[i] += (sectorActors[i] / totalActors) * unusedAngle;				
+			}else{
+				sectorPortions[i] = totalAngle / totalSectors;
+			}
 			sectors[i].phi = phi;
 			sectors[i].delta = sectorPortions[i];
 			sectors[i].originalAttr.phi = sectors[i].phi;
