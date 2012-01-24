@@ -158,16 +158,16 @@ var socialCheesecake = socialCheesecake || {};
 				var context = this.getContext();
 				sector._draw(context);
 			});
-			sector._region.addEventListener('mouseover', function() {
+			sector._region.on('mouseover', function() {
 				sector.eventHandler('mouseover');
 			});
-			sector._region.addEventListener('mouseout', function() {
+			sector._region.on('mouseout', function() {
 				sector.eventHandler('mouseout');
 			});
-			sector._region.addEventListener('mousedown', function() {
+			sector._region.on('mousedown', function() {
 				sector.eventHandler('mousedown');
 			});
-			sector._region.addEventListener('mouseup', function() {
+			sector._region.on('mouseup', function() {
 				sector.eventHandler('mouseup');
 			});
 		}
