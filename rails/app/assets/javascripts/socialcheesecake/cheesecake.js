@@ -391,13 +391,12 @@ var socialCheesecake = socialCheesecake || {};
 		var minDeltaSector = Math.PI / 8;
 		var phi = ((5 * Math.PI) / 4) - (deltaExtra / 2);
 		var sectorActors = [];
-		var sectorProportions = [];
-		var completed = false;
+		var sectorPortions = [];
 		var totalSectors = sectors.length;
 		var totalActors = 0;
 		var totalAngle = 2*Math.PI;
+		var unusedAngle = totalAngle - sectors.length * minDeltaSector;
 		
-		if((this.grid.actors.length == 0) || (sectors.length == 16)) match = false;
 		//Begin with the extra Sector, if it exists
 		if (sectors[sectors.length-1].auxiliar){
 			sectors[sectors.length-1].phi = phi;
@@ -408,44 +407,19 @@ var socialCheesecake = socialCheesecake || {};
 			totalSectors = sectors.length -1;
 			totalAngle -= deltaExtra;
 		}
-		
-		if(match){
-			var minProportion = minDeltaSector/ totalAngle;
-			for(var i = 0; i < totalSectors; i++){
-				sectorActors[i] = sectors[i].actors.length;
-			}
-			while(!completed){
-				totalActors = 0;
-				for(var i = 0; i < totalSectors; i++){
-					totalActors += sectorActors[i];
-				}
-				for(var i = 0; i < totalSectors; i++){
-					sectorProportions[i] = sectorActors[i] / totalActors;
-					if(sectorProportions[i] >= minProportion){
-						completed = true;
-					}else{
-						completed = false;
-						sectorActors[i] += 1;
-					}
-				}
-			}
-			for( var i = 0; i < totalSectors; i++){
-				sectors[i].phi = phi;
-				sectors[i].delta = sectorProportions[i]* totalAngle;
-				sectors[i].originalAttr.phi = sectors[i].phi;
-				sectors[i].originalAttr.delta = sectors[i].delta;
-				phi += sectors[i].delta;
-			}	
-		}else{
-			deltaSector = totalAngle / totalSectors;
-			for(var i = 0; i < totalSectors; i++){
-				sectors[i].phi = phi;
-				sectors[i].delta = deltaSector;
-				sectors[i].originalAttr.phi = sectors[i].phi;
-				sectors[i].originalAttr.delta = sectors[i].delta;
-				phi += deltaSector;
-			}
-		}	
+		for(var i = 0; i < totalSectors; i++) {
+			sectorActors[i] = sectors[i].actors.length;
+			totalActors += sectorActors[i];
+			sectorPortions[i] = minDeltaSector;
+		}
+		for(var i = 0; i < totalSectors; i++) {
+			sectorPortions[i] += (sectorActors[i] / totalActors) * unusedAngle;
+			sectors[i].phi = phi;
+			sectors[i].delta = sectorPortions[i];
+			sectors[i].originalAttr.phi = sectors[i].phi;
+			sectors[i].originalAttr.delta = sectors[i].delta;
+			phi += sectors[i].delta;
+		}
 	}
 	
 	socialCheesecake.Cheesecake.prototype.setHighlightedSector = function(sector){
