@@ -47,7 +47,8 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.searchEngine = new socialCheesecake.SearchEngine({
 			parent : this
 		});
-		cheesecake.matchActorsNumber = cheesecakeData.match || true;
+		cheesecake.matchActorsNumber = cheesecakeData.match;
+		if(cheesecake.matchActorsNumber==null) cheesecake.matchActorsNumber = true;
 		cheesecake._initialState = {};
 		cheesecake._changes = {};
 		cheesecake.onChange = function(cheesecake){};
@@ -387,7 +388,7 @@ var socialCheesecake = socialCheesecake || {};
 		var sectors = this.sectors;
 		var match = this.matchActorsNumber;
 		var deltaExtra = Math.PI / 8;
-		var deltaSector;
+		var averageDelta;
 		var minDeltaSector = Math.PI / 8;
 		var phi = ((5 * Math.PI) / 4) - (deltaExtra / 2);
 		var sectorActors = [];
@@ -407,10 +408,15 @@ var socialCheesecake = socialCheesecake || {};
 			totalSectors = sectors.length -1;
 			totalAngle -= deltaExtra;
 		}
+		if(!match){
+			averageDelta = totalAngle / totalSectors;
+			unusedAngle = 0;
+		}
 		for(var i = 0; i < totalSectors; i++) {
 			sectorActors[i] = sectors[i].actors.length;
 			totalActors += sectorActors[i];
 			sectorPortions[i] = minDeltaSector;
+			if(!match) sectorPortions[i] = averageDelta;
 		}
 		for(var i = 0; i < totalSectors; i++) {
 			sectorPortions[i] += (sectorActors[i] / totalActors) * unusedAngle;
