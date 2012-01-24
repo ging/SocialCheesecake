@@ -396,7 +396,7 @@ var socialCheesecake = socialCheesecake || {};
 		var totalSectors = sectors.length;
 		var totalActors = 0;
 		var totalAngle = 2*Math.PI;
-		var unusedAngle = totalAngle - sectors.length * minDeltaSector;
+		var unusedAngle;
 		
 		//Begin with the extra Sector, if it exists
 		if (sectors[sectors.length-1].auxiliar){
@@ -411,6 +411,8 @@ var socialCheesecake = socialCheesecake || {};
 		if(!match){
 			averageDelta = totalAngle / totalSectors;
 			unusedAngle = 0;
+		}else{
+			unusedAngle = totalAngle - totalSectors * minDeltaSector
 		}
 		for(var i = 0; i < totalSectors; i++) {
 			sectorActors[i] = sectors[i].actors.length;
