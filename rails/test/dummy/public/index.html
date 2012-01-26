@@ -5,7 +5,15 @@
 		<link href="assets/application.css" rel="stylesheet" type="text/css"></style>
 		<script src="assets/application.js"></script>
 		<script>
-		  var counter = 0;
+		  var counterSectors = 0;
+		  var counterSubsectors = [0];
+		  var newSectorModel;
+		  var labels = {
+		    sector: "Sector",
+		    subsector: "Subsector",
+		    label: "label_",
+		    actors: "actors_"
+		  }
 		  var cheese;
       var cheesecakeData = {
         container: {
@@ -73,6 +81,9 @@
            console.log("Cambio detectado"); 
          }
       };
+      window.onload = function(){
+        newSectorModel = $("#s0").clone();
+      }
 			window.requestAnimFrame = (function(callback) {
 				return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
 				function(callback) {
@@ -80,17 +91,37 @@
 				};
 			})();
 			function addSector(){
-			  counter++;
-        var newSector = $("#sector").clone();
-        newSector.id = '';
-        var newSector = newSector.childNodes;
-        for (var i=0;i<newSector.length;i++) {
-          var theName = newSector[i].name
-          if (theName)
-            newSector[i].name = theName + counter;
+			  var prevSector = "#s"+counterSectors;
+			  counterSectors++;
+			  counterSubsectors.push(0);
+			  var newSector = newSectorModel.clone();
+        newSector.attr("id","s"+counterSectors);
+        newSector.find('.subtitle').text("Sector "+counterSectors);
+        newSector.find('.subsubtitle').text("Subsector 0");
+        newSector.find("#label_s0").attr("id","label_s"+counterSectors);
+        newSector.find("#s0s0").attr("id","s"+counterSectors+"s0");
+        newSector.find("#label_s0s0").attr("id","label_s"+counterSectors+"s0");
+        var actors = newSector.find(".actors");
+        for( var i= 0; i < actors.length; i++){
+          actors[i].setAttribute("name", "actors_s"+counterSectors+"s0");
         }
-        $("#form").append(newSector);
+        newSector.find('button').attr('onclick',"addSubsector("+counterSectors+")");
+        $(newSector).insertAfter(prevSector);
 			}
+			function addSubsector(sector){
+			  console.log(sector);
+        var prevSubsector = "#s"+sector+"s"+counterSubsectors[sector];
+        counterSubsectors[sector]++;
+        var newSubsector = $("#s0s0").clone();
+        newSubsector.attr("id","s"+sector+"s"+counterSubsectors[sector]);
+        newSubsector.find('.subsubtitle').text("Subsector "+counterSubsectors[sector]);
+        newSubsector.find("#label_s0s0").attr("id","label_s"+sector+"s"+counterSubsectors[sector]);
+        var actors = newSubsector.find(".actors");
+        for( var i= 0; i < actors.length; i++){
+          actors[i].setAttribute("name", "actors_s"+sector+"s"+counterSubsectors[sector]);
+        }
+        $(newSubsector).insertAfter(prevSubsector);
+      }
 			function checkboxesToActorsArray(name){
 			  var checkboxes = document.settings[name];
 			  var result =[];
@@ -164,36 +195,33 @@
 		    <input type ="text" id ="rmax" value = "200"/>
 		  </div>
 		  <div class = "title label">Sectors</div>
-		  <div id="sector">
-  		  <div class = "subtitle label">Sector 1</div>
+		  <div class="sector" id="s0">
+  		  <div class = "subtitle label">Sector 0</div>
   		  <div class = "row">
           <div class = "label">Name</div>
           <input type ="text" id ="label_s0" value = "John Connor Lider de la revolucion"/>
         </div>
-        <div class = "subsubtitle label">Subsector 1</div>
-        <div class = "row">
-          <div class = "label">Name:</div>
-          <input type ="text" id ="label_s0s0" value = "Cassidy"/>
-          <div class = "label">Actors:</div>
-          <input type ="checkbox" name ="actors_s0s0" value = "0" checked= "true"/>0
-          <input type ="checkbox" name ="actors_s0s0" value = "1" checked= "true"/>1
-          <input type ="checkbox" name ="actors_s0s0" value = "2" checked= "true"/>2
-          <input type ="checkbox" name ="actors_s0s0" value = "3"/>3
-          <input type ="checkbox" name ="actors_s0s0" value = "4"/>4
+        <div class= "subsector" id="s0s0">
+          <div class = "subsubtitle label">Subsector 0</div>
+          <div class = "row">
+            <div class = "label">Name:</div>
+            <input type ="text" id ="label_s0s0" value = "Cassidy"/>
+            <div class = "label">Actors:</div>
+            <input type ="checkbox" class="actors" name ="actors_s0s0" value = "0" />0
+            <input type ="checkbox" class="actors" name ="actors_s0s0" value = "1" />1
+            <input type ="checkbox" class="actors" name ="actors_s0s0" value = "2" />2
+            <input type ="checkbox" class="actors" name ="actors_s0s0" value = "3"/>3
+            <input type ="checkbox" class="actors" name ="actors_s0s0" value = "4"/>4
+          </div>
         </div>
-        <div class = "subsubtitle label">Subsector 2</div>
-        <div class = "row">
-          <div class = "label">Name:</div>
-          <input type ="text" id ="label_s0s0" value = "Cassidy 2"/>
-          <div class = "label">Actors:</div>
-          <input type ="checkbox" name ="actors_s0s1" value = "0"/>0
-          <input type ="checkbox" name ="actors_s0s1" value = "1"/>1
-          <input type ="checkbox" name ="actors_s0s1" value = "2"/>2
-          <input type ="checkbox" name ="actors_s0s1" value = "3"/>3
-          <input type ="checkbox" name ="actors_s0s1" value = "4"/>4
+        <div class = "buttons">
+          <button type="button" onclick="addSubsector(0)">Add Subsector</button>
         </div>
       </div>
-		  <div class = "buttons">
+      <div class = "buttons" id= "add_sector">
+        <button type="button" onclick="addSector()">Add Sector</button>
+      </div>
+		  <div class = "buttons" id= "done">
 		    <button type="button" onclick="createCheese()">Done!</button>
 		  </div>
 		</div>
