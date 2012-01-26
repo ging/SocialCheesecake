@@ -80,3 +80,10 @@ canvas {
 #form .subtitle, #form .subsubtitle{
   display: block;
 }
+#form .subtitle{
+  font-weight: bold;
+  padding: 5px 0px;
+}
+#form .subsubtitle{
+  padding-bottom: 10px;
+}
