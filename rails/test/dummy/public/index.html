@@ -2,53 +2,10 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<style>
-		    body {
-		      	margin: 0px;
-		        padding: 0px;
-		    }
-		    canvas {
-		    }
-		    #grid {
-		        position: absolute;
-		        left: 460px;
-		        top: 30px;
-		    }
-		    #grid .actor {
-		        width: 64px;
-		        height: 64px;
-		        float: left;
-		        margin: 5px;
-		        display: none;
-		    }
-		    #grid .actor.focused {
-		        border: 2px solid #00F;
-				    background-color: #006;
-				    margin: 3px;
-		    }
-		    #grid .actor img {
-		        width: 64px;
-		        height: 64px;
-		        border: 2px solid black;
-		    }
-		    #form {
-		      position: absolute;
-          left: 460px;
-          top: 150px;
-          font : 14px helvetica;
-		    }
-		    #form .label, #form .field{
-          display: inline-block;
-        }
-        #form .row{
-          display: block;
-        }
-        #form .title{
-          font-weight: bold;
-        }
-		</style>
+		<link href="assets/application.css" rel="stylesheet" type="text/css"></style>
 		<script src="assets/application.js"></script>
 		<script>
+		  var counter = 0;
 		  var cheese;
       var cheesecakeData = {
         container: {
@@ -122,6 +79,18 @@
 					window.setTimeout(callback, 1000 / 60);
 				};
 			})();
+			function addSector(){
+			  counter++;
+        var newSector = $("#sector").clone();
+        newSector.id = '';
+        var newSector = newSector.childNodes;
+        for (var i=0;i<newSector.length;i++) {
+          var theName = newSector[i].name
+          if (theName)
+            newSector[i].name = theName + counter;
+        }
+        $("#form").append(newSector);
+			}
 			function checkboxesToActorsArray(name){
 			  var checkboxes = document.settings[name];
 			  var result =[];
@@ -195,21 +164,34 @@
 		    <input type ="text" id ="rmax" value = "200"/>
 		  </div>
 		  <div class = "title label">Sectors</div>
-		  <div class = "subtitle label">Sector 1</div>
-		  <div class = "row">
-        <div class = "label">Name</div>
-        <input type ="text" id ="label_s0" value = "John Connor Lider de la revolucion"/>
-      </div>
-      <div class = "subsubtitle label">Subsector 1</div>
-      <div class = "row">
-        <div class = "label">Name:</div>
-        <input type ="text" id ="label_s0s0" value = "Cassidy"/>
-        <div class = "label">Actors:</div>
-        <input type ="checkbox" name ="actors_s0s0" value = "0" checked= "true"/>0
-        <input type ="checkbox" name ="actors_s0s0" value = "1" checked= "true"/>1
-        <input type ="checkbox" name ="actors_s0s0" value = "2" checked= "true"/>2
-        <input type ="checkbox" name ="actors_s0s0" value = "3"/>3
-        <input type ="checkbox" name ="actors_s0s0" value = "4"/>4
+		  <div id="sector">
+  		  <div class = "subtitle label">Sector 1</div>
+  		  <div class = "row">
+          <div class = "label">Name</div>
+          <input type ="text" id ="label_s0" value = "John Connor Lider de la revolucion"/>
+        </div>
+        <div class = "subsubtitle label">Subsector 1</div>
+        <div class = "row">
+          <div class = "label">Name:</div>
+          <input type ="text" id ="label_s0s0" value = "Cassidy"/>
+          <div class = "label">Actors:</div>
+          <input type ="checkbox" name ="actors_s0s0" value = "0" checked= "true"/>0
+          <input type ="checkbox" name ="actors_s0s0" value = "1" checked= "true"/>1
+          <input type ="checkbox" name ="actors_s0s0" value = "2" checked= "true"/>2
+          <input type ="checkbox" name ="actors_s0s0" value = "3"/>3
+          <input type ="checkbox" name ="actors_s0s0" value = "4"/>4
+        </div>
+        <div class = "subsubtitle label">Subsector 2</div>
+        <div class = "row">
+          <div class = "label">Name:</div>
+          <input type ="text" id ="label_s0s0" value = "Cassidy 2"/>
+          <div class = "label">Actors:</div>
+          <input type ="checkbox" name ="actors_s0s1" value = "0"/>0
+          <input type ="checkbox" name ="actors_s0s1" value = "1"/>1
+          <input type ="checkbox" name ="actors_s0s1" value = "2"/>2
+          <input type ="checkbox" name ="actors_s0s1" value = "3"/>3
+          <input type ="checkbox" name ="actors_s0s1" value = "4"/>4
+        </div>
       </div>
 		  <div class = "buttons">
 		    <button type="button" onclick="createCheese()">Done!</button>

@@ -1,0 +1,52 @@
+body {
+    margin: 0px;
+    padding: 0px;
+}
+canvas {
+}
+#grid {
+    position: absolute;
+    left: 460px;
+    top: 30px;
+}
+#grid .actor {
+    width: 64px;
+    height: 64px;
+    float: left;
+    margin: 5px;
+    display: none;
+}
+#grid .actor.focused {
+    border: 2px solid #00F;
+    background-color: #006;
+    margin: 3px;
+}
+#grid .actor img {
+    width: 64px;
+    height: 64px;
+    border: 2px solid black;
+}
+#form {
+  position: absolute;
+  left: 460px;
+  top: 150px;
+  font : 14px helvetica;
+}
+#form .label, #form .field{
+  display: inline-block;
+}
+#form .row{
+  display: block;
+}
+#form .title, #form .subtitle,{
+  font-weight: bold;
+  padding: 15px;
+  display: block;
+}
+#form .title{
+  font-variant: small-caps;
+  text-decoration: underline;
+}
+#form .subtitle, #form .subsubtitle{
+  display: block;
+}
