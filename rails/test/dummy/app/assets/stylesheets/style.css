@@ -68,14 +68,13 @@ canvas {
   background-color: #D4E4EA;
   padding: 10px;
 }
-#form .title, #form .subtitle,{
+#form .title, #form .subtitle{
   font-weight: bold;
   padding: 15px;
   display: block;
 }
 #form .title{
-  font-variant: small-caps;
-  text-decoration: underline;
+  padding: 5px;
 }
 #form .subtitle, #form .subsubtitle{
   display: block;

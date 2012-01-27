@@ -6,5 +6,6 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery-ui
 //= require social_cheesecake
 //= require_tree .
