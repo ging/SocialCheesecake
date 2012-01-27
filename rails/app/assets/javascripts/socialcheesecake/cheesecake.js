@@ -1,23 +1,30 @@
 var socialCheesecake = socialCheesecake || {};
 (function() {
-	//General variable settings (with dafault values)
-	/*  Normal */
-	var sectorFillColor = "#eeffee";					//normal, mouseout, mouseup states	
-	var sectorFocusColor = "#77ff77";					//mousedown state	
-	var sectorHoverColor = "#aaffaa";					//mouseover state
-	var sectorTextAndStrokeColor = "#1F4A75";	//text and border color
 	
-	/* Extra */
-	var extraSectorFillColor = "#e5e5e5";			//normal, mouseout, mouseup states for extra sectors
-	var extraFocusColor = "#1FA0F7";					//mousedown state for extra sectors
-	var extraHoverColor = "#D4E4EA";					//mouseover state for extra sectors
-	var extraTextAndStrokeColor = "#1F4A75";	//text and border color for extra sectors
-	
-	/* Grey */
-	var greySectorFillColor = "#f5f5f5";			//normal, mouseout, mouseup states for grey auxiliar sectors
-	var greyFocusColor = "#f5f5f5";						//mousedown state for grey auxiliar sectors
-	var greyHoverColor = "#f5f5f5";						//mouseover state for grey auxiliar sectors
-	var greyTextAndStrokeColor = "#666";			//text and border color for grey auxilar sectors
+	//General variable settings (with default values)
+	socialCheesecake.colors = {
+		normalSector : {
+			background : "#eeffee", //normal, mouseout, mouseup states
+			highlight : "#77ff77",	//mousedown state	
+			hover : "#aaffaa",			//mouseover state
+			font : "#1F4A75",				//text
+			border : "#1F4A75"			//stroke
+		},
+		extraSector : {
+			background : "#e5e5e5",
+			highlight : "#1FA0F7",
+			hover : "#D4E4EA",
+			font : "#1F4A75",
+			border : "#1F4A75"
+		},
+		greySector : {
+			background : "#f5f5f5",
+			highlight : "#f5f5f5",
+			hover : "#f5f5f5",
+			font : "#666",
+			border : "#666"
+		}
+	}
 	
 	/* Number of actors to animate */
 	var maxVisibleActors = 30;
@@ -62,6 +69,12 @@ var socialCheesecake = socialCheesecake || {};
 				socialCheesecake.text[style]= cheesecakeData.text[style];
 			}
 		}
+		//Color settings
+		if(cheesecakeData.colors){
+			for( var color in cheesecakeData.colors){
+				socialCheesecake.colors[color]= cheesecakeData.colors[color];
+			}
+		}
 		
 		if(jsonSectors.length < 16){
 			var extraSector = new socialCheesecake.Sector({
@@ -72,24 +85,24 @@ var socialCheesecake = socialCheesecake || {};
 				},
 				label: "+",
 				rOut : cheesecakeData.rMax,
-				color : socialCheesecake.Cheesecake.getExtraSectorFillColor(),
+				color : socialCheesecake.colors.extraSector.background,
 				mouseover : {
-					color : socialCheesecake.Cheesecake.getExtraSectorHoverColor(),
+					color : socialCheesecake.colors.extraSector.hover,
 					callback : function(sector) {
 						sector.focus();
 						cheesecake.grid.hideAll();
 					}
 				},
 				mouseout : {
-					color : socialCheesecake.Cheesecake.getExtraSectorFillColor(),
+					color : socialCheesecake.colors.extraSector.background,
 					callback : function(sector) {
 						sector.unfocus();
 						cheesecake.grid.fadeInAll(300, true);
 					}
 				},
-				mouseup : {color : socialCheesecake.Cheesecake.getExtraSectorFillColor()},
+				mouseup : {color : socialCheesecake.colors.extraSector.background},
 				mousedown : {
-					color : socialCheesecake.Cheesecake.getExtraSectorFocusColor(),
+					color : socialCheesecake.colors.extraSector.highlight,
 					callback : function(sector){
 						cheesecake.focusAndBlurCheesecake(sector);
 					}
@@ -98,7 +111,7 @@ var socialCheesecake = socialCheesecake || {};
 					name : "New Subsector 1",
 				}],
 				auxiliar : true,
-				textAndStrokeColor : socialCheesecake.Cheesecake.getExtraSectorTextAndStrokeColor()
+				textAndStrokeColor : socialCheesecake.colors.extraSector.font
 			});
 			cheesecake.sectors[jsonSectors.length] = extraSector;
 		}
@@ -115,7 +128,7 @@ var socialCheesecake = socialCheesecake || {};
 				rOut : cheesecakeData.rMax,
 				subsectors : jsonSectors[i].subsectors,
 				mouseover : {
-					color : socialCheesecake.Cheesecake.getSectorHoverColor(),
+					color : socialCheesecake.colors.normalSector.hover,
 					callback : function(sector) {
 						document.body.style.cursor = "pointer";
 						cheesecake.grid.hideAll();
@@ -134,7 +147,7 @@ var socialCheesecake = socialCheesecake || {};
 					}
 				},
 				mouseout : {
-					color : socialCheesecake.Cheesecake.getSectorFillColor(),
+					color : socialCheesecake.colors.normalSector.background,
 					callback : function(sector) {
 						document.body.style.cursor = "default";
 						cheesecake.grid.hide(sector.actors);
@@ -145,15 +158,15 @@ var socialCheesecake = socialCheesecake || {};
 					}
 				},
 				mousedown : {
-					color : socialCheesecake.Cheesecake.getSectorFocusColor(),
+					color : socialCheesecake.colors.normalSector.highlight,
 					callback : function(sector) {
 						cheesecake.focusAndBlurCheesecake(sector);
 						cheesecake.grid.hideAll();
 						cheesecake.grid.fadeIn(sector.actors,300, true);
 					}
 				},
-				mouseup : { color : socialCheesecake.Cheesecake.getSectorFillColor() },
-				textAndStrokeColor : socialCheesecake.Cheesecake.getSectorTextAndStrokeColor()
+				mouseup : { color : socialCheesecake.colors.normalSector.background },
+				textAndStrokeColor : socialCheesecake.colors.normalSector.font
 			};
 			cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
 		}
@@ -214,21 +227,21 @@ var socialCheesecake = socialCheesecake || {};
 			delta : 2 * Math.PI - sector.delta,
 			rOut : cheesecake.rMax,
 			mouseout : {
-				color : socialCheesecake.Cheesecake.getGreySectorFillColor(),
+				color : socialCheesecake.colors.greySector.background,
 				callback : function() {
 					document.body.style.cursor = "default";
 				}
 			},
-			mousedown : { color : socialCheesecake.Cheesecake.getGreySectorFocusColor() },
-			mouseup : { color : socialCheesecake.Cheesecake.getGreySectorFillColor() },
+			mousedown : { color : socialCheesecake.colors.greySector.highlight },
+			mouseup : { color : socialCheesecake.colors.greySector.background },
 			mouseover : {
-				color : socialCheesecake.Cheesecake.getGreySectorHoverColor(),
+				color : socialCheesecake.colors.greySector.hover,
 				callback : function() {
 					document.body.style.cursor = "pointer";
 				}
 			},
-			color : socialCheesecake.Cheesecake.getGreySectorFillColor(),
-			textAndStrokeColor : socialCheesecake.Cheesecake.getGreySectorTextAndStrokeColor(),
+			color : socialCheesecake.colors.greySector.background,
+			textAndStrokeColor : socialCheesecake.colors.greySector.font,
 			auxiliar : true
 		};
 		var dummySettings = {
@@ -522,91 +535,6 @@ var socialCheesecake = socialCheesecake || {};
 		}		
 	}
 
-	//Colors and text style settings
-	/** Sector Normal Fill Color (also mouseout and mouseup) */
-	socialCheesecake.Cheesecake.getSectorFillColor = function (){
-		return sectorFillColor;
-	}
-	socialCheesecake.Cheesecake.setSectorFillColor = function (newColor){
-		if(typeof newColor === "string") sectorFillColor = newColor;
-	}
-	/** Extra Sectors Normal Fill Color (also mouseout and mouseup) */
-	socialCheesecake.Cheesecake.getExtraSectorFillColor = function (){
-		return extraSectorFillColor;
-	}
-	socialCheesecake.Cheesecake.setExtraSectorFillColor = function (newColor){
-		if(typeof newColor === "string") extraSectorFillColor = newColor;
-	}
-	/** Grey Sectors Normal Fill Color (also mouseout and mouseup) */
-	socialCheesecake.Cheesecake.getGreySectorFillColor = function (){
-		return greySectorFillColor;
-	}
-	socialCheesecake.Cheesecake.setGreySectorFillColor = function (newColor){
-		if(typeof newColor === "string") greySectorFillColor = newColor;
-	}
-	/** Sector Focus Fill Color (mousedown) */
-	socialCheesecake.Cheesecake.getSectorFocusColor = function (){
-		return sectorFocusColor;
-	}
-	socialCheesecake.Cheesecake.setSectorFocusColor = function (newColor){
-		if(typeof newColor === "string") sectorFocusColor = newColor;
-	}
-	/** Extra Sectors Focus Fill Color (mousedown) */
-	socialCheesecake.Cheesecake.getExtraSectorFocusColor = function (){
-		return extraFocusColor;
-	}
-	socialCheesecake.Cheesecake.setExtraSectorFocusColor = function (newColor){
-		if(typeof newColor === "string") extraFocusColor = newColor;
-	}
-	/** Grey Sectors Focus Fill Color (mousedown) */
-	socialCheesecake.Cheesecake.getGreySectorFocusColor = function (){
-		return greyFocusColor;
-	}
-	socialCheesecake.Cheesecake.setGreySectorFocusColor = function (newColor){
-		if(typeof newColor === "string") greyFocusColor = newColor;
-	}
-	/** Sector Hover Fill Color (mouseover) */
-	socialCheesecake.Cheesecake.getSectorHoverColor = function (){
-		return sectorHoverColor;
-	}
-	socialCheesecake.Cheesecake.setSectorHoverColor = function (newColor){
-		if(typeof newColor === "string") sectorHoverColor = newColor;
-	}
-	/** Extra Sectors Hover Fill Color (mouseover) */
-	socialCheesecake.Cheesecake.getExtraSectorHoverColor = function (){
-		return extraHoverColor;
-	}
-	socialCheesecake.Cheesecake.setExtraSectorHoverColor = function (newColor){
-		if(typeof newColor === "string") extraHoverColor = newColor;
-	}
-	/** Grey Sectors Hover Fill Color (mouseover) */
-	socialCheesecake.Cheesecake.getGreySectorHoverColor = function (){
-		return greyHoverColor;
-	}
-	socialCheesecake.Cheesecake.setGreySectorHoverColor = function (newColor){
-		if(typeof newColor === "string") greyHoverColor = newColor;
-	}
-	/** Sector Text and Stroke Color */
-	socialCheesecake.Cheesecake.getSectorTextAndStrokeColor = function (){
-		return sectorTextAndStrokeColor;
-	}
-	socialCheesecake.Cheesecake.setSectorTextAndStrokeColor = function (newColor){
-		if(typeof newColor === "string") sectorTextAndStrokeColor = newColor;
-	}
-	/** Extra Sectors Hover Fill Color (mouseover) */
-	socialCheesecake.Cheesecake.getExtraSectorTextAndStrokeColor = function (){
-		return extraTextAndStrokeColor;
-	}
-	socialCheesecake.Cheesecake.setExtraSectorTextAndStrokeColor = function (newColor){
-		if(typeof newColor === "string") extraTextAndStrokeColor = newColor;
-	}
-	/** Grey Sectors Hover Fill Color (mouseover) */
-	socialCheesecake.Cheesecake.getGreySectorTextAndStrokeColor = function (){
-		return greyTextAndStrokeColor;
-	}
-	socialCheesecake.Cheesecake.setGreySectorTextAndStrokeColor = function (newColor){
-		if(typeof newColor === "string") greyTextAndStrokeColor = newColor;
-	}
 	/** Number of actors to animate */
 	socialCheesecake.Cheesecake.getMaxVisibleActors = function(){
 		return maxVisibleActors;
