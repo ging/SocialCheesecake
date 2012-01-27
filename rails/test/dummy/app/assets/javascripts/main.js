@@ -1,7 +1,6 @@
 var sectorsCounter = 0;
 var subsectorsCounter = [0];
 var newSectorModel;
-var defaultSettings = [["John Connor Lider de la revolucion", "Cassidy", "Cassidy2"], ["3,14159265358979323846264338327950288419716939937510", "Abc", "Def"], ["Luke I am your father", "Luke I am your father", "Darth Vader"], ["Olivia", "Dunham", "FBI"], ["Altivia", "Duham2", "FBI2"], ["Walter", "Bishop", "Craziness"], ["Nina", "Massive", "Dynamic"], ["Alibabá", "Cave", "Treasure"], ["Mudito", "Enchanted Forest", "Aiho"], ["Ewook", "Endor Forest", "Cool"]];
 var cheese;
 var cheesecakeData = {
 	container : {
@@ -38,13 +37,13 @@ function addSector() {
 
 	var nameSector = newSector.find("#label_s0");
 	nameSector.attr("id", "label_s" + sectorsCounter);
-	nameSector.attr("value", defaultSettings[sectorsCounter][0]);
+	nameSector.attr("value", randomName());
 	//Default
 
 	newSector.find("#s0s0").attr("id", "s" + sectorsCounter + "s0");
 	var nameSubsector = newSector.find("#label_s0s0");
 	nameSubsector.attr("id", "label_s" + sectorsCounter + "s0");
-	nameSubsector.attr("value", defaultSettings[sectorsCounter][1]);
+	nameSubsector.attr("value", randomName());
 	//Default
 
 	var actors = newSector.find(".actors");
@@ -52,7 +51,7 @@ function addSector() {
 		actors[i].setAttribute("name", "actors_s" + sectorsCounter + "s0");
 	}
 	newSector.find('button').attr('onclick', "addSubsector(" + sectorsCounter + ")");
-	$("#sectors").tabs("add","#tabs-" + sectorsCounter, "S" + sectorsCounter);
+	console.log($("#sectors").tabs("add", "#tabs-" + sectorsCounter, "S" + sectorsCounter))
 	$("#tabs-" + sectorsCounter).append(newSector);
 }
 
@@ -65,7 +64,7 @@ function addSubsector(sector) {
 
 	var nameSubsector = newSubsector.find("#label_s0s0");
 	nameSubsector.attr("id", "label_s" + sector + "s" + subsectorsCounter[sector]);
-	nameSubsector.attr("value", defaultSettings[sectorsCounter][2]);
+	nameSubsector.attr("value", randomName());
 	//Default
 	var actors = newSubsector.find(".actors");
 	for(var i = 0; i < actors.length; i++) {
@@ -124,4 +123,54 @@ function deleteCheese() {
 	$('canvas').detach();
 	cheese.grid.hideAll();
 	cheese = 0;
+}
+
+function randomName() {
+	function caseName(txtString) {
+		strConv = txtString;
+		strConv = strConv.toLowerCase();
+		var strResult = "";
+		var blnIsFirstChar = 1;
+		for(var intI = 0; intI < strConv.length; intI++) {
+			var strConvChar = strConv.charAt(intI);
+			if(blnIsFirstChar == 1) {
+				strConvChar = strConvChar.toUpperCase();
+			}
+			strResult += strConvChar;
+			if(strConvChar == " " || strConvChar == "-") {
+				blnIsFirstChar = 1;
+			} else {
+				blnIsFirstChar = 0;
+			}
+		}
+		return strResult;
+	}
+
+	var strSet1 = "ddkkbblmmngppfrrssttwxyvy";
+	var strSet2 = "aieou";
+	var strSet3 = " '- - ";
+	var intRandTitle = Math.ceil(10 * Math.random() - 1);
+	var intRandNames = Math.ceil(2 * Math.random());
+	var strName = "";
+	for( intNames = 1; intNames <= intRandNames; intNames++) {
+		if(intRandTitle < 8) {
+			var intRandChars = Math.round(6 * Math.random()) + 2;
+		} else {
+			var intRandChars = Math.round(2 * Math.random()) + 4;
+		}
+		var blnStartSet = Math.ceil(2 * Math.random());
+		for( intChars = 1; intChars <= intRandChars; intChars++) {
+			if(blnStartSet == 1) {
+				strName += strSet1.substr(Math.ceil(strSet1.length * Math.random()) - 1, 1);
+				blnStartSet = 2;
+			} else {
+				strName += strSet2.substr(Math.ceil(strSet2.length * Math.random()) - 1, 1);
+				blnStartSet = 1;
+			}
+		}
+		if(intNames < intRandNames) {
+			strName += strSet3.substr(Math.ceil(strSet3.length * Math.random()) - 1, 1);
+		}
+	}
+	return caseName(strName);
 }
