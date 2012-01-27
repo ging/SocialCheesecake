@@ -10,118 +10,132 @@
 				$("#label_s0").val(randomName());
 				$("#label_s0s0").val(randomName());
 				$("#add_sector_button").click(addSector).button();
+				$("#create_button").click(createCheese).button();
 				createCheese();
-				$("#settings").tabs({ fx: { opacity: 'toggle',height: 'toggle', duration: 'slow' } });
+				$("#settings").tabs({
+					fx : {
+						opacity : 'toggle',
+						height : 'toggle',
+						duration : 'slow'
+					}
+				});
 				$("#sectors").tabs();
 			})
 		</script>
 	</head>
 	<body id="container">
 		<div id="wrapper">
-			<div id="cheesecake"></div>
-			<form name ="settings" id= "form">
-				<div id="settings">
-					<div class="title">
-						SocialCheeseCakeJS Settings
+			<div id="left_column">
+				<div id="cheesecake"></div>
+				<div id="grid">
+					<div class="actor" id="actor_0"><img src="assets/youngAlberto.png">
 					</div>
-					<ul>
-						<li>
-							<a href="#settings-0">General</a>
-						</li>
-						<li>
-							<a href="#settings-1">Sectors</a>
-						</li>
-					</ul>
-					<div id="settings-0">
-						<div class = "row">
-							<div class = "label">
-								Centre
-							</div>
-							<input type ="text" id ="x" value = "220"/>
-							<input type ="text" id ="y" value = "220"/>
-						</div>
-						<div class = "row">
-							<div class = "label">
-								Radio
-							</div>
-							<input type ="text" id ="rmax" value = "200"/>
-						</div>
+					<div class="actor" id="actor_1"><img src="assets/beatriz.png">
 					</div>
-					<div id="settings-1">
-						<div id="sectors">
-							<ul>
-								<li>
-									<a href="#tabs-0">S0</a>
-								</li>
-							</ul>
-							<div id="tabs-0">
-								<div class="sector" id="s0">
-									<div class = "subtitle label">
-										Sector 0
-									</div>
-									<div class = "row">
-										<div class = "label">
-											Name
-										</div>
-										<input type ="text" id ="label_s0" value = ""/>
-									</div>
-									<div class= "subsector" id="s0s0">
-										<div class = "subsubtitle label">
-											Subsector 0
+					<div class="actor" id="actor_2"><img src="assets/rails.png">
+					</div>
+					<div class="actor" id="actor_3"><img src="assets/beatriz.png">
+					</div>
+					<div class="actor" id="actor_4"><img src="assets/youngAlberto.png">
+					</div>
+				</div>
+			</div>
+			<div id="right_column">
+				<div id="briefing">
+					<img class="icon" src="assets/soialcheesecake_icon.png">
+				</div>
+				<form name ="settings" id= "form">
+					<div id="settings">
+						<div class="title">
+							SocialCheeseCakeJS Settings
+						</div>
+						<ul>
+							<li>
+								<a href="#settings-0">General</a>
+							</li>
+							<li>
+								<a href="#settings-1">Sectors</a>
+							</li>
+						</ul>
+						<div id="settings-0">
+							<div class = "row">
+								<div class = "label">
+									Centre
+								</div>
+								<input type ="text" id ="x" value = "220"/>
+								<input type ="text" id ="y" value = "220"/>
+							</div>
+							<div class = "row">
+								<div class = "label">
+									Radio
+								</div>
+								<input type ="text" id ="rmax" value = "200"/>
+							</div>
+						</div>
+						<div id="settings-1">
+							<div id="sectors">
+								<ul>
+									<li>
+										<a href="#tabs-0">S0</a>
+									</li>
+								</ul>
+								<div id="tabs-0">
+									<div class="sector" id="s0">
+										<div class = "subtitle label">
+											Sector 0
 										</div>
 										<div class = "row">
 											<div class = "label">
-												Name:
+												Name
 											</div>
-											<input type ="text" id ="label_s0s0" value = ""/>
-										</div>										
-										<div class = "row">
-											<div class = "label">
-												Actors:
-											</div>
-											<input type ="checkbox" class="actors" name ="actors_s0s0" value = "0" checked="true"/>
-											0
-											<input type ="checkbox" class="actors" name ="actors_s0s0" value = "1" checked="true"/>
-											1
-											<input type ="checkbox" class="actors" name ="actors_s0s0" value = "2" checked="true"/>
-											2
-											<input type ="checkbox" class="actors" name ="actors_s0s0" value = "3"/>
-											3
-											<input type ="checkbox" class="actors" name ="actors_s0s0" value = "4"/>
-											4
+											<input type ="text" id ="label_s0" value = ""/>
 										</div>
-									</div>
-									<div class = "buttons">
-										<button type="button" onclick="addSubsector(0)">
-											Add Subsector
-										</button>
+										<div class= "subsector" id="s0s0">
+											<div class = "subsubtitle label">
+												Subsector 0
+											</div>
+											<div class = "row">
+												<div class = "label">
+													Name:
+												</div>
+												<input type ="text" id ="label_s0s0" value = ""/>
+											</div>
+											<div class = "row">
+												<div class = "label">
+													Actors:
+												</div>
+												<input type ="checkbox" class="actors" name ="actors_s0s0" value = "0" checked="true"/>
+												0
+												<input type ="checkbox" class="actors" name ="actors_s0s0" value = "1" checked="true"/>
+												1
+												<input type ="checkbox" class="actors" name ="actors_s0s0" value = "2" checked="true"/>
+												2
+												<input type ="checkbox" class="actors" name ="actors_s0s0" value = "3"/>
+												3
+												<input type ="checkbox" class="actors" name ="actors_s0s0" value = "4"/>
+												4
+											</div>
+										</div>
+										<div class = "buttons">
+											<button type="button" onclick="addSubsector(0)">
+												Add Subsector
+											</button>
+										</div>
 									</div>
 								</div>
 							</div>
+							<button type="button" id="add_sector_button">
+								Add new sector
+							</button>
 						</div>
-						<button type="button" id="add_sector_button">
-							Add new sector
-						</button>
 					</div>
-				</div>
-				<div class = "buttons" id= "done">
-					<button type="button" onclick="createCheese()">
-						Done!
-					</button>
-				</div>
-			</form>
-			<div id="grid">
-				<div class="actor" id="actor_0"><img src="assets/youngAlberto.png">
-				</div>
-				<div class="actor" id="actor_1"><img src="assets/beatriz.png">
-				</div>
-				<div class="actor" id="actor_2"><img src="assets/rails.png">
-				</div>
-				<div class="actor" id="actor_3"><img src="assets/beatriz.png">
-				</div>
-				<div class="actor" id="actor_4"><img src="assets/youngAlberto.png">
-				</div>
+					
+							<button type="button" id="create_button">
+								Create Cheescake!
+							</button>
+				</form>
 			</div>
+			<br class="clearfloat">
 		</div>
 	</body>
 </html>

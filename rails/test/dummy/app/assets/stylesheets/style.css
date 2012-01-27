@@ -1,10 +1,29 @@
 body {
   text-align: center;
+  background: #1c1c1c;
 }
 #wrapper {
-  width: 960px;
+  width: 940px;
   position: relative;
+  padding: 10px;
   margin: auto;
+  background: #fff;
+  border: 3px solid #ab8211;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+}
+#left_column {
+  float: left;
+  padding: 0px;
+  margin: 0px;
+  width: 440px;  
+}
+#right_column {
+  float: right;
+  padding: 0px;
+  margin: 0px;
+  width: 490px;  
 }
 canvas {
   position: relative !important;
@@ -18,6 +37,17 @@ canvas {
   width: 440px;
   display: block;
   float: left;
+}
+#briefing {
+  height: 120px;
+  width: 490px;
+  display: block;
+  float: right;
+}
+#briefing .icon {
+  height: 100px;
+  width: 100px;
+  margin: 10px;
 }
 #grid {
   display: block;
@@ -34,17 +64,16 @@ canvas {
 }
 #grid .actor.focused {
   border: 2px solid #8E846B;
-  background-color: #FEEEBD;
+  background-color: #ffe481;
   margin: 1px;
   opacity: 1;
 }
 #grid .actor img {
   width: 64px;
   height: 64px;
-  //border: 2px solid black;
 }
 #form {
-  width: 510px;
+  width: 490px;
   font: 12px helvetica;
   display: block;
   float: right;
@@ -112,5 +141,4 @@ canvas {
 #sectors li a {
   padding: .5em 4px;
 }
-
 
