@@ -122,8 +122,13 @@
 			  cheesecakeData.rMax = rMax;
 			  cheesecakeData.center = {x : x, y: y};
 			  cheesecakeData.sectors = sectors;
-			  
+			  if(cheese) deleteCheese();
 			  cheese = new socialCheesecake.Cheesecake(cheesecakeData);
+			}
+			function deleteCheese(){
+			  $('canvas').detach();
+			  cheese.grid.hideAll();
+			  cheese = 0;
 			}
 		</script>
 	</head>
@@ -139,20 +144,6 @@
 			</div>
 			<div class="actor" id="actor_4"><img src="assets/youngAlberto.png">
 			</div>
-		</div>
-		<div class="buttons">
-			<button type="button" onclick="cheese.grid.actors[0].focus()">Focus 0</button>
-			<button type="button" onclick="cheese.grid.actors[0].unfocus()">unfocus 0</button>
-			<button type="button" onclick="cheese.grid.actors[0].hide()">hide 0</button>
-			<button type="button" onclick="cheese.grid.actors[0].show()">show 0</button>
-			<button type="button" onclick="cheese.grid.actors[0].fadeOut(1000)">fadeOut 0</button>
-			<button type="button" onclick="cheese.grid.actors[0].fadeIn(1000)">fadeIn 0</button>
-			<button type="button" onclick="cheese.grid.actors[0].unselect()">unselect 0</button>
-			<button type="button" onclick="cheese.grid.focusAll()">Focus all!</button>
-			<button type="button" onclick="cheese.grid.unfocusAll()">Unfocus all!</button>
-			<button type="button" onclick="cheese.grid.hideAll()">Hide all!</button>
-			<button type="button" onclick="cheese.grid.showAll()">Show all!</button>
-			<button type="button" onclick="cheese.grid.unselectAll()">Unselect all!</button>
 		</div>
 		<form name ="settings" id= "form">
 		  <div class = "title label">General Settings</div>
