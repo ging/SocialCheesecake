@@ -141,10 +141,13 @@ var socialCheesecake = socialCheesecake || {};
 		context.stroke();
 		if((this.auxiliar)&&(label=="+")){
 			socialCheesecake.text.addPlusCharacter(context, x, y, 0.5*(rOut-rIn) + rIn, 
-			phi, delta, textAndStrokeColor);
+				phi, delta, textAndStrokeColor);
+		}else if((this.parent.auxiliar)&&(this.parent.label=="+")){
+			socialCheesecake.text.writeCurvedText(label, context, x, y, 0.7*(rOut-rIn) + rIn, 
+				phi, delta, textAndStrokeColor, "newStyle");
 		}else{
 			socialCheesecake.text.writeCurvedText(label, context, x, y, 0.7*(rOut-rIn) + rIn, 
-			phi, delta, textAndStrokeColor);
+				phi, delta, textAndStrokeColor);
 		}				
 		if(!this.auxiliar)
 			socialCheesecake.text.writeCurvedText("(" + actors.length + ")", context, x, y, 

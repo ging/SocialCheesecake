@@ -56,6 +56,12 @@ var socialCheesecake = socialCheesecake || {};
 			socialCheesecake.Cheesecake.setMaxVisibleActors(cheesecakeData.maxVisibleActors);
 		if(cheesecakeData.onChange)
 			cheesecake.onChange = cheesecakeData.onChange;
+		//Text settings
+		if(cheesecakeData.text){
+			for( var style in cheesecakeData.text){
+				socialCheesecake.text[style]= cheesecakeData.text[style];
+			}
+		}
 		
 		if(jsonSectors.length < 16){
 			var extraSector = new socialCheesecake.Sector({
@@ -71,16 +77,26 @@ var socialCheesecake = socialCheesecake || {};
 					color : socialCheesecake.Cheesecake.getExtraSectorHoverColor(),
 					callback : function(sector) {
 						sector.focus();
+						cheesecake.grid.hideAll();
 					}
 				},
 				mouseout : {
 					color : socialCheesecake.Cheesecake.getExtraSectorFillColor(),
 					callback : function(sector) {
 						sector.unfocus();
+						cheesecake.grid.fadeInAll(300, true);
 					}
 				},
 				mouseup : {color : socialCheesecake.Cheesecake.getExtraSectorFillColor()},
-				mousedown : {color : socialCheesecake.Cheesecake.getExtraSectorFocusColor()},
+				mousedown : {
+					color : socialCheesecake.Cheesecake.getExtraSectorFocusColor(),
+					callback : function(sector){
+						cheesecake.focusAndBlurCheesecake(sector);
+					}
+				},
+				subsectors : [{
+					name : "New Subsector 1",
+				}],
 				auxiliar : true,
 				textAndStrokeColor : socialCheesecake.Cheesecake.getExtraSectorTextAndStrokeColor()
 			});

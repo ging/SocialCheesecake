@@ -1,7 +1,11 @@
 var socialCheesecake = socialCheesecake || {}; (function() {
 	socialCheesecake.text = {
-		addPlusCharacter : function(context, x, y, r, phi, delta, color) {
-			context.font = "bold 14px sans-serif";
+		style : "bold 14px sans-serif",
+		newStyle: "bold 14px sans-serif",
+		
+		addPlusCharacter : function(context, x, y, r, phi, delta, color, style) {
+			context.font = 
+				(style && socialCheesecake.text[style]) ? socialCheesecake.text[style] : socialCheesecake.text.style;
 			context.fillStyle = color || "#000";
   		context.textAlign = "center";
 			context.textBaseline = "middle";
@@ -12,8 +16,9 @@ var socialCheesecake = socialCheesecake || {}; (function() {
 			context.restore();
 			context.save();
 		},
-		writeCurvedText : function(text, context, x, y, r, phi, delta, color) {
-			context.font = "bold 14px sans-serif";
+		writeCurvedText : function(text, context, x, y, r, phi, delta, color, style) {
+			context.font = 
+				(style && socialCheesecake.text[style]) ? socialCheesecake.text[style] : socialCheesecake.text.style;
 			context.fillStyle = color || "#000";
 			context.textBaseline = "middle";
 			var medium_alpha = Math.tan(context.measureText(text).width / (text.length * r));
