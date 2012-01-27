@@ -4,7 +4,7 @@ var newSectorModel;
 var cheese;
 var cheesecakeData = {
 	container : {
-		id : "container",
+		id : "cheesecake",
 		width : 440,
 		height : 440
 	},
@@ -28,6 +28,7 @@ window.requestAnimFrame = (function(callback) {
 })();
 function addSector() {
 	var prevSector = "#s" + sectorsCounter;
+	if(sectorsCounter >= 15) return false;
 	sectorsCounter++;
 	subsectorsCounter.push(0);
 	var newSector = newSectorModel.clone();
@@ -51,8 +52,9 @@ function addSector() {
 		actors[i].setAttribute("name", "actors_s" + sectorsCounter + "s0");
 	}
 	newSector.find('button').attr('onclick', "addSubsector(" + sectorsCounter + ")");
-	console.log($("#sectors").tabs("add", "#tabs-" + sectorsCounter, "S" + sectorsCounter))
+	$("#sectors").tabs("add", "#tabs-" + sectorsCounter, "S" + sectorsCounter);
 	$("#tabs-" + sectorsCounter).append(newSector);
+	return true;
 }
 
 function addSubsector(sector) {
@@ -79,7 +81,7 @@ function checkboxesToActorsArray(name) {
 	for(var i = 0; i < checkboxes.length; i++) {
 		if(checkboxes[i].checked) {
 			var actor = [];
-			actor.push(i);
+			actor.push(i);$(document)
 			result.push(actor);
 		}
 	}
@@ -107,10 +109,10 @@ function createCheese() {
 		};
 		sectors.push(sector);
 	}
-
+	
 	cheesecakeData.rMax = rMax;
 	cheesecakeData.center = {
-		x : x,
+		x : x, 
 		y : y
 	};
 	cheesecakeData.sectors = sectors;
@@ -139,7 +141,7 @@ function randomName() {
 			strResult += strConvChar;
 			if(strConvChar == " " || strConvChar == "-") {
 				blnIsFirstChar = 1;
-			} else {
+			} else {cheesecake
 				blnIsFirstChar = 0;
 			}
 		}
