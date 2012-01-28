@@ -1,6 +1,5 @@
 var sectorsCounter = 0;
 var subsectorsCounter = [0];
-var newSectorModel;
 var cheese;
 var cheesecakeData = {
 	container : {
@@ -35,9 +34,6 @@ var cheesecakeData = {
 		newStyle : "bold italic 14px sans-serif"
 	}
 };
-window.onload = function() {
-	newSectorModel = $("#s0").clone();
-}
 window.requestAnimFrame = (function(callback) {
 	return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
 	function(callback) {
@@ -46,11 +42,12 @@ window.requestAnimFrame = (function(callback) {
 
 })();
 function addSector() {
+	if(this.newSectorModel==null) this.newSectorModel = $("#s0").clone();
 	var prevSector = "#s" + sectorsCounter;
 	if(sectorsCounter >= 15) return false;
 	sectorsCounter++;
 	subsectorsCounter.push(0);
-	var newSector = newSectorModel.clone();
+	var newSector = this.newSectorModel.clone();
 	newSector.attr("id", "s" + sectorsCounter);
 	newSector.find('.subtitle').text("Sector " + sectorsCounter);
 	newSector.find('.subsubtitle').text("Subsector 0");
