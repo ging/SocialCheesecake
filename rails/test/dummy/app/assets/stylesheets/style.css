@@ -147,7 +147,13 @@ canvas {
   padding: 0px;
 }
 #sectors li a {
-  padding: .5em 4px;
+  padding: .5em 0px;
+  width: 27px;
+}
+#sectors .ui-tabs-nav li {
+  margin: 0px;
+  width: 27px;
+  text-align: center;
 }
 #settings-1 .ui-tabs-panel{
   padding-bottom: 0px !important;

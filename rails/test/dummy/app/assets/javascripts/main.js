@@ -61,20 +61,25 @@ function addSector() {
 	var nameSubsector = newSector.find("#label_s0s0");
 	nameSubsector.attr("id", "label_s" + sectorsCounter + "s0");
 	nameSubsector.attr("value", randomName());
-	//Default
+	//Default	
+	newSector.find("#add_subsector_button_s0").attr("id", "add_subsector_button_s" + sectorsCounter);	
 
 	var actors = newSector.find(".actors");
 	for(var i = 0; i < actors.length; i++) {
 		actors[i].setAttribute("name", "actors_s" + sectorsCounter + "s0");
 	}
 	newSector.find('button').attr('onclick', "addSubsector(" + sectorsCounter + ")");
-	$("#sectors").tabs("add", "#tabs-" + sectorsCounter, "S" + sectorsCounter);
+	$("#sectors").tabs("add", "#tabs-" + sectorsCounter, sectorsCounter);
 	$("#tabs-" + sectorsCounter).append(newSector);
+	if(sectorsCounter >= 15){
+		$("#add_sector_button").attr("disabled", "true").slideToggle("slow");
+	} 
 	return true;
 }
 
 function addSubsector(sector) {
 	var prevSubsector = "#s" + sector + "s" + subsectorsCounter[sector];
+	if(subsectorsCounter[sector] >= 3) return false;
 	subsectorsCounter[sector]++;
 	var newSubsector = $("#s0s0").clone();
 	newSubsector.attr("id", "s" + sector + "s" + subsectorsCounter[sector]);
@@ -89,6 +94,10 @@ function addSubsector(sector) {
 		actors[i].setAttribute("name", "actors_s" + sector + "s" + subsectorsCounter[sector]);
 	}
 	$(newSubsector).insertAfter(prevSubsector);
+	if(subsectorsCounter[sector] >= 3){
+		$("#add_subsector_button_s" + sector).attr("disabled", "true").slideToggle("slow");
+	} 
+	return true;
 }
 
 function checkboxesToActorsArray(name) {
