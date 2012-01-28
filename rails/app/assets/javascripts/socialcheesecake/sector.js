@@ -89,11 +89,13 @@ var socialCheesecake = socialCheesecake || {};
 						}
 					},
 					mousedown : {
+						color : socialCheesecake.colors.normalSector.highlight,
 						callback : function(subsector) {
 							var selectedActors = subsector.getCheesecake().grid.getSelectedActors();
 							if(selectedActors.length > 0) subsector.changeMembership(selectedActors);
 						}
-					}
+					},
+					mouseup : {color : socialCheesecake.colors.normalSector.background}
 				});
 				rInSubsector = rOutSubsector;
 				this.subsectors.push(subsector);

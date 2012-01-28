@@ -71,8 +71,10 @@ var socialCheesecake = socialCheesecake || {};
 		}
 		//Color settings
 		if(cheesecakeData.colors){
-			for( var color in cheesecakeData.colors){
-				socialCheesecake.colors[color]= cheesecakeData.colors[color];
+			for( var type in cheesecakeData.colors){
+				for (var color in cheesecakeData.colors[type]){
+					socialCheesecake.colors[type][color]= cheesecakeData.colors[type][color];
+				}
 			}
 		}
 		

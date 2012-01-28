@@ -18,8 +18,8 @@ var cheesecakeData = {
 	colors: {
 		normalSector : {
 			background : "#FEEEBD",
-			border : "#A68211",
-			font : "#A68211",
+			border : "#D19405",
+			font : "#D19405",
 			highlight : "#FFE481",
 			hover : "#FFE481"
 		},
@@ -30,6 +30,9 @@ var cheesecakeData = {
 			highlight : "#FF5964",
 			hover : "#FF5964"
 		}
+	},
+	text: {
+		newStyle : "bold italic 14px sans-serif"
 	}
 };
 window.onload = function() {
