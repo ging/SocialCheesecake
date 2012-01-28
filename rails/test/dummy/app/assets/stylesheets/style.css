@@ -98,29 +98,30 @@ canvas {
 }
 #form .sector {
   margin-bottom: 10px;
-  background-color: #f5f5f5;
-  padding: 10px;
-  border: 1px solid #D4E4EA;
+  background: #EEDCB7;
+  padding: 5px 10px;
+  border: 1px solid #8E846B;
+  text-align: center;
 }
-#form .sector .buttons button {
-  float: right;
+#form .sector div{
+  text-align: left;
 }
-#form .sector .buttons {
-  height: 25px;
-  padding-top: 6px;
+#form .sector blockquote {
+  margin-top: 0px;
 }
 #form .sector .subsector {
-  margin-top: 10px;
-  background-color: #D4E4EA;
-  padding: 10px;
+  margin: 5px;
+  border: 1px solid #8E846B;
+  background: #EEDCB7;
+  padding: 5px;  
 }
-#form .title, #form .subtitle {
+#form .sector button {
+  margin: auto;
+}
+#form .title, #form .subtitle, #form .subsubtitle {
   font-weight: bold;
-  padding: 15px;
-  display: block;
-}
-#form .title {
   padding: 5px;
+  display: block;
 }
 #form .subtitle, #form .subsubtitle {
   display: block;
@@ -131,9 +132,6 @@ canvas {
 }
 #form .subsubtitle {
   padding-bottom: 10px;
-}
-#settings-1 {
-  padding: 0px;
 }
 #settings-1 {
   padding: 0px;

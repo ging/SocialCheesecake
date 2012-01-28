@@ -11,6 +11,7 @@
 				$("#label_s0s0").val(randomName());
 				$("#add_sector_button").click(addSector).button();
 				$("#create_button").click(createCheese).button();
+				$(".add_subsector_button").button();
 				createCheese();
 				$("#settings").tabs({
 					fx : {
@@ -58,18 +59,35 @@
 							</li>
 						</ul>
 						<div id="settings-0">
-							<div class = "row">
-								<div class = "label">
-									Centre
+							<div class = "sector">
+								<div class = "subtitle label">
+									Location & Size
 								</div>
-								<input type ="text" id ="x" value = "220"/>
-								<input type ="text" id ="y" value = "220"/>
-							</div>
-							<div class = "row">
-								<div class = "label">
-									Radio
+								<div class = "row">
+									<div class = "label">
+										Centre
+									</div>
+									<blockquote>
+										<div class = "row">
+											<div class = "label">
+												X
+											</div>
+											<input type ="text" id ="x" value = "220" size="3" maxlength="3"/>px
+										</div>
+										<div class = "row">
+											<div class = "label">
+												Y
+											</div>
+											<input type ="text" id ="y" value = "220" size="3" maxlength="3"/>px
+										</div>
+									</blockquote>
 								</div>
-								<input type ="text" id ="rmax" value = "200"/>
+								<div class = "row">
+									<div class = "label">
+										Radius
+									</div>
+									<input type ="text" id ="rmax" value = "200" size="3" maxlength="3"/>px
+								</div>
 							</div>
 						</div>
 						<div id="settings-1">
@@ -96,13 +114,13 @@
 											</div>
 											<div class = "row">
 												<div class = "label">
-													Name:
+													Name
 												</div>
 												<input type ="text" id ="label_s0s0" value = ""/>
 											</div>
 											<div class = "row">
 												<div class = "label">
-													Actors:
+													Actors
 												</div>
 												<input type ="checkbox" class="actors" name ="actors_s0s0" value = "0" checked="true"/>
 												0
@@ -116,12 +134,10 @@
 												4
 											</div>
 										</div>
-										<div class = "buttons">
-											<button type="button" onclick="addSubsector(0)">
-												Add Subsector
-											</button>
-										</div>
 									</div>
+									<button type="button" class="add_subsector_button" onclick="addSubsector(0)">
+										Add Subsector
+									</button>
 								</div>
 							</div>
 							<button type="button" id="add_sector_button">
@@ -129,10 +145,9 @@
 							</button>
 						</div>
 					</div>
-					
-							<button type="button" id="create_button">
-								Create Cheescake!
-							</button>
+					<button type="button" id="create_button">
+						Create Cheescake!
+					</button>
 				</form>
 			</div>
 			<br class="clearfloat">
