@@ -12,6 +12,17 @@ body {
   border-radius: 20px;
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
+  min-height: 550px;
+}
+#footer {
+  width: 920px;
+  padding: 10px;
+  border: 1px solid #8E846B;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  margin-top: 15px;
+  font: 12px helvetica;
 }
 #left_column {
   float: left;
@@ -97,7 +108,6 @@ canvas {
   width: 60px;
 }
 #form .sector {
-  margin-bottom: 10px;
   background: #EEDCB7;
   padding: 5px 10px;
   border: 1px solid #8E846B;
@@ -139,4 +149,6 @@ canvas {
 #sectors li a {
   padding: .5em 4px;
 }
-
+#settings-1 .ui-tabs-panel{
+  padding-bottom: 0px !important;
+}
