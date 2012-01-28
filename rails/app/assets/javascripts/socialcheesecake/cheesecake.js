@@ -111,7 +111,8 @@ var socialCheesecake = socialCheesecake || {};
 					name : "New Subsector 1",
 				}],
 				auxiliar : true,
-				textAndStrokeColor : socialCheesecake.colors.extraSector.font
+				fontColor : socialCheesecake.colors.extraSector.font,
+				borderColor : socialCheesecake.colors.extraSector.border
 			});
 			cheesecake.sectors[jsonSectors.length] = extraSector;
 		}
@@ -166,7 +167,8 @@ var socialCheesecake = socialCheesecake || {};
 					}
 				},
 				mouseup : { color : socialCheesecake.colors.normalSector.background },
-				textAndStrokeColor : socialCheesecake.colors.normalSector.font
+				fontColor : socialCheesecake.colors.normalSector.font,
+				borderColor : socialCheesecake.colors.normalSector.border
 			};
 			cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
 		}
@@ -241,7 +243,8 @@ var socialCheesecake = socialCheesecake || {};
 				}
 			},
 			color : socialCheesecake.colors.greySector.background,
-			textAndStrokeColor : socialCheesecake.colors.greySector.font,
+			fontColor : socialCheesecake.colors.greySector.font,
+			borderColor : socialCheesecake.colors.greySector.border,
 			auxiliar : true
 		};
 		var dummySettings = {

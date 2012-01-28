@@ -14,6 +14,22 @@ var cheesecakeData = {
 	},
 	onChange : function() {
 		console.log("Cambio detectado");
+	},
+	colors: {
+		normalSector : {
+			background : "#FEEEBD",
+			border : "#A68211",
+			font : "#A68211",
+			highlight : "#FFE481",
+			hover : "#FFE481"
+		},
+		extraSector : {
+			background : "#FFBABA",
+			border : "#BD1823",
+			font : "#BD1823",
+			highlight : "#FF5964",
+			hover : "#FF5964"
+		}
 	}
 };
 window.onload = function() {
