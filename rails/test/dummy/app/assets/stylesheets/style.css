@@ -55,10 +55,16 @@ canvas {
   display: block;
   float: right;
 }
-#briefing .icon {
+#briefing #logo {
   height: 100px;
   width: 100px;
-  margin: 10px;
+  margin: 10px auto;
+}
+#briefing #logo img{
+  height: 100px;
+  width: 100px;
+  padding: 0px;
+  margin: 0px;
 }
 #grid {
   display: block;

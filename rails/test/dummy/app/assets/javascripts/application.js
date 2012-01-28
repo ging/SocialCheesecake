@@ -7,5 +7,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery-ui
+//= require jquery.flip
 //= require social_cheesecake
 //= require_tree .

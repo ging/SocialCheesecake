@@ -26,6 +26,37 @@
 				addSector();
 				addSubsector(2);
 				createCheese();
+				// Icon Effects ----------------------------
+				var flipped = false;
+				var flipin = function() {
+					$("#briefing #logo").flip({
+						direction : 'lr',
+						dontChangeColor : true,
+						speed : 150,
+						content : $("#briefing #logoback").html(),
+						onEnd : function() {
+							flipped = true;
+						}
+					});
+				}
+				var flipout = function() {
+					$("#briefing #logo").flip({
+						direction : 'rl',
+						dontChangeColor : true,
+						speed : 150,
+						content : $("#briefing #logofront").html(),
+						onEnd : function() {
+							flipped = false;
+						}
+					});
+				}
+				$("#briefing #logo").on("mouseenter", function() {
+					if(!flipped) flipin();
+				});
+				$("#briefing #logo").on("mouseout", function() {
+					if(flipped) flipout();
+				});
+				// END Icon Effects ----------------------------
 			})
 		</script>
 	</head>
@@ -48,7 +79,15 @@
 			</div>
 			<div id="right_column">
 				<div id="briefing">
-					<img class="icon" src="assets/soialcheesecake_icon.png">
+					<div id="logo">
+						<img src="assets/soialcheesecake_icon.png">
+					</div>
+					<div id="logoback" style="display:none;">
+						<img src="assets/soialcheesecake_icon_back.png">
+					</div>
+					<div id="logofront" style="display:none;">
+						<img src="assets/soialcheesecake_icon.png">
+					</div>
 				</div>
 				<form name ="settings" id= "form">
 					<div id="settings">
@@ -77,13 +116,15 @@
 											<div class = "label">
 												X
 											</div>
-											<input type ="text" id ="x" value = "220" size="3" maxlength="3"/>px
+											<input type ="text" id ="x" value = "220" size="3" maxlength="3"/>
+											px
 										</div>
 										<div class = "row">
 											<div class = "label">
 												Y
 											</div>
-											<input type ="text" id ="y" value = "220" size="3" maxlength="3"/>px
+											<input type ="text" id ="y" value = "220" size="3" maxlength="3"/>
+											px
 										</div>
 									</blockquote>
 								</div>
@@ -91,7 +132,8 @@
 									<div class = "label">
 										Radius
 									</div>
-									<input type ="text" id ="rmax" value = "200" size="3" maxlength="3"/>px
+									<input type ="text" id ="rmax" value = "200" size="3" maxlength="3"/>
+									px
 								</div>
 							</div>
 						</div>
@@ -156,7 +198,9 @@
 				</form>
 			</div>
 			<br class="clearfloat">
-			<div id="footer">Copyright ©2012</div>
+			<div id="footer">
+				Copyright ©2012
+			</div>
 		</div>
 	</body>
 </html>
