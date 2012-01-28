@@ -69,7 +69,7 @@ canvas {
   width: 64px;
   height: 64px;
   float: left;
-  margin: 3px;
+  margin: 3px; 
   display: none;
   opacity: 0.8;
 }
@@ -94,7 +94,7 @@ canvas {
 }
 #form .row {
   display: block;
-}
+} 
 #form #add_sector button {
   width: 100%;
 }
@@ -112,6 +112,9 @@ canvas {
   padding: 5px 10px;
   border: 1px solid #8E846B;
   text-align: center;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
 }
 #form .sector div{
   text-align: left;
@@ -124,6 +127,9 @@ canvas {
   border: 1px solid #8E846B;
   background: #EEDCB7;
   padding: 5px;  
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
 }
 #form .sector button {
   margin: auto;
