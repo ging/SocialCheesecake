@@ -29,32 +29,39 @@
 				// Icon Effects ----------------------------
 				var flipped = false;
 				var flipin = function() {
-					$("#briefing #logo").flip({
-						direction : 'lr',
-						dontChangeColor : true,
-						speed : 150,
-						content : $("#briefing #logoback").html(),
-						onEnd : function() {
-							flipped = true;
-						}
-					});
+					if($("#briefing #logo").html() != $("#briefing #logoback").html())
+						$("#briefing #logo").flip({
+							direction : 'lr',
+							dontChangeColor : true,
+							speed : 150,
+							content : $("#briefing #logoback").html(),
+							onEnd : function() {
+								flipped = true;
+							}
+						});
 				}
 				var flipout = function() {
-					$("#briefing #logo").flip({
-						direction : 'rl',
-						dontChangeColor : true,
-						speed : 150,
-						content : $("#briefing #logofront").html(),
-						onEnd : function() {
-							flipped = false;
-						}
-					});
+					if($("#briefing #logo").html() != $("#briefing #logofront").html())
+						$("#briefing #logo").flip({
+							direction : 'rl',
+							dontChangeColor : true,
+							speed : 150,
+							content : $("#briefing #logofront").html(),
+							onEnd : function() {
+								flipped = false;
+							}
+						});
 				}
-				$("#briefing #logo").on("mouseenter", function() {
-					if(!flipped) flipin();
-				});
-				$("#briefing #logo").on("mouseout", function() {
-					if(flipped) flipout();
+				$("#briefing #logo").hover(function() {
+					console.log("in")
+					clearTimeout($(this).data('timeout1'));
+					clearTimeout($(this).data('timeout2'));
+					$(this).data('timeout1', setTimeout(flipin, 100));
+				}, function() {
+					console.log("out")
+					clearTimeout($(this).data('timeout1'));
+					clearTimeout($(this).data('timeout2'));
+					$(this).data('timeout2', setTimeout(flipout, 1000));
 				});
 				// END Icon Effects ----------------------------
 			})
