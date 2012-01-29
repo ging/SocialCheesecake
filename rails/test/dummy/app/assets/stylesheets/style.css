@@ -6,6 +6,7 @@ body {
   width: 940px;
   position: relative;
   padding: 10px;
+  padding-bottom: 51px;
   margin: auto;
   background: #FEFEE0;
   border: 3px solid #ab8211;
@@ -23,6 +24,8 @@ body {
   -moz-border-radius: 20px;
   margin-top: 15px;
   font: 12px helvetica;
+  bottom: 10px;
+  position: absolute;
 }
 #left_column {
   float: left;
@@ -140,9 +143,11 @@ canvas {
 #form .sector button {
   margin: auto;
 }
+#form .title{
+  padding: 5px;
+}
 #form .title, #form .subtitle, #form .subsubtitle {
   font-weight: bold;
-  padding: 5px;
   display: block;
 }
 #form .subtitle, #form .subsubtitle {
@@ -153,7 +158,6 @@ canvas {
   padding: 5px 0px;
 }
 #form .subsubtitle {
-  padding-bottom: 10px;
 }
 #settings-1 {
   padding: 0px;

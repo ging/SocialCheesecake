@@ -93,7 +93,9 @@ function addSubsector(sector) {
 	for(var i = 0; i < actors.length; i++) {
 		actors[i].setAttribute("name", "actors_s" + sector + "s" + subsectorsCounter[sector]);
 	}
+	$(newSubsector).hide();
 	$(newSubsector).insertAfter(prevSubsector);
+	$(newSubsector).slideToggle("slow");
 	if(subsectorsCounter[sector] >= 3){
 		$("#add_subsector_button_s" + sector).attr("disabled", "true").slideToggle("slow");
 	} 
@@ -106,7 +108,7 @@ function checkboxesToActorsArray(name) {
 	for(var i = 0; i < checkboxes.length; i++) {
 		if(checkboxes[i].checked) {
 			var actor = [];
-			actor.push(i);$(document)
+			actor.push(i);
 			result.push(actor);
 		}
 	}
