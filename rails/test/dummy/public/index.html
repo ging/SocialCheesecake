@@ -28,37 +28,50 @@
 				createCheese();
 				// Icon Effects ----------------------------
 				var flipped = false;
+				var flipTime = 500;
 				var flipin = function() {
-					if($("#briefing #logo").html() != $("#briefing #logoback").html())
-						$("#briefing #logo").flip({
-							direction : 'lr',
-							dontChangeColor : true,
-							speed : 150,
-							content : $("#briefing #logoback").html(),
-							onEnd : function() {
-								flipped = true;
-							}
-						});
+					if((!flipped)&&($("#briefing #logo img").attr("src") != $("#briefing #logoback img").attr("src"))) {
+						var width = 100;
+						$("#briefing #logo img").animate({
+							width : 0,
+							height : "+=10",
+							"margin-top" : "-=5"
+						}, flipTime/2, function() {
+							$("#briefing #logo img").attr("src", $("#briefing #logoback img").attr("src"));
+							$("#briefing #logo img").animate({
+								width : width,
+								height : "-=10",
+								"margin-top" : "+=5"
+							}, flipTime/2, function() {
+								flipped = true
+							})
+						})
+					}
 				}
 				var flipout = function() {
-					if($("#briefing #logo").html() != $("#briefing #logofront").html())
-						$("#briefing #logo").flip({
-							direction : 'rl',
-							dontChangeColor : true,
-							speed : 150,
-							content : $("#briefing #logofront").html(),
-							onEnd : function() {
-								flipped = false;
-							}
-						});
+					if((flipped)&&($("#briefing #logo img").attr("src") != $("#briefing #logofront img").attr("src"))) {
+						var width = 100;
+						$("#briefing #logo img").animate({
+							width : 0,
+							height : "+=10",
+							"margin-top" : "-=5"
+						}, flipTime/2, function() {
+							$("#briefing #logo img").attr("src", $("#briefing #logofront img").attr("src"));
+							$("#briefing #logo img").animate({
+								width : width,
+								height : "-=10",
+								"margin-top" : "+=5"
+							}, flipTime/2, function() {
+								flipped = false
+							})
+						})
+					}
 				}
 				$("#briefing #logo").hover(function() {
-					console.log("in")
 					clearTimeout($(this).data('timeout1'));
 					clearTimeout($(this).data('timeout2'));
 					$(this).data('timeout1', setTimeout(flipin, 100));
 				}, function() {
-					console.log("out")
 					clearTimeout($(this).data('timeout1'));
 					clearTimeout($(this).data('timeout2'));
 					$(this).data('timeout2', setTimeout(flipout, 1000));
