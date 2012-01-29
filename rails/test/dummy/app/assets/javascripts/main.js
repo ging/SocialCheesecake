@@ -1,6 +1,7 @@
 var sectorsCounter = 0;
 var subsectorsCounter = [0];
 var cheese;
+var newSectorModel;
 var cheesecakeData = {
 	container : {
 		id : "cheesecake",
@@ -42,12 +43,12 @@ window.requestAnimFrame = (function(callback) {
 
 })();
 function addSector() {
-	if(this.newSectorModel==null) this.newSectorModel = $("#s0").clone();
+	if(newSectorModel == null) newSectorModel = $("#s0").clone();
 	var prevSector = "#s" + sectorsCounter;
 	if(sectorsCounter >= 15) return false;
 	sectorsCounter++;
 	subsectorsCounter.push(0);
-	var newSector = this.newSectorModel.clone();
+	var newSector = newSectorModel.clone();
 	newSector.attr("id", "s" + sectorsCounter);
 	newSector.find('.subtitle').text("Sector " + sectorsCounter);
 	newSector.find('.subsubtitle').text("Subsector 0");
