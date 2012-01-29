@@ -76,6 +76,9 @@ function addSector() {
 	$("#tabs-" + sectorsCounter).append(newSector);
 	if(sectorsCounter >= 15) {
 		$("#add_sector_button").attr("disabled", "true").slideToggle("slow");
+		$("#add_tab").remove();
+	}else{
+		$("#sectors").find("ul").append($("#add_tab"));
 	}
 	return true;
 }
@@ -271,6 +274,9 @@ $(function() {
 	addSubsector(1);
 	addSector();
 	addSubsector(2);
+	
+	$("#sectors").find("ul").append($("#add_tab"));
+	
 	createCheese();
 	// Popup funcitons -------------------------
 

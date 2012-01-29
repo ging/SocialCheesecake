@@ -232,6 +232,13 @@ canvas {
   padding: .5em 0px;
   width: 27px;
 }
+#add_tab{
+  background: #FFBABA;
+  border-style: dashed;
+}
+#add_tab a{
+  color: #BD1823;
+}
 #sectors .ui-tabs-nav li {
   margin: 0px;
   width: 27px;
