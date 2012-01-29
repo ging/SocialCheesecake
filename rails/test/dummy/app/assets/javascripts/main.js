@@ -77,7 +77,7 @@ function addSector() {
 	if(sectorsCounter >= 15) {
 		$("#add_sector_button").attr("disabled", "true").slideToggle("slow");
 		$("#add_tab").remove();
-	}else{
+	} else {
 		$("#sectors").find("ul").append($("#add_tab"));
 	}
 	return true;
@@ -216,22 +216,30 @@ function openPopup(id) {
 		id : "popup_darkener"
 	});
 	darkener.css("position", "fixed").css("top", 0).css("left", 0);
-	darkener.css("height", $(document).height()*1.2).css("width", $(document).width()*1.2).css("z-index", 1000);
+	var height = Math.max($(document).height(), $(window).height());
+	var width = Math.max($(document).width(), $(window).width());
+	darkener.css("height", height).css("width", width).css("z-index", 1000);
 	darkener.on("click", function() {
 		closePopup(id);
 	})
 	darkener.appendTo('body');
-	$("#" + id).css("position", "fixed").css("top", 400).css("left", $(window).width() / 2)
+	$("#" + id).css("position", "fixed").css("top", 400).css("left", $(window).width() / 2);
 	$("#" + id).css("height", 0).css("width", 0).css("z-index", 2000).show().animate({
 		width : 900,
 		height : 500,
 		top : "-=263",
 		left : "-=463"
-	}, 1000)
+	}, 1000);
+	$(window).on("resize.popup_" + id, function() {
+		var height = Math.max($(document).height(), $(window).height());
+		var width = Math.max($(document).width(), $(window).width());
+		$("#popup_darkener").css("height", height).css("width", width);
+		$("#" + id).css("top", 137).css("left", ($(window).width() / 2) - 463);
+	});
 }
 
 function closePopup(id) {
-	
+	$(window).off("resize.popup_" + id);
 	$("#" + id).animate({
 		width : 0,
 		height : 0,
@@ -274,9 +282,9 @@ $(function() {
 	addSubsector(1);
 	addSector();
 	addSubsector(2);
-	
+
 	$("#sectors").find("ul").append($("#add_tab"));
-	
+
 	createCheese();
 	// Popup funcitons -------------------------
 
