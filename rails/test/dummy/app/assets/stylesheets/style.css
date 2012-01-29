@@ -43,6 +43,14 @@ body {
   -moz-border-radius: 8px;
   background: rgba(254, 238, 189, 0.5);
 }
+#left_column .title {
+  font-weight: bold;
+  display: block;
+  padding: 5px;
+  color: #383838;
+  font-family: Segoe UI, Arial, sans-serif;
+  font-size: 13px;
+}
 #right_column {
   float: right;
   padding: 0px;
