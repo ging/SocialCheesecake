@@ -15,11 +15,15 @@
 				$("#settings").tabs({
 					fx : {
 						opacity : 'toggle',
-						height : 'toggle',
 						duration : 'slow'
 					}
 				});
-				$("#sectors").tabs();
+				$("#sectors").tabs({
+					fx : {
+						opacity : 'toggle',
+						duration : 'slow'
+					}
+				});
 				addSector();
 				addSubsector(1);
 				addSubsector(1);
@@ -30,38 +34,38 @@
 				var flipped = false;
 				var flipTime = 500;
 				var flipin = function() {
-					if((!flipped)&&($("#briefing #logo img").attr("src") != $("#briefing #logoback img").attr("src"))) {
+					if((!flipped) && ($("#briefing #logo img").attr("src") != $("#briefing #logoback img").attr("src"))) {
 						var width = 100;
 						$("#briefing #logo img").animate({
 							width : 0,
 							height : "+=10",
 							"margin-top" : "-=5"
-						}, flipTime/2, function() {
+						}, flipTime / 2, function() {
 							$("#briefing #logo img").attr("src", $("#briefing #logoback img").attr("src"));
 							$("#briefing #logo img").animate({
 								width : width,
 								height : "-=10",
 								"margin-top" : "+=5"
-							}, flipTime/2, function() {
+							}, flipTime / 2, function() {
 								flipped = true
 							})
 						})
 					}
 				}
 				var flipout = function() {
-					if((flipped)&&($("#briefing #logo img").attr("src") != $("#briefing #logofront img").attr("src"))) {
+					if((flipped) && ($("#briefing #logo img").attr("src") != $("#briefing #logofront img").attr("src"))) {
 						var width = 100;
 						$("#briefing #logo img").animate({
 							width : 0,
 							height : "+=10",
 							"margin-top" : "-=5"
-						}, flipTime/2, function() {
+						}, flipTime / 2, function() {
 							$("#briefing #logo img").attr("src", $("#briefing #logofront img").attr("src"));
 							$("#briefing #logo img").animate({
 								width : width,
 								height : "-=10",
 								"margin-top" : "+=5"
-							}, flipTime/2, function() {
+							}, flipTime / 2, function() {
 								flipped = false
 							})
 						})
@@ -82,6 +86,17 @@
 	</head>
 	<body id="container">
 		<div id="wrapper">
+			<div id="briefing">
+				<div id="logo">
+					<img src="assets/soialcheesecake_icon.png">
+				</div>
+				<div id="logoback" style="display:none;">
+					<img src="assets/soialcheesecake_icon_back.png">
+				</div>
+				<div id="logofront" style="display:none;">
+					<img src="assets/soialcheesecake_icon.png">
+				</div>
+			</div>
 			<div id="left_column">
 				<div id="cheesecake"></div>
 				<div id="grid">
@@ -98,17 +113,6 @@
 				</div>
 			</div>
 			<div id="right_column">
-				<div id="briefing">
-					<div id="logo">
-						<img src="assets/soialcheesecake_icon.png">
-					</div>
-					<div id="logoback" style="display:none;">
-						<img src="assets/soialcheesecake_icon_back.png">
-					</div>
-					<div id="logofront" style="display:none;">
-						<img src="assets/soialcheesecake_icon.png">
-					</div>
-				</div>
 				<form name ="settings" id= "form">
 					<div id="settings">
 						<div class="title">

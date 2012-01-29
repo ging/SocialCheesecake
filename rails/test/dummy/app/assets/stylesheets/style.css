@@ -8,36 +8,46 @@ body {
   padding: 10px;
   padding-bottom: 51px;
   margin: auto;
-  background: #FEFEE0;
+  background-color: #FEFEE0;
   border: 3px solid #ab8211;
   border-radius: 20px;
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   min-height: 550px;
+  background-image: url("socialcheesecake_background.png");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 #footer {
   width: 920px;
   padding: 10px;
   border: 1px solid #8E846B;
-  border-radius: 20px;
-  -webkit-border-radius: 20px;
-  -moz-border-radius: 20px;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
   margin-top: 15px;
   font: 12px helvetica;
   bottom: 10px;
   position: absolute;
+  background: rgba(254, 238, 189, 0.5);
 }
 #left_column {
   float: left;
   padding: 0px;
   margin: 0px;
-  width: 440px;  
+  width: 440px;
+  height: 570px;
+  border: 1px solid #8E846B;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  background: rgba(254, 238, 189, 0.5);
 }
 #right_column {
   float: right;
   padding: 0px;
   margin: 0px;
-  width: 490px;  
+  width: 490px;
 }
 canvas {
   position: relative !important;
@@ -54,7 +64,7 @@ canvas {
 }
 #briefing {
   height: 120px;
-  width: 490px;
+  width: 940px;
   display: block;
   float: right;
 }
@@ -63,7 +73,7 @@ canvas {
   width: 100px;
   margin: 10px auto;
 }
-#briefing #logo img{
+#briefing #logo img {
   height: 100px;
   width: 100px;
   padding: 0px;
@@ -78,7 +88,7 @@ canvas {
   width: 64px;
   height: 64px;
   float: left;
-  margin: 3px; 
+  margin: 3px;
   display: none;
   opacity: 0.8;
 }
@@ -103,7 +113,7 @@ canvas {
 }
 #form .row {
   display: block;
-} 
+}
 #form #add_sector button {
   width: 100%;
 }
@@ -125,7 +135,7 @@ canvas {
   -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
 }
-#form .sector div{
+#form .sector div {
   text-align: left;
 }
 #form .sector blockquote {
@@ -135,7 +145,7 @@ canvas {
   margin: 5px;
   border: 1px solid #8E846B;
   background: #EEDCB7;
-  padding: 5px;  
+  padding: 5px;
   border-radius: 8px;
   -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
@@ -143,7 +153,7 @@ canvas {
 #form .sector button {
   margin: auto;
 }
-#form .title{
+#form .title {
   padding: 5px;
 }
 #form .title, #form .subtitle, #form .subsubtitle {
@@ -159,8 +169,12 @@ canvas {
 }
 #form .subsubtitle {
 }
+#settings-0 {
+  height: 447px;
+}
 #settings-1 {
   padding: 0px;
+  height: 473px;
 }
 #sectors li a {
   padding: .5em 0px;
@@ -171,6 +185,11 @@ canvas {
   width: 27px;
   text-align: center;
 }
-#settings-1 .ui-tabs-panel{
+#settings-1 .ui-tabs-panel {
   padding-bottom: 0px !important;
+  height: 384px;
+  background: none;
+}
+.ui-widget-content {
+  background: rgba(254, 238, 189, 0.5);
 }
