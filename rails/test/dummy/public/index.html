@@ -5,84 +5,6 @@
 		<title>SocialCheeseCakeJS</title>
 		<link href="assets/application.css" rel="stylesheet" type="text/css">
 		<script src="assets/application.js" type="text/javascript"></script>
-		<script type="text/javascript">
-			$(function() {
-				$("#label_s0").val(randomName());
-				$("#label_s0s0").val(randomName());
-				$("#add_sector_button").click(addSector).button();
-				$("#create_button").click(createCheese).button();
-				$(".add_subsector_button").button();
-				$("#settings").tabs({
-					fx : {
-						opacity : 'toggle',
-						duration : 'slow'
-					}
-				});
-				$("#sectors").tabs({
-					fx : {
-						opacity : 'toggle',
-						duration : 'slow'
-					}
-				});
-				addSector();
-				addSubsector(1);
-				addSubsector(1);
-				addSector();
-				addSubsector(2);
-				createCheese();
-				// Icon Effects ----------------------------
-				var flipped = false;
-				var flipTime = 500;
-				var flipin = function() {
-					if((!flipped) && ($("#briefing #logo img").attr("src") != $("#briefing #logoback img").attr("src"))) {
-						var width = 100;
-						$("#briefing #logo img").animate({
-							width : 0,
-							height : "+=10",
-							"margin-top" : "-=5"
-						}, flipTime / 2, function() {
-							$("#briefing #logo img").attr("src", $("#briefing #logoback img").attr("src"));
-							$("#briefing #logo img").animate({
-								width : width,
-								height : "-=10",
-								"margin-top" : "+=5"
-							}, flipTime / 2, function() {
-								flipped = true
-							})
-						})
-					}
-				}
-				var flipout = function() {
-					if((flipped) && ($("#briefing #logo img").attr("src") != $("#briefing #logofront img").attr("src"))) {
-						var width = 100;
-						$("#briefing #logo img").animate({
-							width : 0,
-							height : "+=10",
-							"margin-top" : "-=5"
-						}, flipTime / 2, function() {
-							$("#briefing #logo img").attr("src", $("#briefing #logofront img").attr("src"));
-							$("#briefing #logo img").animate({
-								width : width,
-								height : "-=10",
-								"margin-top" : "+=5"
-							}, flipTime / 2, function() {
-								flipped = false
-							})
-						})
-					}
-				}
-				$("#briefing #logo").hover(function() {
-					clearTimeout($(this).data('timeout1'));
-					clearTimeout($(this).data('timeout2'));
-					$(this).data('timeout1', setTimeout(flipin, 100));
-				}, function() {
-					clearTimeout($(this).data('timeout1'));
-					clearTimeout($(this).data('timeout2'));
-					$(this).data('timeout2', setTimeout(flipout, 1000));
-				});
-				// END Icon Effects ----------------------------
-			})
-		</script>
 	</head>
 	<body id="container">
 		<div id="wrapper">
@@ -228,6 +150,9 @@
 			<div id="footer">
 				Copyright ©2012
 			</div>
+		</div>
+		<div id="briefing_popup" class="popup" style="display:none;">
+			
 		</div>
 	</body>
 </html>

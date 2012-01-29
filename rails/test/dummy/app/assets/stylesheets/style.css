@@ -18,6 +18,17 @@ body {
   background-repeat: no-repeat;
   background-position: center;
 }
+.popup {
+  padding: 10px;
+  background-color: #FEFEE0;
+  border: 3px solid #ab8211;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+}
+#popup_darkener {
+  background: rgba(50, 50, 50, 0.5);  
+}
 #footer {
   width: 920px;
   padding: 10px;

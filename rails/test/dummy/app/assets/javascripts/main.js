@@ -1,3 +1,10 @@
+window.requestAnimFrame = (function(callback) {
+	return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+	function(callback) {
+		window.setTimeout(callback, 1000 / 60);
+	};
+
+})();
 var sectorsCounter = 0;
 var subsectorsCounter = [0];
 var cheese;
@@ -15,7 +22,7 @@ var cheesecakeData = {
 	onChange : function() {
 		console.log("Cambio detectado");
 	},
-	colors: {
+	colors : {
 		normalSector : {
 			background : "#FEEEBD",
 			border : "#D19405",
@@ -31,21 +38,16 @@ var cheesecakeData = {
 			hover : "#FF5964"
 		}
 	},
-	text: {
+	text : {
 		newStyle : "bold italic 14px sans-serif"
 	}
 };
-window.requestAnimFrame = (function(callback) {
-	return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
-	function(callback) {
-		window.setTimeout(callback, 1000 / 60);
-	};
-
-})();
 function addSector() {
-	if(newSectorModel == null) newSectorModel = $("#s0").clone();
+	if(newSectorModel == null)
+		newSectorModel = $("#s0").clone();
 	var prevSector = "#s" + sectorsCounter;
-	if(sectorsCounter >= 15) return false;
+	if(sectorsCounter >= 15)
+		return false;
 	sectorsCounter++;
 	subsectorsCounter.push(0);
 	var newSector = newSectorModel.clone();
@@ -62,8 +64,8 @@ function addSector() {
 	var nameSubsector = newSector.find("#label_s0s0");
 	nameSubsector.attr("id", "label_s" + sectorsCounter + "s0");
 	nameSubsector.attr("value", randomName());
-	//Default	
-	newSector.find("#add_subsector_button_s0").attr("id", "add_subsector_button_s" + sectorsCounter);	
+	//Default
+	newSector.find("#add_subsector_button_s0").attr("id", "add_subsector_button_s" + sectorsCounter);
 
 	var actors = newSector.find(".actors");
 	for(var i = 0; i < actors.length; i++) {
@@ -72,15 +74,16 @@ function addSector() {
 	newSector.find('button').attr('onclick', "addSubsector(" + sectorsCounter + ")");
 	$("#sectors").tabs("add", "#tabs-" + sectorsCounter, sectorsCounter);
 	$("#tabs-" + sectorsCounter).append(newSector);
-	if(sectorsCounter >= 15){
+	if(sectorsCounter >= 15) {
 		$("#add_sector_button").attr("disabled", "true").slideToggle("slow");
-	} 
+	}
 	return true;
 }
 
 function addSubsector(sector) {
 	var prevSubsector = "#s" + sector + "s" + subsectorsCounter[sector];
-	if(subsectorsCounter[sector] >= 3) return false;
+	if(subsectorsCounter[sector] >= 3)
+		return false;
 	subsectorsCounter[sector]++;
 	var newSubsector = $("#s0s0").clone();
 	newSubsector.attr("id", "s" + sector + "s" + subsectorsCounter[sector]);
@@ -97,9 +100,9 @@ function addSubsector(sector) {
 	$(newSubsector).hide();
 	$(newSubsector).insertAfter(prevSubsector);
 	$(newSubsector).slideToggle("slow");
-	if(subsectorsCounter[sector] >= 3){
+	if(subsectorsCounter[sector] >= 3) {
 		$("#add_subsector_button_s" + sector).attr("disabled", "true").slideToggle("slow");
-	} 
+	}
 	return true;
 }
 
@@ -137,10 +140,10 @@ function createCheese() {
 		};
 		sectors.push(sector);
 	}
-	
+
 	cheesecakeData.rMax = rMax;
 	cheesecakeData.center = {
-		x : x, 
+		x : x,
 		y : y
 	};
 	cheesecakeData.sectors = sectors;
@@ -169,7 +172,7 @@ function randomName() {
 			strResult += strConvChar;
 			if(strConvChar == " " || strConvChar == "-") {
 				blnIsFirstChar = 1;
-			} else {cheesecake
+			} else { cheesecake
 				blnIsFirstChar = 0;
 			}
 		}
@@ -204,3 +207,132 @@ function randomName() {
 	}
 	return caseName(strName);
 }
+
+function openPopup(id) {
+	var darkener = $('<div/>', {
+		id : "popup_darkener"
+	});
+	darkener.css("position", "fixed").css("top", 0).css("left", 0);
+	darkener.css("height", $(document).height()*1.2).css("width", $(document).width()*1.2).css("z-index", 1000);
+	darkener.on("click", function() {
+		closePopup(id);
+	})
+	darkener.appendTo('body');
+	$("#" + id).css("position", "fixed").css("top", 400).css("left", $(window).width() / 2)
+	$("#" + id).css("height", 0).css("width", 0).css("z-index", 2000).show().animate({
+		width : 900,
+		height : 500,
+		top : "-=263",
+		left : "-=463"
+	}, 1000)
+}
+
+function closePopup(id) {
+	
+	$("#" + id).animate({
+		width : 0,
+		height : 0,
+		top : "+=263",
+		left : "+=463"
+	}, 1000, function() {
+		$("#" + id).hide()
+		$("#popup_darkener").remove();
+	})
+}
+
+function togglePopup(id) {
+	if($("#" + id).is(":visible")) {
+		closePopup(id);
+	} else {
+		openPopup(id);
+	}
+}
+
+$(function() {
+	$("#label_s0").val(randomName());
+	$("#label_s0s0").val(randomName());
+	$("#add_sector_button").click(addSector).button();
+	$("#create_button").click(createCheese).button();
+	$(".add_subsector_button").button();
+	$("#settings").tabs({
+		fx : {
+			opacity : 'toggle',
+			duration : 'slow'
+		}
+	});
+	$("#sectors").tabs({
+		fx : {
+			opacity : 'toggle',
+			duration : 'slow'
+		}
+	});
+	addSector();
+	addSubsector(1);
+	addSubsector(1);
+	addSector();
+	addSubsector(2);
+	createCheese();
+	// Popup funcitons -------------------------
+
+	// END Popup funcitons -------------------------
+	var flipped = false;
+	var flipTime = 500;
+	function flipin() {
+		if((!flipped) && ($("#briefing #logo img").attr("src") != $("#briefing #logoback img").attr("src"))) {
+			var width = 100;
+			$("#briefing #logo img").animate({
+				width : 0,
+				height : "+=10",
+				"margin-top" : "-=5"
+			}, flipTime / 2, function() {
+				$("#briefing #logo img").attr("src", $("#briefing #logoback img").attr("src"));
+				$("#briefing #logo img").css("cursor", "pointer");
+				$("#briefing #logo img").on("click.popup", function() {
+					togglePopup("briefing_popup");
+				})
+				$("#briefing #logo img").animate({
+					width : width,
+					height : "-=10",
+					"margin-top" : "+=5"
+				}, flipTime / 2, function() {
+					flipped = true
+				})
+			})
+		}
+	}
+
+	function flipout() {
+		if((flipped) && ($("#briefing #logo img").attr("src") != $("#briefing #logofront img").attr("src"))) {
+			var width = 100;
+			$("#briefing #logo img").animate({
+				width : 0,
+				height : "+=10",
+				"margin-top" : "-=5"
+			}, flipTime / 2, function() {
+				$("#briefing #logo img").attr("src", $("#briefing #logofront img").attr("src"));
+				$("#briefing #logo img").css("cursor", "inherited");
+				$("#briefing #logo img").off("click.popup");
+				$("#briefing #logo img").animate({
+					width : width,
+					height : "-=10",
+					"margin-top" : "+=5"
+				}, flipTime / 2, function() {
+					flipped = false
+				})
+			})
+		}
+	}
+
+
+	$("#briefing #logo").hover(function() {
+		clearTimeout($(this).data('timeout1'));
+		clearTimeout($(this).data('timeout2'));
+		$(this).data('timeout1', setTimeout(flipin, 100));
+	}, function() {
+		clearTimeout($(this).data('timeout1'));
+		clearTimeout($(this).data('timeout2'));
+		$(this).data('timeout2', setTimeout(flipout, 1000));
+	});
+	// END Icon Effects ----------------------------
+
+})
