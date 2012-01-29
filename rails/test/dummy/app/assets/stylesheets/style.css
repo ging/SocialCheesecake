@@ -217,11 +217,7 @@ canvas {
   background: rgba(254, 238, 189, 0.5);
   border-width : 2px;
 }
-#settings-0 {
-  height: 447px;
-  padding: 0;
-}
-#settings-1 {
+#settings-0, #settings-1 {
   padding: 0px;
   height: 473px;
 }
