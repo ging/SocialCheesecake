@@ -105,9 +105,9 @@ var socialCheesecake = socialCheesecake || {};
 				mouseup : {color : socialCheesecake.colors.extraSector.background},
 				mousedown : {
 					color : socialCheesecake.colors.extraSector.highlight,
-					callback : function(sector){
+					/*callback : function(sector){
 						cheesecake.focusAndBlurCheesecake(sector);
-					}
+					}*/
 				},
 				subsectors : [{
 					name : "New Subsector 1",

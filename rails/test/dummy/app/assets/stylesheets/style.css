@@ -32,17 +32,10 @@ body {
 #footer {
   width: 920px;
   padding: 10px;
-<<<<<<< HEAD
-  border: 1px solid #8E846B;
+  border: 1px solid #817865;
   border-radius: 8px;
   -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
-=======
-  border: 1px solid #817865;
-  border-radius: 20px;
-  -webkit-border-radius: 20px;
-  -moz-border-radius: 20px;
->>>>>>> Changes in jquery-ui style
   margin-top: 15px;
   font: 12px helvetica;
   bottom: 10px;
@@ -55,7 +48,7 @@ body {
   margin: 0px;
   width: 440px;
   height: 570px;
-  border: 1px solid #8E846B;
+  border: 2px solid #FFE481;
   border-radius: 8px;
   -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
@@ -140,8 +133,26 @@ canvas {
 #form .row {
   display: block;
 }
+#form .compound_row{
+  min-height : 80px;
+  max-width : 335px;
+  padding-left : 30px;
+}
+#form .compound_row .left_mid_row{
+  float: left; 
+}
+#form .compound_row .right_mid_row{
+  float : right;
+}
 #form #add_sector button {
   width: 100%;
+}
+#form .add_subsector_button{
+  float: right;
+}
+#form .button_container{
+  min-height: 30px;
+  padding-right: 5px;
 }
 #form #done {
   height: 50px;
@@ -153,13 +164,16 @@ canvas {
   width: 60px;
 }
 #form .sector {
-  background: rgba(238,220,183,0.5);
+  background: #feeebd url(images/ui-bg_highlight-soft_100_feeebd_1x100.png) 50% top repeat-x;;
   padding: 5px 10px;
-  border: 1px solid #8E846B;
+  border: 1px solid #EEDCB7;
   text-align: center;
   border-radius: 8px;
   -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 #form .sector div {
   text-align: left;
@@ -195,20 +209,24 @@ canvas {
 }
 #form .subsubtitle {
 }
-<<<<<<< HEAD
+#form ul{
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
 #settings {
   background: rgba(254, 238, 189, 0.5);
+  border-width : 2px;
 }
 #settings-0 {
   height: 447px;
-=======
-#settings{
-  border-width : 2px;
->>>>>>> Changes in jquery-ui style
+  padding: 0;
 }
 #settings-1 {
   padding: 0px;
   height: 473px;
+}
+#sectors {
+  border: none;
 }
 #sectors li a {
   padding: .5em 0px;
@@ -220,10 +238,11 @@ canvas {
   text-align: center;
 }
 #settings-1 .ui-tabs-panel {
-  padding-bottom: 0px !important;
+  padding: 0px !important;
   height: 384px;
   background: none;
 }
 .ui-widget-content {
   background: none;
+  border
 }
