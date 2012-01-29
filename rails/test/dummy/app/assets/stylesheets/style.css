@@ -169,6 +169,9 @@ canvas {
 }
 #form .subsubtitle {
 }
+#settings {
+  background: rgba(254, 238, 189, 0.5);
+}
 #settings-0 {
   height: 447px;
 }
@@ -191,5 +194,5 @@ canvas {
   background: none;
 }
 .ui-widget-content {
-  background: rgba(254, 238, 189, 0.5);
+  background: none;
 }
