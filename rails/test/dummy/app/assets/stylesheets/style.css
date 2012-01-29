@@ -127,7 +127,7 @@ canvas {
   width: 60px;
 }
 #form .sector {
-  background: #EEDCB7;
+  background: rgba(238,220,183,0.5);
   padding: 5px 10px;
   border: 1px solid #8E846B;
   text-align: center;
@@ -144,7 +144,7 @@ canvas {
 #form .sector .subsector {
   margin: 5px;
   border: 1px solid #8E846B;
-  background: #EEDCB7;
+  background: rgba(238,220,183,0.5);
   padding: 5px;
   border-radius: 8px;
   -webkit-border-radius: 8px;
