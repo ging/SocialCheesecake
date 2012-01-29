@@ -32,10 +32,17 @@ body {
 #footer {
   width: 920px;
   padding: 10px;
+<<<<<<< HEAD
   border: 1px solid #8E846B;
   border-radius: 8px;
   -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
+=======
+  border: 1px solid #817865;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+>>>>>>> Changes in jquery-ui style
   margin-top: 15px;
   font: 12px helvetica;
   bottom: 10px;
@@ -162,9 +169,9 @@ canvas {
 }
 #form .sector .subsector {
   margin: 5px;
-  border: 1px solid #8E846B;
   background: rgba(238,220,183,0.5);
-  padding: 5px;
+  border: 1px solid #A68211;
+  padding: 5px;  
   border-radius: 8px;
   -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
@@ -188,11 +195,16 @@ canvas {
 }
 #form .subsubtitle {
 }
+<<<<<<< HEAD
 #settings {
   background: rgba(254, 238, 189, 0.5);
 }
 #settings-0 {
   height: 447px;
+=======
+#settings{
+  border-width : 2px;
+>>>>>>> Changes in jquery-ui style
 }
 #settings-1 {
   padding: 0px;
