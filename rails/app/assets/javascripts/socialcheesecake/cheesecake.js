@@ -49,8 +49,7 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.grid = new socialCheesecake.Grid({
 			parent : this,
 			grid_id : cheesecakeData.grid.id,
-			divIdPrefix : cheesecakeData.grid.divIdPrefix || "actor_",
-			maxVisibleActors : cheesecakeData.grid.maxVisibleActors || 30
+			divIdPrefix : cheesecakeData.grid.divIdPrefix || "actor_"
 		});
 		cheesecake.searchEngine = new socialCheesecake.SearchEngine({
 			parent : this
