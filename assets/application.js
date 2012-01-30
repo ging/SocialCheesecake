@@ -10173,7 +10173,7 @@ function randomName() {
 			strResult += strConvChar;
 			if(strConvChar == " " || strConvChar == "-") {
 				blnIsFirstChar = 1;
-			} else { cheesecake
+			} else {
 				blnIsFirstChar = 0;
 			}
 		}
