@@ -5,7 +5,7 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.colors = {
 		normalSector : {
 			background : "#eeffee", //normal, mouseout, mouseup states
-			highlight : "#77ff77",	//mousedown state	
+			highlight : "#77ff77",	//click state	
 			hover : "#aaffaa",			//mouseover state
 			font : "#1F4A75",				//text
 			border : "#1F4A75"			//stroke
@@ -103,7 +103,7 @@ var socialCheesecake = socialCheesecake || {};
 					}
 				},
 				mouseup : {color : socialCheesecake.colors.extraSector.background},
-				mousedown : {
+				click : {
 					color : socialCheesecake.colors.extraSector.highlight
 					/*callback : function(sector){
 						cheesecake.focusAndBlurCheesecake(sector);
@@ -160,7 +160,7 @@ var socialCheesecake = socialCheesecake || {};
 						sector.fan(false);
 					}
 				},
-				mousedown : {
+				click : {
 					color : socialCheesecake.colors.normalSector.highlight,
 					callback : function(sector) {
 						cheesecake.focusAndBlurCheesecake(sector);
@@ -236,7 +236,7 @@ var socialCheesecake = socialCheesecake || {};
 					document.body.style.cursor = "default";
 				}
 			},
-			mousedown : { color : socialCheesecake.colors.greySector.highlight },
+			click : { color : socialCheesecake.colors.greySector.highlight },
 			mouseup : { color : socialCheesecake.colors.greySector.background },
 			mouseover : {
 				color : socialCheesecake.colors.greySector.hover,
@@ -281,12 +281,12 @@ var socialCheesecake = socialCheesecake || {};
 		mainLayer.add(dummySector.getRegion());
 
 		//Animations
-		var greyMousedownCallback = function() {
+		var greyClickCallback = function() {
 			greySector.label = "";
 			cheesecake.unfocusAndUnblurCheesecake();
 		}
 		var greyResizeCallback = function() {
-			greySector.mousedown.callback = greyMousedownCallback;
+			greySector.click.callback = greyClickCallback;
 			greySector.label = "GO BACK";
 		}
 		var greyRotateToCallback = function() {

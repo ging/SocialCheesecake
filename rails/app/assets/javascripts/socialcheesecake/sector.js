@@ -14,7 +14,7 @@ var socialCheesecake = socialCheesecake || {};
 			mouseover : { color : socialCheesecake.colors.normalSector.hover },
 			mouseout : { color : socialCheesecake.colors.normalSector.background },
 			mouseup : { color : socialCheesecake.colors.normalSector.background },
-			mousedown : { color : socialCheesecake.colors.normalSector.highlight },
+			click : { color : socialCheesecake.colors.normalSector.highlight },
 			auxiliar : false
 		}
 		for(var property in defaultSettings) {
@@ -43,7 +43,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.mouseover = settings.mouseover;
 		this.mouseup = settings.mouseup;
 		this.mouseout = settings.mouseout;
-		this.mousedown = settings.mousedown;
+		this.click = settings.click;
 		this.subsectors = [];
 		this.extraSubsectors = [];
 		this.actors = [];
@@ -88,7 +88,7 @@ var socialCheesecake = socialCheesecake || {};
 							subsector.getCheesecake().setHighlightedSector(subsector.parent);
 						}
 					},
-					mousedown : {
+					click : {
 						color : socialCheesecake.colors.normalSector.highlight,
 						callback : function(subsector) {
 							var selectedActors = subsector.getCheesecake().grid.getSelectedActors();
@@ -114,7 +114,7 @@ var socialCheesecake = socialCheesecake || {};
 			label : this.label,
 			mouseover : this.mouseover,
 			mouseout : this.mouseout,
-			mousedown : this.mousedown,
+			click : this.click,
 			mouseup : this.mouseup,
 			simulate : this.simulate,
 			subsectors : this.subsectors,
@@ -176,8 +176,8 @@ var socialCheesecake = socialCheesecake || {};
 			sector._region.on('mouseout', function() {
 				sector.eventHandler('mouseout');
 			});
-			sector._region.on('mousedown', function() {
-				sector.eventHandler('mousedown');
+			sector._region.on('click', function() {
+				sector.eventHandler('click');
 			});
 			sector._region.on('mouseup', function() {
 				sector.eventHandler('mouseup');
@@ -251,7 +251,7 @@ var socialCheesecake = socialCheesecake || {};
 					})
 				}
 			},
-			mousedown : { color: socialCheesecake.colors.extraSector.highlight},
+			click : { color: socialCheesecake.colors.extraSector.highlight},
 			mouseup : { color: socialCheesecake.colors.extraSector.background }
 		}		
 		//Add sector's subsectors
@@ -302,7 +302,7 @@ var socialCheesecake = socialCheesecake || {};
 							})
 						}
 					},
-				mousedown : { color: socialCheesecake.colors.extraSector.highlight},
+				click : { color: socialCheesecake.colors.extraSector.highlight},
 				mouseup : { color: socialCheesecake.colors.extraSector.background }
 				}
 				var extraSector = new socialCheesecake.Subsector(extraSettingsFirst);  
@@ -693,7 +693,7 @@ var socialCheesecake = socialCheesecake || {};
 		if(settings.color) this.color = settings.color;
 		if(settings.fontColor) this.fontColor = settings.fontColor;
 		if(settings.borderColor) this.borderColor = settings.borderColor;
-		if(settings.mousedown != null) this.mousedown = settings.mousedown;
+		if(settings.click != null) this.click = settings.click;
 		if(settings.mouseup != null) this.mouseup = settings.mouseup; 
 		if(settings.mouseover != null) this.mouseover = settings.mouseover; 
 		if(settings.mouseout != null) this.mouseout = settings.mouseout;
@@ -728,7 +728,7 @@ var socialCheesecake = socialCheesecake || {};
 		mouseover : this.mouseover,
 		mouseout : this.mouseout,
 		mouseup : this.mouseup,
-		mousedown : this.mousedown
+		click : this.click
 	});
 	
 	socialCheesecake.Subsector.prototype.getCheesecake = function () {
