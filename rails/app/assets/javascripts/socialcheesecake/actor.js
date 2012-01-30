@@ -49,7 +49,7 @@ var socialCheesecake = socialCheesecake || {};
 				actor.parents[subsector].changeColor(sector.mouseout.color);
 			}
 		}, false);
-		actor_div.addEventListener("mousedown", function(){
+		actor_div.addEventListener("click", function(){
 			var sector;
 			if( actor.isSelected()){
 				// Deactivate actor
