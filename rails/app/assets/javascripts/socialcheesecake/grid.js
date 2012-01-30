@@ -8,13 +8,14 @@ var socialCheesecake = socialCheesecake || {};
 		this.parent = settings.parent;
 		this.id = settings.grid_id;
 		this.divIdPrefix = settings.divIdPrefix;
+		this.maxVisibleActors = settings.maxVisibleActors;
 		this.visibleActors = [];
 	}
   
 	socialCheesecake.Grid.prototype.addActor = function (actor_info, subsector) {
 		var actors = this.actors;
 		var visibleActors = this.visibleActors;
-		var maxVisibleActors = socialCheesecake.Cheesecake.getMaxVisibleActors();
+		var maxVisibleActors = this.maxVisibleActors;
 		var actor;
 		
 		//Check if the actor is already in the array
@@ -195,7 +196,7 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Grid.prototype.show = function (actor_ids) {
 		var actor;
 		var visibleActors = this.visibleActors;
-		var maxActors = Math.min(actor_ids.length, socialCheesecake.Cheesecake.getMaxVisibleActors());
+		var maxActors = Math.min(actor_ids.length, this.maxVisibleActors);
 		
 		if (actor_ids instanceof Array) {
 			for(var i = 0; visibleActors.length < maxActors ; i++){
@@ -296,7 +297,7 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Grid.prototype.fadeIn = function (actor_ids, time, modifyDisplay, ignoreSelected) {
 		var actor;
 		var visibleActors = this.visibleActors;
-		var maxActors = Math.min(actor_ids.length, socialCheesecake.Cheesecake.getMaxVisibleActors());
+		var maxActors = Math.min(actor_ids.length, this.maxVisibleActors);
 		if (actor_ids instanceof Array) {
 			for(var i = 0; visibleActors.length < maxActors ; i++){
 				actor = actor_ids[i];

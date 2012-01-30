@@ -25,10 +25,7 @@ var socialCheesecake = socialCheesecake || {};
 			border : "#666"
 		}
 	}
-	
-	/* Number of actors to animate */
-	var maxVisibleActors = 30;
-	
+
 	socialCheesecake.Cheesecake = function(cheesecakeData) {
 		var jsonSectors = cheesecakeData.sectors;
 		var cheesecake = this;
@@ -49,7 +46,8 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.grid = new socialCheesecake.Grid({
 			parent : this,
 			grid_id : cheesecakeData.grid.id,
-			divIdPrefix : cheesecakeData.grid.divIdPrefix || "actor_"
+			divIdPrefix : cheesecakeData.grid.divIdPrefix || "actor_",
+			maxVisibleActors : cheesecakeData.grid.maxVisibleActors || 30
 		});
 		cheesecake.searchEngine = new socialCheesecake.SearchEngine({
 			parent : this
@@ -59,8 +57,6 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake._initialState = {};
 		cheesecake._changes = {};
 		cheesecake.onChange = function(cheesecake){};
-		if(cheesecakeData.maxVisibleActors != undefined) 
-			socialCheesecake.Cheesecake.setMaxVisibleActors(cheesecakeData.maxVisibleActors);
 		if(cheesecakeData.onChange)
 			cheesecake.onChange = cheesecakeData.onChange;
 		//Text settings
@@ -538,14 +534,6 @@ var socialCheesecake = socialCheesecake || {};
 				extraInfo : actors[actor].extraInfo
 			})
 		}		
-	}
-
-	/** Number of actors to animate */
-	socialCheesecake.Cheesecake.getMaxVisibleActors = function(){
-		return maxVisibleActors;
-	}
-	socialCheesecake.Cheesecake.setMaxVisibleActors = function(number){
-		if(typeof number === "number") maxVisibleActors = number;
 	}
 	
 })();
