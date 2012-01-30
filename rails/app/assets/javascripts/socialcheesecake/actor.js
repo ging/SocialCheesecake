@@ -71,45 +71,56 @@ var socialCheesecake = socialCheesecake || {};
 		return parentsIds;
 	}
 	
+	socialCheesecake.Actor.prototype.addClass = function(cssClass) {
+		var actor_div = this.getDiv();
+		var newClass="";
+		
+		if (actor_div.getAttribute("class")){
+			cssClass = " "+cssClass;
+			var classRegExp = new RegExp(cssClass);
+			if (!(actor_div.getAttribute("class").match(classRegExp) )){
+				newClass = actor_div.getAttribute("class").concat(cssClass);
+				actor_div.setAttribute("class", newClass);
+			}
+		}else{
+			newClass = cssClass;
+			actor_div.setAttribute("class", newClass);
+		}
+	}
+	
+	socialCheesecake.Actor.prototype.removeClass = function(cssClass) {
+		var actor_div = this.getDiv();
+		var newClass="";
+		var classRegExp = new RegExp("(^|\\s)" + cssClass + "($|\\s)");
+		
+		if (actor_div.getAttribute("class")){
+			newClass = actor_div.getAttribute("class").replace(classRegExp, "");
+			actor_div.setAttribute("class", newClass);
+		}
+	}
+	
 	socialCheesecake.Actor.prototype.isSelected = function() {
 		return this._selected;
 	}
 	
 	socialCheesecake.Actor.prototype.select = function() {
-		var actor = this;
-		actor._selected = true;
-		actor.focus();
+		this._selected = true;
+		this.addClass("selected");
 	}
 	
 	socialCheesecake.Actor.prototype.unselect = function() {
-		var actor = this;
-		actor._selected = false;
-		actor.unfocus();
+		this._selected = false;
+		this.removeClass("selected");
 	}
 	
-	socialCheesecake.Actor.prototype.focus = function() {
-		var actor_div = this.getDiv();
-		var newClass="";
+	socialCheesecake.Actor.prototype.focus = function() {		
 		this._focused = true;
-		if (actor_div.getAttribute("class")){
-			if (!(actor_div.getAttribute("class").match(/\sfocused/) )){
-				newClass = actor_div.getAttribute("class").concat(" focused");
-				actor_div.setAttribute("class", newClass);
-			}
-		}else{
-			newClass = "focused";
-			actor_div.setAttribute("class", newClass);
-		}
+		this.addClass("focused");
 	}
 	
 	socialCheesecake.Actor.prototype.unfocus = function() {
-		var actor_div = this.getDiv();
-		var newClass="";
 		this._focused = false;
-		if (actor_div.getAttribute("class")){
-			newClass = actor_div.getAttribute("class").replace(/(^|\s)focused($|\s)/, "");
-			actor_div.setAttribute("class", newClass);
-		}	
+		this.removeClass("focused");
 	}
 	
 	socialCheesecake.Actor.prototype.isFocused = function() {		var actor = this;
