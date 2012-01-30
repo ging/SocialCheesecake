@@ -37,7 +37,10 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.rMax = cheesecakeData.rMax;
 		cheesecake.sectors = [];
 		cheesecake.highlightedSector = null;
-		cheesecake.highlightedSectorCallback = cheesecakeData.highlightedSectorCallback || undefined;
+		cheesecake.onSectorHighlight = cheesecakeData.onSectorHighlight || null;
+		cheesecake.onSectorFocusBegin = cheesecakeData.onSectorFocusBegin || null;
+		cheesecake.onSectorFocusEnd = cheesecakeData.onSectorFocusEnd || null;
+		cheesecake.syncSectorFocusCallbacks = cheesecake.syncSectorFocusCallbacks || false;
 		cheesecake.auxiliarSectors = [];
 		cheesecake.stage = new Kinetic.Stage(cheesecakeData.container.id, 
 			cheesecakeData.container.width, cheesecakeData.container.height);
@@ -479,8 +482,8 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Cheesecake.prototype.setHighlightedSector = function(sector){
 		if(this.highlightedSector != sector){
 			this.highlightedSector = sector;
-			if(this.highlightedSectorCallback){
-				this.highlightedSectorCallback(this);
+			if(this.onSectorHighlight){
+				this.onSectorHighlight(this);
 			}
 		}
 	}
