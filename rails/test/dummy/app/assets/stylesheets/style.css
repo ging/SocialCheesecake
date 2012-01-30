@@ -146,10 +146,10 @@ canvas {
 }
 #form #add_sector button {
   width: 100%;
-}
+}/*
 #form .add_subsector_button{
   float: right;
-}
+}*/
 #form .button_container{
   min-height: 30px;
   padding-right: 5px;
