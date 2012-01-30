@@ -1,47 +1,44 @@
-var socialCheesecake = socialCheesecake || {}; (function() {
+var socialCheesecake = socialCheesecake || {};
+(function() {
 	socialCheesecake.text = {
 		style : "bold 14px sans-serif",
-		newStyle: "bold 14px sans-serif",
-		
+		newStyle : "bold 14px sans-serif",
+
 		addPlusCharacter : function(context, x, y, r, phi, delta, color, style) {
-			context.font = 
-				(style && socialCheesecake.text[style]) ? socialCheesecake.text[style] : socialCheesecake.text.style;
+			context.font = (style && socialCheesecake.text[style]) ? socialCheesecake.text[style] : socialCheesecake.text.style;
 			context.fillStyle = color || "#000";
-  		context.textAlign = "center";
+			context.textAlign = "center";
 			context.textBaseline = "middle";
 			text = "+";
 			context.translate(x, y);
-			context.rotate(- delta / 2 - phi - Math.PI / 2);
+			context.rotate(-delta / 2 - phi - Math.PI / 2);
 			context.fillText(text[0], 0, r);
 			context.restore();
 			context.save();
 		},
 		writeCurvedText : function(text, context, x, y, r, phi, delta, color, style) {
-			context.font = 
-				(style && socialCheesecake.text[style]) ? socialCheesecake.text[style] : socialCheesecake.text.style;
+			context.font = (style && socialCheesecake.text[style]) ? socialCheesecake.text[style] : socialCheesecake.text.style;
 			context.fillStyle = color || "#000";
 			context.textBaseline = "middle";
 			var medium_alpha = Math.tan(context.measureText(text).width / (text.length * r));
 			var old_text = null;
 			var original_text = text;
 			while(medium_alpha * (text.length + 4) > delta) {
-				if(old_text==text){
-					console.log("WARNING: Infinite loop detected and stopped. Text '" + original_text + "' failed to be " + 
-								"correctly truncated. Proccesed serveral times as '" + text + "' and will be returned as '" + 
-								words[0].substring(0, delta/medium_alpha - 7) + "'. Space too small to even be able to truncate.")								
-					text = words[0].substring(0, delta/medium_alpha - 7);
+				if(old_text == text) {
+					console.log("WARNING: Infinite loop detected and stopped. Text '" + original_text + "' failed to be " + "correctly truncated. Proccesed serveral times as '" + text + "' and will be returned as '" + words[0].substring(0, delta / medium_alpha - 7) + "'. Space too small to even be able to truncate.")
+					text = words[0].substring(0, delta / medium_alpha - 7);
 					break;
-				}else{
+				} else {
 					old_text = text;
 				}
 				words = text.split(" ");
-				if(words.length > 1){
+				if(words.length > 1) {
 					words.splice(words.length - 1, 1);
 					text = words.join(" ") + "...";
-				}else{
-					text = words[0].substring(0, delta/medium_alpha - 7) + "...";
+				} else {
+					text = words[0].substring(0, delta / medium_alpha - 7) + "...";
 				}
-				medium_alpha = Math.tan(context.measureText(text).width / (text.length * r));			
+				medium_alpha = Math.tan(context.measureText(text).width / (text.length * r));
 			}
 			context.translate(x, y);
 			var orientation = 0;
