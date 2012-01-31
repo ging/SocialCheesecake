@@ -135,8 +135,7 @@ var socialCheesecake = socialCheesecake || {};
 					color : socialCheesecake.colors.normalSector.hover,
 					callback : function(sector) {
 						document.body.style.cursor = "pointer";
-						cheesecake.grid.hideAll();
-						cheesecake.grid.fadeIn(sector.actors, 300, true);
+						cheesecake.grid.focus(sector.actors);
 						sector.focus();
 						if(cheesecake.highlightedSector != null) {
 							cheesecake.highlightedSector.fan(false, function() {
@@ -152,8 +151,7 @@ var socialCheesecake = socialCheesecake || {};
 					color : socialCheesecake.colors.normalSector.background,
 					callback : function(sector) {
 						document.body.style.cursor = "default";
-						cheesecake.grid.hide(sector.actors);
-						cheesecake.grid.fadeInAll(300, true);
+						cheesecake.grid.unfocusAll();
 						sector.unfocus();
 						sector.getCheesecake().setHighlightedSector(null);
 						sector.fan(false);

@@ -146,7 +146,7 @@ var socialCheesecake = socialCheesecake || {};
 		actor_div.setAttribute("style", newStyle);
 		this.fading = "none";
 	}
-
+	
 	socialCheesecake.Actor.prototype.show = function() {
 		var actor_div = this.getDiv();
 		var newStyle = " display: inline;";
