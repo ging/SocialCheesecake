@@ -285,7 +285,7 @@ var socialCheesecake = socialCheesecake || {};
 
 		mainLayer.add(greySector.getRegion());
 		mainLayer.add(dummySector.getRegion());
-
+		this.stage.draw();
 		//Animations
 		var greyClickCallback = function() {
 			greySector.label = "";
@@ -311,18 +311,29 @@ var socialCheesecake = socialCheesecake || {};
 				callback : dummyResizeCallback
 			});
 		}
+		var animations = function() {
+			greySector.rotateTo({
+				destination : 5 * Math.PI / 4,
+				callback : greyRotateToCallback,
+				anchor : "M"
+			});
 
-		greySector.rotateTo({
-			destination : 5 * Math.PI / 4,
-			callback : greyRotateToCallback,
-			anchor : "M"
-		});
-
-		dummySector.rotateTo({
-			destination : Math.PI / 4,
-			callback : dummyRotateToCallback,
-			anchor : "M"
-		});
+			dummySector.rotateTo({
+				destination : Math.PI / 4,
+				callback : dummyRotateToCallback,
+				anchor : "M"
+			});
+		}
+		if(this.onSectorFocusBegin) {
+			if(this.syncSectorFocusCallbacks) {
+				this.onSectorFocusBegin(this, animations);
+			} else {
+				this.onSectorFocusBegin(this);
+				animations();
+			}
+		} else {
+			animations();
+		}
 	}
 	socialCheesecake.Cheesecake.prototype.recoverCheesecake = function() {
 		var cheesecake = this;

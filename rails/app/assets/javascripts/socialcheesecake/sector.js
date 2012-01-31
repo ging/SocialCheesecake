@@ -206,6 +206,7 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Sector.prototype.splitUp = function() {
 		var cheesecake = this.getCheesecake();
+		var callback = cheesecake.onSectorFocusEnd;
 		var mainLayer = cheesecake.stage.mainLayer;
 		var phi = this.phi;
 		var delta = this.delta;
@@ -314,6 +315,9 @@ var socialCheesecake = socialCheesecake || {};
 			mainLayer.add(extraSector.getRegion());
 			this.extraSubsectors.push(extraSector);
 			rIn += extraWidth + sectorWidth;
+		}
+		if(callback){
+			callback(cheesecake);
 		}
 		mainLayer.draw();
 	}
