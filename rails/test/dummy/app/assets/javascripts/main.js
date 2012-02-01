@@ -27,15 +27,19 @@ var cheesecakeData = {
 			background : "#FEEEBD",
 			border : "#D19405",
 			font : "#D19405",
-			highlight : "#FFE481",
-			hover : "#FFE481"
+			click : "#FFE481",
+			mouseover : "#FFE481",
+			mouseup : "#FEEEBD",
+			mouseout : "#FEEEBD"
 		},
 		extraSector : {
 			background : "#FFBABA",
 			border : "#BD1823",
 			font : "#BD1823",
-			highlight : "#FF5964",
-			hover : "#FF5964"
+			click	: "#FF5964",
+			mouseover : "#FF5964",
+			mouseup : "#FFBABA",
+			mouseout : "#FFBABA"
 		}
 	},
 	text : {

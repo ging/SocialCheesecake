@@ -58,27 +58,13 @@ var socialCheesecake = socialCheesecake || {};
 				label : "+",
 				rOut : cheesecakeData.rMax,
 				color : socialCheesecake.colors.extraSector.background,
-				mouseover : {
-					color : socialCheesecake.colors.extraSector.hover,
-					callback : socialCheesecake.eventHandlers.extraSector.mouseover
-				},
-				mouseout : {
-					color : socialCheesecake.colors.extraSector.background,
-					callback : socialCheesecake.eventHandlers.extraSector.mouseout
-				},
-				mouseup : {
-					color : socialCheesecake.colors.extraSector.background
-				},
-				click : {
-					color : socialCheesecake.colors.extraSector.highlight,
-					callback : socialCheesecake.eventHandlers.extraSector.click
-				},
 				subsectors : [{
 					name : "New Subsector 1"
 				}],
 				auxiliar : true,
 				fontColor : socialCheesecake.colors.extraSector.font,
-				borderColor : socialCheesecake.colors.extraSector.border
+				borderColor : socialCheesecake.colors.extraSector.border,
+				type : "extraSector"
 			});
 			cheesecake.sectors[jsonSectors.length] = extraSector;
 		}
@@ -91,23 +77,9 @@ var socialCheesecake = socialCheesecake || {};
 				label : jsonSectors[i].name,
 				rOut : cheesecakeData.rMax,
 				subsectors : jsonSectors[i].subsectors,
-				mouseover : {
-					color : socialCheesecake.colors.normalSector.hover,
-					callback : socialCheesecake.eventHandlers.normalSector.mouseover
-				},
-				mouseout : {
-					color : socialCheesecake.colors.normalSector.background,
-					callback : socialCheesecake.eventHandlers.normalSector.mouseout
-				},
-				click : {
-					color : socialCheesecake.colors.normalSector.highlight,
-					callback : socialCheesecake.eventHandlers.normalSector.click
-				},
-				mouseup : {
-					color : socialCheesecake.colors.normalSector.background
-				},
 				fontColor : socialCheesecake.colors.normalSector.font,
-				borderColor : socialCheesecake.colors.normalSector.border
+				borderColor : socialCheesecake.colors.normalSector.border,
+				type : "normalSector"
 			};
 			cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
 		}
@@ -165,24 +137,11 @@ var socialCheesecake = socialCheesecake || {};
 			phi : sector.phi + sector.delta,
 			delta : 2 * Math.PI - sector.delta,
 			rOut : cheesecake.rMax,
-			mouseout : {
-				color : socialCheesecake.colors.greySector.background,
-				callback : socialCheesecake.eventHandlers.greySector.mouseout
-			},
-			click : {
-				color : socialCheesecake.colors.greySector.highlight
-			},
-			mouseup : {
-				color : socialCheesecake.colors.greySector.background
-			},
-			mouseover : {
-				color : socialCheesecake.colors.greySector.hover,
-				callback : socialCheesecake.eventHandlers.greySector.mouseover
-			},
 			color : socialCheesecake.colors.greySector.background,
 			fontColor : socialCheesecake.colors.greySector.font,
 			borderColor : socialCheesecake.colors.greySector.border,
-			auxiliar : true
+			auxiliar : true,
+			type : "greySector"
 		};
 		var dummySettings = {
 			parent : cheesecake,
@@ -198,14 +157,6 @@ var socialCheesecake = socialCheesecake || {};
 			fontColor : sector.fontColor,
 			borderColor : sector.borderColor,
 			simulate : sectorIndex,
-			mouseout : {
-				color : sector.mouseout.color,
-				callback : socialCheesecake.eventHandlers.normalSector.mouseout
-			},
-			mouseover : {
-				color : sector.mouseover.color,
-				callback : socialCheesecake.eventHandlers.normalSector.mouseover
-			},
 			auxiliar : true
 		};
 		var greySector = new socialCheesecake.Sector(greySettings);
@@ -222,7 +173,9 @@ var socialCheesecake = socialCheesecake || {};
 			cheesecake.unfocusAndUnblurCheesecake();
 		};
 		var greyResizeCallback = function() {
-			greySector.click.callback = greyClickCallback;
+			greySector.click = {
+				callback : greyClickCallback
+			}
 			greySector.label = "GO BACK";
 		};
 		var greyRotateToCallback = function() {
@@ -347,21 +300,6 @@ var socialCheesecake = socialCheesecake || {};
 			label : "New Sector",
 			rOut : cheesecake.rMax,
 			subsectors : [{name : "New Subsector 1"}],
-			mouseover : {
-				color : socialCheesecake.colors.normalSector.hover,
-				callback : socialCheesecake.eventHandlers.normalSector.mouseover
-			},
-			mouseout : {
-				color : socialCheesecake.colors.normalSector.background,
-				callback : socialCheesecake.eventHandlers.normalSector.mouseout
-			},
-			click : {
-				color : socialCheesecake.colors.normalSector.highlight,
-				callback : socialCheesecake.eventHandlers.normalSector.click
-			},
-			mouseup : {
-				color : socialCheesecake.colors.normalSector.background
-			},
 			fontColor : socialCheesecake.colors.normalSector.font,
 			borderColor : socialCheesecake.colors.normalSector.border
 		};

@@ -60,14 +60,61 @@ var socialCheesecake = socialCheesecake || {};
 			mouseout : function() {
 					document.body.style.cursor = "default";
 			},
-			click : {
-				
+			click : function() {
+				return;
 			},
-			mouseup : {
-				
+			mouseup : function(){
+				return;
 			},
 			mouseover : function() {
 					document.body.style.cursor = "pointer";
+			}
+		},
+		normalSubsector : {
+			mouseover : function(subsector) {
+				var cheesecake = subsector.getCheesecake();
+				document.body.style.cursor = "pointer";
+				cheesecake.grid.hideAll();
+				cheesecake.grid.fadeIn(subsector.actors, 300, true);
+				cheesecake.setHighlightedSector(subsector);
+				cheesecake.stage.mainLayer.draw();
+			},
+			mouseout : function(subsector) {
+				var cheesecake = subsector.getCheesecake();
+				document.body.style.cursor = "default";
+				cheesecake.grid.fadeIn(subsector.parent.actors, 300, true);
+				cheesecake.setHighlightedSector(subsector.parent);
+			},
+			click : function(subsector) {
+				var cheesecake = subsector.getCheesecake();
+				var selectedActors = cheesecake.grid.getSelectedActors();
+				if(selectedActors.length > 0) subsector.changeMembership(selectedActors);
+			},
+			mouseup : function(){
+				return;
+			}
+		},
+		extraSubsector : {
+			mouseover : function (sector){
+				sector.resizeWidth({
+					width : (sector.originalAttr.rOut - sector.originalAttr.rIn)*1.5,
+					anchor : "m",
+					step : 1 
+				});
+			},
+			mouseout : function(sector){
+				sector.resizeWidth({
+					width : (sector.originalAttr.rOut - sector.originalAttr.rIn),
+					anchor : "m",
+					step : 1,
+					priority : true 
+				})
+			},
+			click : function(){
+				return;
+			},
+			mouseup : function(){
+				return;
 			}
 		}
 	}
