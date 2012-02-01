@@ -195,6 +195,7 @@ var socialCheesecake = socialCheesecake || {};
 			}
 			if(sector[eventName].callback != null) {
 				sector[eventName].callback(sector);
+				//socialCheesecake.eventHandlers['normalSector'][eventName](sector);
 			}
 		}
 	}

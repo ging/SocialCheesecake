@@ -54,38 +54,24 @@ var socialCheesecake = socialCheesecake || {};
 		if(jsonSectors.length < 16) {
 			var extraSector = new socialCheesecake.Sector({
 				parent : cheesecake,
-				center : {
-					x : cheesecakeData.center.x,
-					y : cheesecakeData.center.y
-				},
+				center : cheesecake.center,
 				label : "+",
 				rOut : cheesecakeData.rMax,
 				color : socialCheesecake.colors.extraSector.background,
 				mouseover : {
 					color : socialCheesecake.colors.extraSector.hover,
-					callback : function(sector) {
-						document.body.style.cursor = "pointer";
-						sector.focus();
-						cheesecake.grid.hideAll();
-					}
+					callback : socialCheesecake.eventHandlers.extraSector.mouseover
 				},
 				mouseout : {
 					color : socialCheesecake.colors.extraSector.background,
-					callback : function(sector) {
-						document.body.style.cursor = "default";
-						sector.unfocus();
-						cheesecake.grid.fadeInAll(300, true);
-					}
+					callback : socialCheesecake.eventHandlers.extraSector.mouseout
 				},
 				mouseup : {
 					color : socialCheesecake.colors.extraSector.background
 				},
 				click : {
 					color : socialCheesecake.colors.extraSector.highlight,
-					callback : function(sector){
-					 cheesecake.focusAndBlurCheesecake(sector);
-					 cheesecake.addNewSector();
-					}
+					callback : socialCheesecake.eventHandlers.extraSector.click
 				},
 				subsectors : [{
 					name : "New Subsector 1"
@@ -100,47 +86,22 @@ var socialCheesecake = socialCheesecake || {};
 		for(var i = 0; i < minNumSectors; i++) {
 			var settings = {
 				parent : cheesecake,
-				center : {
-					x : cheesecakeData.center.x,
-					y : cheesecakeData.center.y
-				},
+				center : cheesecake.center,
 				id : jsonSectors[i].id,
 				label : jsonSectors[i].name,
 				rOut : cheesecakeData.rMax,
 				subsectors : jsonSectors[i].subsectors,
 				mouseover : {
 					color : socialCheesecake.colors.normalSector.hover,
-					callback : function(sector) {
-						document.body.style.cursor = "pointer";
-						cheesecake.grid.focus(sector.actors);
-						sector.focus();
-						if(cheesecake.highlightedSector != null) {
-							cheesecake.highlightedSector.fan(false, function() {
-								sector.fan(true);
-							});
-						} else {
-							sector.fan(true);
-						}
-						sector.getCheesecake().setHighlightedSector(sector);
-					}
+					callback : socialCheesecake.eventHandlers.normalSector.mouseover
 				},
 				mouseout : {
 					color : socialCheesecake.colors.normalSector.background,
-					callback : function(sector) {
-						document.body.style.cursor = "default";
-						cheesecake.grid.unfocusAll();
-						sector.unfocus();
-						sector.getCheesecake().setHighlightedSector(null);
-						sector.fan(false);
-					}
+					callback : socialCheesecake.eventHandlers.normalSector.mouseout
 				},
 				click : {
 					color : socialCheesecake.colors.normalSector.highlight,
-					callback : function(sector) {
-						cheesecake.focusAndBlurCheesecake(sector);
-						cheesecake.grid.hideAll();
-						cheesecake.grid.fadeIn(sector.actors, 300, true);
-					}
+					callback : socialCheesecake.eventHandlers.normalSector.click
 				},
 				mouseup : {
 					color : socialCheesecake.colors.normalSector.background
@@ -200,18 +161,13 @@ var socialCheesecake = socialCheesecake || {};
 		//Add auxiliar sectors
 		var greySettings = {
 			parent : cheesecake,
-			center : {
-				x : cheesecake.center.x,
-				y : cheesecake.center.y
-			},
+			center : cheesecake.center,
 			phi : sector.phi + sector.delta,
 			delta : 2 * Math.PI - sector.delta,
 			rOut : cheesecake.rMax,
 			mouseout : {
 				color : socialCheesecake.colors.greySector.background,
-				callback : function() {
-					document.body.style.cursor = "default";
-				}
+				callback : socialCheesecake.eventHandlers.greySector.mouseout
 			},
 			click : {
 				color : socialCheesecake.colors.greySector.highlight
@@ -221,9 +177,7 @@ var socialCheesecake = socialCheesecake || {};
 			},
 			mouseover : {
 				color : socialCheesecake.colors.greySector.hover,
-				callback : function() {
-					document.body.style.cursor = "pointer";
-				}
+				callback : socialCheesecake.eventHandlers.greySector.mouseover
 			},
 			color : socialCheesecake.colors.greySector.background,
 			fontColor : socialCheesecake.colors.greySector.font,
@@ -246,15 +200,11 @@ var socialCheesecake = socialCheesecake || {};
 			simulate : sectorIndex,
 			mouseout : {
 				color : sector.mouseout.color,
-				callback : function() {
-					document.body.style.cursor = "default";
-				}
+				callback : socialCheesecake.eventHandlers.normalSector.mouseout
 			},
 			mouseover : {
 				color : sector.mouseover.color,
-				callback : function() {
-					document.body.style.cursor = "pointer";
-				}
+				callback : socialCheesecake.eventHandlers.normalSector.mouseover
 			},
 			auxiliar : true
 		};
@@ -270,27 +220,27 @@ var socialCheesecake = socialCheesecake || {};
 		var greyClickCallback = function() {
 			greySector.label = "";
 			cheesecake.unfocusAndUnblurCheesecake();
-		}
+		};
 		var greyResizeCallback = function() {
 			greySector.click.callback = greyClickCallback;
 			greySector.label = "GO BACK";
-		}
+		};
 		var greyRotateToCallback = function() {
 			greySector.resizeDelta({
 				delta : 3 * Math.PI / 2,
 				anchor : "M",
 				callback : greyResizeCallback
 			});
-		}
+		};
 		var dummyResizeCallback = function() {
 			dummySector.splitUp();
-		}
+		};
 		var dummyRotateToCallback = function() {
 			dummySector.resizeDelta({
 				anchor : "M",
 				callback : dummyResizeCallback
 			});
-		}
+		};
 		var animations = function() {
 			greySector.rotateTo({
 				destination : 5 * Math.PI / 4,
@@ -303,7 +253,7 @@ var socialCheesecake = socialCheesecake || {};
 				callback : dummyRotateToCallback,
 				anchor : "M"
 			});
-		}
+		};
 		if(this.onSectorFocusBegin) {
 			if(this.syncSectorFocusCallbacks) {
 				this.onSectorFocusBegin(this, animations);
@@ -399,37 +349,15 @@ var socialCheesecake = socialCheesecake || {};
 			subsectors : [{name : "New Subsector 1"}],
 			mouseover : {
 				color : socialCheesecake.colors.normalSector.hover,
-				callback : function(sector) {
-					document.body.style.cursor = "pointer";
-					cheesecake.grid.focus(sector.actors);
-					sector.focus();
-					if(cheesecake.highlightedSector != null) {
-						cheesecake.highlightedSector.fan(false, function() {
-							sector.fan(true);
-						});
-					} else {
-						sector.fan(true);
-					}
-					sector.getCheesecake().setHighlightedSector(sector);
-				}
+				callback : socialCheesecake.eventHandlers.normalSector.mouseover
 			},
 			mouseout : {
 				color : socialCheesecake.colors.normalSector.background,
-				callback : function(sector) {
-					document.body.style.cursor = "default";
-					cheesecake.grid.unfocusAll();
-					sector.unfocus();
-					sector.getCheesecake().setHighlightedSector(null);
-					sector.fan(false);
-				}
+				callback : socialCheesecake.eventHandlers.normalSector.mouseout
 			},
 			click : {
 				color : socialCheesecake.colors.normalSector.highlight,
-				callback : function(sector) {
-					cheesecake.focusAndBlurCheesecake(sector);
-					cheesecake.grid.hideAll();
-					cheesecake.grid.fadeIn(sector.actors, 300, true);
-				}
+				callback : socialCheesecake.eventHandlers.normalSector.click
 			},
 			mouseup : {
 				color : socialCheesecake.colors.normalSector.background
