@@ -1,4 +1,4 @@
-var socialCheesecake = socialCheesecake || {}; 
+var socialCheesecake = socialCheesecake || {};
 (function() {
 	socialCheesecake.Cheesecake = function(cheesecakeData) {
 		var jsonSectors = cheesecakeData.sectors;
@@ -168,7 +168,6 @@ var socialCheesecake = socialCheesecake || {};
 
 		mainLayer.add(greySector.getRegion());
 		mainLayer.add(dummySector.getRegion());
-		this.stage.draw();
 		//Animations
 		var greyClickCallback = function() {
 			greySector.label = "";
@@ -191,34 +190,34 @@ var socialCheesecake = socialCheesecake || {};
 			dummySector.splitUp();
 		};
 		var dummyRotateToCallback = function() {
-			dummySector.resizeDelta({
-				anchor : "M",
-				callback : dummyResizeCallback
-			});
-		};
-		var animations = function() {
-			greySector.rotateTo({
-				destination : 5 * Math.PI / 4,
-				callback : greyRotateToCallback,
-				anchor : "M"
-			});
-
-			dummySector.rotateTo({
-				destination : Math.PI / 4,
-				callback : dummyRotateToCallback,
-				anchor : "M"
-			});
-		};
-		if(this.onSectorFocusBegin) {
-			if(this.syncSectorFocusCallbacks) {
-				this.onSectorFocusBegin(this, animations);
-			} else {
-				this.onSectorFocusBegin(this);
-				animations();
+			var callback = function() {
+				dummySector.resizeDelta({
+					anchor : "M",
+					callback : dummyResizeCallback
+				});
 			}
-		} else {
-			animations();
+			if(cheesecake.onSectorFocusBegin) {
+				if(cheesecake.syncSectorFocusCallbacks) {
+					cheesecake.onSectorFocusBegin(cheesecake, callback);
+				} else {
+					cheesecake.onSectorFocusBegin(cheesecake);
+					callback();
+				}
+			} else {
+				callback();
+			}
 		}
+		greySector.rotateTo({
+			destination : 5 * Math.PI / 4,
+			callback : greyRotateToCallback,
+			anchor : "M"
+		});
+
+		dummySector.rotateTo({
+			destination : Math.PI / 4,
+			callback : dummyRotateToCallback,
+			anchor : "M"
+		});
 	}
 	socialCheesecake.Cheesecake.prototype.recoverCheesecake = function() {
 		var cheesecake = this;
@@ -252,41 +251,55 @@ var socialCheesecake = socialCheesecake || {};
 		var sectorNewDelta;
 		var sectorNewPhi;
 		var greySector;
-
-		//Localize the dummy and grey sectors
-		for(var i in auxiliarSectors) {
-			if(auxiliarSectors[i].simulate != null) {
-				sector = auxiliarSectors[i];
-			} else {
-				greySector = auxiliarSectors[i];
+		var actions = function() {
+			//Localize the dummy and grey sectors
+			for(var i in auxiliarSectors) {
+				if(auxiliarSectors[i].simulate != null) {
+					sector = auxiliarSectors[i];
+				} else {
+					greySector = auxiliarSectors[i];
+				}
 			}
-		}
 
-		//Animate and go back to the general view
-		sectorNewDelta = cheesecake.sectors[sector.simulate].delta;
-		sectorNewPhi = cheesecake.sectors[sector.simulate].phi;
-		sector.putTogether();
-		sector.resizeDelta({
-			anchor : "M",
-			delta : sectorNewDelta,
-			callback : function() {
-				sector.rotateTo({
-					destination : sectorNewPhi
-				});
-			}
-		});
-		greySector.resizeDelta({
-			anchor : "M",
-			delta : (2 * Math.PI) - sectorNewDelta,
-			callback : function() {
-				greySector.rotateTo({
-					destination : sectorNewPhi + sectorNewDelta,
-					callback : function() {
-						cheesecake.recoverCheesecake();
+			//Animate and go back to the general view
+			sectorNewDelta = cheesecake.sectors[sector.simulate].delta;
+			sectorNewPhi = cheesecake.sectors[sector.simulate].phi;
+			sector.putTogether();
+			sector.resizeDelta({
+				anchor : "M",
+				delta : sectorNewDelta,
+				callback : function() {
+					if(cheesecake.onSectorFocusBegin) {
+						cheesecake.onSectorFocusEnd(cheesecake);
 					}
-				});
+					sector.rotateTo({
+						destination : sectorNewPhi
+					});
+				}
+			});
+			greySector.resizeDelta({
+				anchor : "M",
+				delta : (2 * Math.PI) - sectorNewDelta,
+				callback : function() {
+					greySector.rotateTo({
+						destination : sectorNewPhi + sectorNewDelta,
+						callback : function() {
+							cheesecake.recoverCheesecake();
+						}
+					});
+				}
+			});
+		}
+		if(cheesecake.onSectorFocusBegin) {
+			if(cheesecake.syncSectorFocusCallbacks) {
+				cheesecake.onSectorFocusBegin(cheesecake, actions);
+			} else {
+				cheesecake.onSectorFocusBegin(cheesecake);
+				actions();
 			}
-		});
+		} else {
+			actions();
+		}
 	}
 	
 	socialCheesecake.Cheesecake.prototype.addNewSector = function() {
