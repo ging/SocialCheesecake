@@ -179,7 +179,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.hide(this.actors);
 	}
 
-	socialCheesecake.Grid.prototype.show = function(actor_ids) {
+	socialCheesecake.Grid.prototype.show = function(actor_ids, ignoreSelected) {
 		var actor;
 
 		if( actor_ids instanceof Array) {
