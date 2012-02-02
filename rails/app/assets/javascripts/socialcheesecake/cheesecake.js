@@ -65,7 +65,6 @@ var socialCheesecake = socialCheesecake || {};
 				}],
 				auxiliar : true,
 				fontColor : socialCheesecake.colors.extraSector.font,
-				borderColor : socialCheesecake.colors.extraSector.border,
 				type : "extraSector"
 			});
 			cheesecake.sectors[jsonSectors.length] = extraSector;
@@ -80,7 +79,6 @@ var socialCheesecake = socialCheesecake || {};
 				rOut : cheesecakeData.rMax,
 				subsectors : jsonSectors[i].subsectors,
 				fontColor : socialCheesecake.colors.normalSector.font,
-				borderColor : socialCheesecake.colors.normalSector.border,
 				type : "normalSector"
 			};
 			cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
@@ -141,7 +139,6 @@ var socialCheesecake = socialCheesecake || {};
 			rOut : cheesecake.rMax,
 			color : socialCheesecake.colors.greySector.background,
 			fontColor : socialCheesecake.colors.greySector.font,
-			borderColor : socialCheesecake.colors.greySector.border,
 			auxiliar : true,
 			type : "greySector"
 		};
@@ -155,9 +152,9 @@ var socialCheesecake = socialCheesecake || {};
 			delta : sector.delta,
 			rOut : sector.rOut,
 			label : sector.label,
+			borderColor : socialCheesecake.colors[sector.type]["border"],
 			color : sector.color,
 			fontColor : sector.fontColor,
-			borderColor : sector.borderColor,
 			simulate : sectorIndex,
 			auxiliar : true
 		};
@@ -319,8 +316,7 @@ var socialCheesecake = socialCheesecake || {};
 			label : "New Sector",
 			rOut : cheesecake.rMax,
 			subsectors : [{name : "New Subsector 1"}],
-			fontColor : socialCheesecake.colors.normalSector.font,
-			borderColor : socialCheesecake.colors.normalSector.border
+			fontColor : socialCheesecake.colors.normalSector.font
 		};
 		//move the extra sector to its new position, create new sector.
 		sectors.push(sectors[sectors.length-1]);

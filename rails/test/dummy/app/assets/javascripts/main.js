@@ -22,26 +22,6 @@ var cheesecakeData = {
 	onChange : function() {
 		console.log("Cambio detectado");
 	},
-	colors : {
-		normalSector : {
-			background : "#FEEEBD",
-			border : "#D19405",
-			font : "#D19405",
-			click : "#FFE481",
-			mouseover : "#FFE481",
-			mouseup : "#FEEEBD",
-			mouseout : "#FEEEBD"
-		},
-		extraSector : {
-			background : "#FFBABA",
-			border : "#BD1823",
-			font : "#BD1823",
-			click	: "#FF5964",
-			mouseover : "#FF5964",
-			mouseup : "#FFBABA",
-			mouseout : "#FFBABA"
-		}
-	},
 	text : {
 		newStyle : "bold italic 14px sans-serif"
 	}

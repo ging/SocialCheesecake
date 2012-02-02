@@ -1,6 +1,6 @@
 var socialCheesecake = socialCheesecake || {}; 
 (function() {
-	socialCheesecake.eventHandlers = {
+	socialCheesecake.eventCallbackHandlers = {
 		normalSector : {
 			mouseover : function(sector) {
 				var cheesecake = sector.getCheesecake();

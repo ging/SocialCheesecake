@@ -10,7 +10,6 @@ var socialCheesecake = socialCheesecake || {};
 			label : "",
 			color : socialCheesecake.colors.normalSector.background,
 			fontColor : socialCheesecake.colors.normalSector.font,
-			borderColor : socialCheesecake.colors.normalSector.border,
 			auxiliar : false,
 			type : "normalSector"
 		}
@@ -36,7 +35,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.label = settings.label;
 		this.color = settings.color;
 		this.fontColor = settings.fontColor;
-		this.borderColor = settings.borderColor;
+		if(settings.borderColor) this.borderColor = settings.borderColor;
 		if(settings.mouseover) this.mouseover = settings.mouseover;
 		if(settings.mouseup) this.mouseup = settings.mouseup;
 		if(settings.mouseout) this.mouseout = settings.mouseout;
@@ -66,7 +65,6 @@ var socialCheesecake = socialCheesecake || {};
 					rOut : rOutSubsector,
 					actors : settings.subsectors[i].actors,
 					color : socialCheesecake.colors.normalSector.background,
-					borderColor : socialCheesecake.colors.normalSector.border,
 					fontColor : socialCheesecake.colors.normalSector.font
 				});
 				rInSubsector = rOutSubsector;
@@ -83,7 +81,6 @@ var socialCheesecake = socialCheesecake || {};
 			rOut : this.rOut,
 			color : this.color,
 			fontColor : this.fontColor,
-			borderColor : this.borderColor,
 			label : this.label,
 			simulate : this.simulate,
 			subsectors : this.subsectors,
@@ -103,9 +100,9 @@ var socialCheesecake = socialCheesecake || {};
 		var rOut = this.rOut;
 		var color = this.color;
 		var fontColor = this.fontColor;
-		var borderColor = this.borderColor;
 		var label = this.label;
 		var actors = this.actors;
+		var type = this.type;
 		
 		context.restore();
 		context.save();
@@ -117,7 +114,7 @@ var socialCheesecake = socialCheesecake || {};
 		context.fillStyle = color;
 		context.fill();
 		context.lineWidth = 2;
-		context.strokeStyle = borderColor;
+		context.strokeStyle = this.borderColor || socialCheesecake.colors[type]["border"];
 		context.stroke();
 		if((this.auxiliar)&&(label=="+")){
 			socialCheesecake.text.addPlusCharacter(context, x, y, 0.5*(rOut-rIn) + rIn, 
@@ -179,8 +176,8 @@ var socialCheesecake = socialCheesecake || {};
 
 		if(sector[eventName] != null && sector[eventName].callback != null){
 			sector[eventName].callback(sector);
-		}else	if(socialCheesecake.eventHandlers[type] && socialCheesecake.eventHandlers[type][eventName]){
-			socialCheesecake.eventHandlers[type][eventName](sector);
+		}else	if(socialCheesecake.eventCallbackHandlers[type] && socialCheesecake.eventCallbackHandlers[type][eventName]){
+			socialCheesecake.eventCallbackHandlers[type][eventName](sector);
 		}
 	}
 	
@@ -214,7 +211,6 @@ var socialCheesecake = socialCheesecake || {};
 			parent : this,
 			auxiliar : true,
 			color : socialCheesecake.colors.extraSector.background,
-			borderColor : socialCheesecake.colors.extraSector.border,
 			fontColor : socialCheesecake.colors.extraSector.font,
 			type : "extraSubsector"
 		}		
@@ -243,7 +239,6 @@ var socialCheesecake = socialCheesecake || {};
 					parent : this,
 					auxiliar : true,
 					color : socialCheesecake.colors.extraSector.background,
-					borderColor : socialCheesecake.colors.extraSector.border,
 					fontColor : socialCheesecake.colors.extraSector.font,
 					mouseover : {
 						callback : function (sector){

@@ -3,22 +3,22 @@ var socialCheesecake = socialCheesecake || {};
 	//General variable settings (with default values)
 	socialCheesecake.colors = {
 		normalSector : {
-			background : "#eeffee",
-			click : "#77ff77",
-			mouseover : "#aaffaa",
-			mouseout : "#eeffee",
-			mouseup : "#eeffee",
-			font : "#1F4A75",
-			border : "#1F4A75"
+			background : "#FEEEBD",
+			border : "#D19405",
+			font : "#D19405",
+			click : "#FFE481",
+			mouseover : "#FFE481",
+			mouseup : "#FEEEBD",
+			mouseout : "#FEEEBD"
 		},
 		extraSector : {
-			background : "#e5e5e5",
-			click : "#1FA0F7",
-			mouseover : "#D4E4EA",
-			mouseout : "#e5e5e5",
-			mouseup : "#e5e5e5",
-			font : "#1F4A75",
-			border : "#1F4A75"
+			background : "#FFBABA",
+			border : "#BD1823",
+			font : "#BD1823",
+			click	: "#FF5964",
+			mouseover : "#FF5964",
+			mouseup : "#FFBABA",
+			mouseout : "#FFBABA"
 		},
 		greySector : {
 			background : "#f5f5f5",
