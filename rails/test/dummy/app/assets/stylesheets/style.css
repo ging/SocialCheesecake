@@ -108,7 +108,6 @@ canvas {
   height: 64px;
   float: left;
   margin: 3px;
-  display: none;
   opacity: 0.8;
 }
 #grid .actor.focused {

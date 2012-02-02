@@ -15,7 +15,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.id = settings.id;
 		this.name = settings.name;
 		this.extraInfo = (settings.extraInfo) ? settings.extraInfo : undefined;
-		this.opacity = 1;
+		this.opacity = socialCheesecake.Grid.maxOpacity;
 		this._focused = false;
 		this._selected = false;
 		this._hidden = true;
@@ -205,42 +205,49 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Actor.prototype.fade = function(time, modifyDisplay) {
 		var actor = this;
 		var time = (time) ? time : 300;
-		var deltaOpacity = 1000.0 / (60.0 * time);
+		var minOpacity = socialCheesecake.Grid.minOpacity;
+		var maxOpacity = socialCheesecake.Grid.maxOpacity;
+		var deltaOpacity = ((maxOpacity - minOpacity)* 1000.0) / (60.0 * time);
 		var grow = 0;
-
+		
 		if(this.fading == "out") {
 			grow = -1;
+			if(deltaOpacity > (this.opacity - minOpacity)) deltaOpacity = this.opacity - minOpacity;
 		} else if(this.fading == "in") {
 			grow = 1;
+			if(deltaOpacity > (maxOpacity - this.opacity)) deltaOpacity = maxOpacity - this.opacity;
 		}
+		
 		var opacity = this.opacity + grow * deltaOpacity;
 		opacity = Math.round(opacity * 1000) / 1000;
 		actor.setDivOpacity(opacity);
 
-		if(((this.fading == "out") && (opacity >= 0)) || ((this.fading == "in") && (opacity <= 1))) {
+		if(((this.fading == "out") && (opacity > minOpacity)) || ((this.fading == "in") && (opacity < maxOpacity))) {
 			requestAnimFrame(function() {
 				actor.fade(time, modifyDisplay);
 			});
 		} else {
 			this.fading = "none";
-			if((modifyDisplay) && (opacity <= 0))
+			if((modifyDisplay) && (opacity <= minOpacity))
 				actor.hide();
 		}
 	}
 
 	socialCheesecake.Actor.prototype.fadeOut = function(time, modifyDisplay) {
+		var maxOpacity = socialCheesecake.Grid.maxOpacity;
 		this.fading = "out";
-		this.setDivOpacity(1);
+		this.setDivOpacity(maxOpacity);
 		this.fade(time, modifyDisplay);
 	}
 
 	socialCheesecake.Actor.prototype.fadeIn = function(time, modifyDisplay) {
 		var actor = this;
+		var minOpacity = socialCheesecake.Grid.minOpacity;
 
 		if(actor.isFiltered())
 			return;
 		actor.fading = "in";
-		actor.setDivOpacity(0);
+		actor.setDivOpacity(minOpacity);
 		if(modifyDisplay)
 			actor.show();
 		actor.fade(time, modifyDisplay);

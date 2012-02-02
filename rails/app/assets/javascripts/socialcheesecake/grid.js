@@ -1,5 +1,6 @@
 var socialCheesecake = socialCheesecake || {}; 
 (function() {
+	
 	socialCheesecake.Grid = function(settings) {
 		if(!settings)
 			throw "No arguments passed to the function";
@@ -9,6 +10,8 @@ var socialCheesecake = socialCheesecake || {};
 		this.parent = settings.parent;
 		this.id = settings.grid_id;
 		this.divIdPrefix = settings.divIdPrefix;
+		socialCheesecake.Grid.maxOpacity = settings.maxOpacity;
+		socialCheesecake.Grid.minOpacity = settings.minOpacity;
 	}
 
 	socialCheesecake.Grid.prototype.addActor = function(actor_info, subsector) {

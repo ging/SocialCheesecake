@@ -22,7 +22,9 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.grid = new socialCheesecake.Grid({
 			parent : this,
 			grid_id : cheesecakeData.grid.id,
-			divIdPrefix : cheesecakeData.grid.divIdPrefix || "actor_"
+			divIdPrefix : cheesecakeData.grid.divIdPrefix || "actor_",
+			maxOpacity : cheesecakeData.grid.maxOpacity || 1,
+			minOpacity : cheesecakeData.grid.minOpacity || 0
 		});
 		cheesecake.searchEngine = new socialCheesecake.SearchEngine({
 			parent : this
