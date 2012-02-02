@@ -38,14 +38,12 @@ var socialCheesecake = socialCheesecake || {};
 
 				document.body.style.cursor = "pointer";
 				sector.focus();
-				cheesecake.grid.hideAll();
 			},
 			mouseout : function(sector) {
 				var cheesecake = sector.getCheesecake();
 
 				document.body.style.cursor = "default";
 				sector.unfocus();
-				cheesecake.grid.fadeInAll(300, true);
 			},
 			click : function(sector) {
 				var cheesecake = sector.getCheesecake();

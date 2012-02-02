@@ -187,6 +187,9 @@ var socialCheesecake = socialCheesecake || {};
 			});
 		};
 		var dummyResizeCallback = function() {
+			var grid = cheesecake.grid;
+			grid.hideAll();
+			grid.show(cheesecake.sectors[sectorIndex].actors);
 			dummySector.splitUp();
 		};
 		var dummyRotateToCallback = function() {
@@ -206,7 +209,7 @@ var socialCheesecake = socialCheesecake || {};
 			} else {
 				callback();
 			}
-		}
+		};
 		greySector.rotateTo({
 			destination : 5 * Math.PI / 4,
 			callback : greyRotateToCallback,
@@ -271,6 +274,8 @@ var socialCheesecake = socialCheesecake || {};
 					if(cheesecake.onSectorFocusBegin) {
 						cheesecake.onSectorFocusEnd(cheesecake);
 					}
+					cheesecake.grid.showAll();
+					//cheesecake.grid.unfocusAll();
 					sector.rotateTo({
 						destination : sectorNewPhi
 					});
