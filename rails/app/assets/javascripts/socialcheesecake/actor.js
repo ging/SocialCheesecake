@@ -30,9 +30,7 @@ var socialCheesecake = socialCheesecake || {};
 
 		actor_div.addEventListener("mouseover", function() {
 			var sector;
-			if(!actor.isSelected()) {
-				actor.focus();
-			}
+			actor.focus();
 			for(var subsector in actor.parents) {
 				sector = actor.parents[subsector].parent;
 				sector.focus();
@@ -42,9 +40,7 @@ var socialCheesecake = socialCheesecake || {};
 		}, false);
 		actor_div.addEventListener("mouseout", function() {
 			var sector;
-			if(!actor.isSelected()) {
-				actor.unfocus();
-			}
+			actor.unfocus();
 			for(var subsector in actor.parents) {
 				sector = actor.parents[subsector].parent;
 				sector.unfocus();
@@ -55,11 +51,10 @@ var socialCheesecake = socialCheesecake || {};
 		actor_div.addEventListener("click", function() {
 			var sector;
 			if(actor.isSelected()) {
-				// Deactivate actor
 				actor.unselect();
 			} else {
-				//Activate actor
 				actor.select();
+				actor.unfocus();
 			}
 		}, false);
 	}
