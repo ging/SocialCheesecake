@@ -158,30 +158,30 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Sector.prototype.eventHandler = function(eventName) {
+		this.colorHandler(eventName);
+		this.callbackHandler(eventName);
+	}
+	
+	socialCheesecake.Sector.prototype.colorHandler = function(eventName) {
 		var sector = this;
 		var type = sector.type;
-		var colorReady = false;
-		var callbackReady = false;
-		//Custom colors and actions
-		if(sector[eventName] != null){
-			if(sector[eventName].color != null) {
-				sector.changeColor(sector[eventName].color);
-				colorReady = true;
-			}
-			if(sector[eventName].callback != null) {
-				sector[eventName].callback(sector);
-				callbackReady = true;
-			}
+
+		if(sector[eventName] != null && sector[eventName].color != null){
+			sector.changeColor(sector[eventName].color);
+		}else if(socialCheesecake.colors[type] && socialCheesecake.colors[type][eventName]){
+			sector.changeColor(socialCheesecake.colors[type][eventName]);
 		}
-		//General colors and actions
-		if(socialCheesecake.eventHandlers[type]){
-			if(!colorReady && socialCheesecake.colors[type][eventName]){
-				sector.changeColor(socialCheesecake.colors[type][eventName]);
-			}
-			if(!callbackReady && socialCheesecake.eventHandlers[type][eventName]){
-				socialCheesecake.eventHandlers[type][eventName](sector);
-			}
-		}  
+	}
+	
+	socialCheesecake.Sector.prototype.callbackHandler = function(eventName) {
+		var sector = this;
+		var type = sector.type;
+
+		if(sector[eventName] != null && sector[eventName].callback != null){
+			sector[eventName].callback(sector);
+		}else	if(socialCheesecake.eventHandlers[type] && socialCheesecake.eventHandlers[type][eventName]){
+			socialCheesecake.eventHandlers[type][eventName](sector);
+		}
 	}
 	
 	socialCheesecake.Sector.prototype.getCheesecake = function () {
