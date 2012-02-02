@@ -77,12 +77,12 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Actor.prototype.addClass = function(cssClass) {
 		var actor_div = this.getDiv();
 		var newClass = "";
+		var classRegExp = new RegExp("(^|\\s)" + cssClass + "($|\\s)");
 
 		if(actor_div.getAttribute("class")) {
-			cssClass = " " + cssClass;
-			var classRegExp = new RegExp(cssClass);
-			if(!(actor_div.getAttribute("class").match(classRegExp) )) {
-				newClass = actor_div.getAttribute("class").concat(cssClass);
+			newClass = actor_div.getAttribute("class");
+			if(!(newClass.match(classRegExp)) ) {
+				newClass = newClass.concat(" " + cssClass);
 				actor_div.setAttribute("class", newClass);
 			}
 		} else {
@@ -97,8 +97,12 @@ var socialCheesecake = socialCheesecake || {};
 		var classRegExp = new RegExp("(^|\\s)" + cssClass + "($|\\s)");
 
 		if(actor_div.getAttribute("class")) {
-			newClass = actor_div.getAttribute("class").replace(classRegExp, "");
-			actor_div.setAttribute("class", newClass);
+			newClass = actor_div.getAttribute("class");
+			if (newClass.match(classRegExp)){
+				classRegExp = new RegExp("(^|\\s)" + cssClass);
+				newClass = actor_div.getAttribute("class").replace(classRegExp, "");
+				actor_div.setAttribute("class", newClass);
+			}
 		}
 	}
 
