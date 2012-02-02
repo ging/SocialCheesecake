@@ -242,7 +242,6 @@ var socialCheesecake = socialCheesecake || {};
 			lastSector.unfocus();
 			this.setHighlightedSector(null);
 		}
-		cheesecake.grid.fadeInAll(300, true);
 	}
 	socialCheesecake.Cheesecake.prototype.unfocusAndUnblurCheesecake = function() {
 		var cheesecake = this;

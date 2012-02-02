@@ -4,7 +4,7 @@ var socialCheesecake = socialCheesecake || {};
 		normalSector : {
 			mouseover : function(sector) {
 				var cheesecake = sector.getCheesecake();
-				
+
 				document.body.style.cursor = "pointer";
 				cheesecake.grid.focus(sector.actors);
 				sector.focus();
@@ -19,7 +19,7 @@ var socialCheesecake = socialCheesecake || {};
 			},
 			mouseout : function(sector) {
 				var cheesecake = sector.getCheesecake();
-				
+
 				document.body.style.cursor = "default";
 				cheesecake.grid.unfocusAll();
 				sector.unfocus();
@@ -30,44 +30,42 @@ var socialCheesecake = socialCheesecake || {};
 				var cheesecake = sector.getCheesecake();
 				
 				cheesecake.focusAndBlurCheesecake(sector);
-				cheesecake.grid.hideAll();
-				cheesecake.grid.fadeIn(sector.actors, 300, true);
 			}
 		},
 		extraSector : {
 			mouseover : function(sector) {
 				var cheesecake = sector.getCheesecake();
-				
+
 				document.body.style.cursor = "pointer";
 				sector.focus();
 				cheesecake.grid.hideAll();
 			},
 			mouseout : function(sector) {
 				var cheesecake = sector.getCheesecake();
-				
+
 				document.body.style.cursor = "default";
 				sector.unfocus();
 				cheesecake.grid.fadeInAll(300, true);
 			},
-			click : function(sector){
+			click : function(sector) {
 				var cheesecake = sector.getCheesecake();
-				
+
 				cheesecake.focusAndBlurCheesecake(sector);
 				cheesecake.addNewSector();
 			}
 		},
 		greySector : {
 			mouseout : function() {
-					document.body.style.cursor = "default";
+				document.body.style.cursor = "default";
 			},
 			click : function() {
 				return;
 			},
-			mouseup : function(){
+			mouseup : function() {
 				return;
 			},
 			mouseover : function() {
-					document.body.style.cursor = "pointer";
+				document.body.style.cursor = "pointer";
 			}
 		},
 		normalSubsector : {
@@ -88,34 +86,35 @@ var socialCheesecake = socialCheesecake || {};
 			click : function(subsector) {
 				var cheesecake = subsector.getCheesecake();
 				var selectedActors = cheesecake.grid.getSelectedActors();
-				if(selectedActors.length > 0) subsector.changeMembership(selectedActors);
+				if(selectedActors.length > 0)
+					subsector.changeMembership(selectedActors);
 			},
-			mouseup : function(){
+			mouseup : function() {
 				return;
 			}
 		},
 		extraSubsector : {
-			mouseover : function (sector){
+			mouseover : function(sector) {
 				sector.resizeWidth({
-					width : (sector.originalAttr.rOut - sector.originalAttr.rIn)*1.5,
+					width : (sector.originalAttr.rOut - sector.originalAttr.rIn) * 1.5,
 					anchor : "m",
-					step : 1 
+					step : 1
 				});
 			},
-			mouseout : function(sector){
+			mouseout : function(sector) {
 				sector.resizeWidth({
 					width : (sector.originalAttr.rOut - sector.originalAttr.rIn),
 					anchor : "m",
 					step : 1,
-					priority : true 
+					priority : true
 				})
 			},
-			click : function(){
+			click : function() {
 				return;
 			},
-			mouseup : function(){
+			mouseup : function() {
 				return;
 			}
 		}
 	}
-}) ();
+})();
