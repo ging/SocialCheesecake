@@ -14,6 +14,8 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.onSectorHighlight = cheesecakeData.onSectorHighlight || null;
 		cheesecake.onSectorFocusBegin = cheesecakeData.onSectorFocusBegin || null;
 		cheesecake.onSectorFocusEnd = cheesecakeData.onSectorFocusEnd || null;
+		cheesecake.onSectorUnfocusBegin = cheesecakeData.onSectorUnfocusBegin || null;
+		cheesecake.onSectorUnfocusEnd = cheesecakeData.onSectorUnfocusEnd || null;
 		cheesecake.syncSectorFocusCallbacks = cheesecake.syncSectorFocusCallbacks || false;
 		cheesecake.auxiliarSectors = [];
 		cheesecake.stage = new Kinetic.Stage(cheesecakeData.container.id, cheesecakeData.container.width, cheesecakeData.container.height);
@@ -262,8 +264,8 @@ var socialCheesecake = socialCheesecake || {};
 				anchor : "M",
 				delta : sectorNewDelta,
 				callback : function() {
-					if(cheesecake.onSectorFocusBegin) {
-						cheesecake.onSectorFocusEnd(cheesecake);
+					if(cheesecake.onSectorUnfocusEnd) {
+						cheesecake.onSectorUnfocusEnd(cheesecake);
 					}
 					cheesecake.grid.showAll();
 					//cheesecake.grid.unfocusAll();
@@ -285,11 +287,11 @@ var socialCheesecake = socialCheesecake || {};
 				}
 			});
 		}
-		if(cheesecake.onSectorFocusBegin) {
+		if(cheesecake.onSectorUnfocusBegin) {
 			if(cheesecake.syncSectorFocusCallbacks) {
-				cheesecake.onSectorFocusBegin(cheesecake, actions);
+				cheesecake.onSectorUnfocusBegin(cheesecake, actions);
 			} else {
-				cheesecake.onSectorFocusBegin(cheesecake);
+				cheesecake.onSectorUnfocusBegin(cheesecake);
 				actions();
 			}
 		} else {
