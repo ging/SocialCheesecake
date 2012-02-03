@@ -9,7 +9,6 @@ var socialCheesecake = socialCheesecake || {};
 			phi : 0,
 			label : "",
 			color : socialCheesecake.colors.normalSector.background,
-			fontColor : socialCheesecake.colors.normalSector.font,
 			auxiliar : false,
 			type : "normalSector"
 		}
@@ -34,7 +33,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.delta = settings.delta;
 		this.label = settings.label;
 		this.color = settings.color;
-		this.fontColor = settings.fontColor;
+		if(settings.fontColor) this.fontColor = settings.fontColor;
 		if(settings.borderColor) this.borderColor = settings.borderColor;
 		if(settings.mouseover) this.mouseover = settings.mouseover;
 		if(settings.mouseup) this.mouseup = settings.mouseup;
@@ -65,7 +64,6 @@ var socialCheesecake = socialCheesecake || {};
 					rOut : rOutSubsector,
 					actors : settings.subsectors[i].actors,
 					color : socialCheesecake.colors.normalSector.background,
-					fontColor : socialCheesecake.colors.normalSector.font
 				});
 				rInSubsector = rOutSubsector;
 				this.subsectors.push(subsector);
@@ -80,7 +78,6 @@ var socialCheesecake = socialCheesecake || {};
 			rIn : this.rIn,
 			rOut : this.rOut,
 			color : this.color,
-			fontColor : this.fontColor,
 			label : this.label,
 			simulate : this.simulate,
 			subsectors : this.subsectors,
@@ -99,10 +96,10 @@ var socialCheesecake = socialCheesecake || {};
 		var rIn = this.rIn;
 		var rOut = this.rOut;
 		var color = this.color;
-		var fontColor = this.fontColor;
 		var label = this.label;
 		var actors = this.actors;
 		var type = this.type;
+		var fontColor = this.fontColor || socialCheesecake.colors[type]["font"];
 		
 		context.restore();
 		context.save();
@@ -211,7 +208,6 @@ var socialCheesecake = socialCheesecake || {};
 			parent : this,
 			auxiliar : true,
 			color : socialCheesecake.colors.extraSector.background,
-			fontColor : socialCheesecake.colors.extraSector.font,
 			type : "extraSubsector"
 		}		
 		//Add sector's subsectors
@@ -239,7 +235,6 @@ var socialCheesecake = socialCheesecake || {};
 					parent : this,
 					auxiliar : true,
 					color : socialCheesecake.colors.extraSector.background,
-					fontColor : socialCheesecake.colors.extraSector.font,
 					mouseover : {
 						callback : function (sector){
 							sector.resizeWidth({

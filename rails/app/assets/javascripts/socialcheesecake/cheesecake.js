@@ -64,7 +64,6 @@ var socialCheesecake = socialCheesecake || {};
 					name : "New Subsector 1"
 				}],
 				auxiliar : true,
-				fontColor : socialCheesecake.colors.extraSector.font,
 				type : "extraSector"
 			});
 			cheesecake.sectors[jsonSectors.length] = extraSector;
@@ -78,7 +77,6 @@ var socialCheesecake = socialCheesecake || {};
 				label : jsonSectors[i].name,
 				rOut : cheesecakeData.rMax,
 				subsectors : jsonSectors[i].subsectors,
-				fontColor : socialCheesecake.colors.normalSector.font,
 				type : "normalSector"
 			};
 			cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
@@ -138,23 +136,19 @@ var socialCheesecake = socialCheesecake || {};
 			delta : 2 * Math.PI - sector.delta,
 			rOut : cheesecake.rMax,
 			color : socialCheesecake.colors.greySector.background,
-			fontColor : socialCheesecake.colors.greySector.font,
 			auxiliar : true,
 			type : "greySector"
 		};
 		var dummySettings = {
 			parent : cheesecake,
-			center : {
-				x : cheesecake.center.x,
-				y : cheesecake.center.y
-			},
+			center : cheesecake.center,
 			phi : sector.phi,
 			delta : sector.delta,
 			rOut : sector.rOut,
 			label : sector.label,
 			borderColor : socialCheesecake.colors[sector.type]["border"],
 			color : sector.color,
-			fontColor : sector.fontColor,
+			fontColor : socialCheesecake.colors[sector.type]["font"],
 			simulate : sectorIndex,
 			auxiliar : true
 		};
@@ -308,15 +302,11 @@ var socialCheesecake = socialCheesecake || {};
 		var sectors = this.sectors;	
 		var settings = {
 			parent : cheesecake,
-			center : {
-				x : cheesecake.center.x,
-				y : cheesecake.center.y
-			},
+			center : cheesecake.center,
 			/*id : jsonSectors[i].id,*/
 			label : "New Sector",
 			rOut : cheesecake.rMax,
-			subsectors : [{name : "New Subsector 1"}],
-			fontColor : socialCheesecake.colors.normalSector.font
+			subsectors : [{name : "New Subsector 1"}]
 		};
 		//move the extra sector to its new position, create new sector.
 		sectors.push(sectors[sectors.length-1]);
