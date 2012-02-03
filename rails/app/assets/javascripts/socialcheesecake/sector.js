@@ -12,6 +12,10 @@ var socialCheesecake = socialCheesecake || {};
 			auxiliar : false,
 			type : "normalSector"
 		}
+		if(!settings){
+			settings = defaultSettings;
+			console.log("no hay settings");
+		}
 		for(var property in defaultSettings) {
 			if(!(property in settings) || (settings[property]===undefined)) {
 				settings[property] = defaultSettings[property];

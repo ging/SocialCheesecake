@@ -141,24 +141,10 @@ var socialCheesecake = socialCheesecake || {};
 			auxiliar : true,
 			type : "greySector"
 		};
-		var dummySettings = {
-			parent : cheesecake,
-			center : cheesecake.center,
-			phi : sector.phi,
-			delta : sector.delta,
-			rOut : sector.rOut,
-			label : sector.label,
-			borderColor : socialCheesecake.colors[sector.type]["border"],
-			color : sector.color,
-			fontColor : socialCheesecake.colors[sector.type]["font"],
-			simulate : sectorIndex,
-			auxiliar : true
-		};
 		var greySector = new socialCheesecake.Sector(greySettings);
 		cheesecake.auxiliarSectors.push(greySector);
-		var dummySector = new socialCheesecake.Sector(dummySettings)
-		cheesecake.auxiliarSectors.push(dummySector);
-
+		var dummySector = this.getAuxiliarClone(sectorIndex);
+		
 		mainLayer.add(greySector.getRegion());
 		mainLayer.add(dummySector.getRegion());
 		//Animations
@@ -268,7 +254,6 @@ var socialCheesecake = socialCheesecake || {};
 						cheesecake.onSectorUnfocusEnd(cheesecake);
 					}
 					cheesecake.grid.showAll();
-					//cheesecake.grid.unfocusAll();
 					sector.rotateTo({
 						destination : sectorNewPhi
 					});
@@ -302,6 +287,8 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Cheesecake.prototype.addNewSector = function() {
 		var cheesecake = this;
 		var sectors = this.sectors;	
+		var dummySector = null;
+		var newSector;
 		var settings = {
 			parent : cheesecake,
 			center : cheesecake.center,
@@ -312,9 +299,11 @@ var socialCheesecake = socialCheesecake || {};
 		};
 		//move the extra sector to its new position, create new sector.
 		sectors.push(sectors[sectors.length-1]);
-		cheesecake.sectors[sectors.length-2] = new socialCheesecake.Sector(settings);
-		cheesecake.calculatePortions();	
+		newSector = new socialCheesecake.Sector(settings);
+		cheesecake.sectors[sectors.length-2] = newSector;
+		cheesecake.calculatePortions();
 	}
+	
 	/**
 	 * actorId 		- actor which changes one of its parents
 	 */
@@ -416,6 +405,47 @@ var socialCheesecake = socialCheesecake || {};
 				this.onSectorHighlight(this);
 			}
 		}
+	}
+	
+	socialCheesecake.Cheesecake.prototype.getAuxiliarClone = function(sectorIndex){
+		var dummy = null;
+		var cheesecake = this;
+		var sector = null;
+		var auxiliarSectors = cheesecake.auxiliarSectors;
+		var settings = {};
+		//Localize the dummy sector
+		for(var i in auxiliarSectors) {
+			if(auxiliarSectors[i].simulate != null) {
+				dummy = auxiliarSectors[i];
+			}
+		}	
+		if( sectorIndex != null){
+			sector = cheesecake.sectors[sectorIndex];
+			settings = {
+				phi : sector.phi,
+				delta : sector.delta,
+				rOut : sector.rOut,
+				label : sector.label,
+				borderColor : socialCheesecake.colors[sector.type]["border"],
+				color : sector.color,
+				fontColor : socialCheesecake.colors[sector.type]["font"],
+				simulate : sectorIndex,
+				auxiliar : true,
+				type: "dummySector"
+			}
+			//if dummy doesnt exist, create a new one
+			if(!dummy){ 
+				dummy = new socialCheesecake.Sector({
+					center : cheesecake.center,
+					parent : cheesecake
+				});
+				this.auxiliarSectors.push(dummy);
+			}
+			for(var property in settings){
+				dummy[property] = settings[property];
+			}
+		}
+		return dummy;
 	}
 
 	socialCheesecake.Cheesecake.prototype.getSectorById = function(id) {
