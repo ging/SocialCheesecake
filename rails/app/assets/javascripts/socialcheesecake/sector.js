@@ -510,7 +510,7 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Sector.prototype.rotateTo = function(options) {
 		// update stage
 		var sector = this;
-		var currentPhi = this.phi;
+		var currentPhi = this.phi % (2 * Math.PI);
 		var delta = this.delta;
 		var step = 0.05;
 		var anchor = 0;
@@ -530,6 +530,9 @@ var socialCheesecake = socialCheesecake || {};
 		var phiDestination = (options.destination- anchor*delta) % (2 * Math.PI) ;
 		while(phiDestination < 0) {
 			phiDestination += (2 * Math.PI);
+		}
+		while(currentPhi < 0) {
+			currentPhi += (2 * Math.PI);
 		}
 
 		var grow = 0;

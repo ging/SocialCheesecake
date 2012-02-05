@@ -144,7 +144,7 @@ var socialCheesecake = socialCheesecake || {};
 		var greySector = new socialCheesecake.Sector(greySettings);
 		cheesecake.auxiliarSectors.push(greySector);
 		var dummySector = this.getAuxiliarClone(sectorIndex);
-		
+
 		mainLayer.add(greySector.getRegion());
 		mainLayer.add(dummySector.getRegion());
 		//Animations
@@ -228,7 +228,7 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Cheesecake.prototype.unfocusAndUnblurCheesecake = function() {
 		var cheesecake = this;
 		var auxiliarSectors = this.auxiliarSectors;
-		var sector;
+		var dummySector;
 		var sectorNewDelta;
 		var sectorNewPhi;
 		var greySector;
@@ -236,35 +236,40 @@ var socialCheesecake = socialCheesecake || {};
 			//Localize the dummy and grey sectors
 			for(var i in auxiliarSectors) {
 				if(auxiliarSectors[i].simulate != null) {
-					sector = auxiliarSectors[i];
+					var options = {
+						phi : auxiliarSectors[i].phi,
+						delta : auxiliarSectors[i].delta,
+						rOut : auxiliarSectors[i].rOut
+					};
+					dummySector = cheesecake.getAuxiliarClone(auxiliarSectors[i].simulate, options);
 				} else {
 					greySector = auxiliarSectors[i];
 				}
 			}
 
 			//Animate and go back to the general view
-			sectorNewDelta = cheesecake.sectors[sector.simulate].delta;
-			sectorNewPhi = cheesecake.sectors[sector.simulate].phi;
-			sector.putTogether();
-			sector.resizeDelta({
+			dummyNewDelta = cheesecake.sectors[dummySector.simulate].delta;
+			dummyNewPhi = cheesecake.sectors[dummySector.simulate].phi;
+			dummySector.putTogether();
+			dummySector.resizeDelta({
 				anchor : "M",
-				delta : sectorNewDelta,
+				delta : dummyNewDelta,
 				callback : function() {
 					if(cheesecake.onSectorUnfocusEnd) {
 						cheesecake.onSectorUnfocusEnd(cheesecake);
 					}
 					cheesecake.grid.showAll();
-					sector.rotateTo({
-						destination : sectorNewPhi
+					dummySector.rotateTo({
+						destination : dummyNewPhi
 					});
 				}
 			});
 			greySector.resizeDelta({
 				anchor : "M",
-				delta : (2 * Math.PI) - sectorNewDelta,
+				delta : (2 * Math.PI) - dummyNewDelta,
 				callback : function() {
 					greySector.rotateTo({
-						destination : sectorNewPhi + sectorNewDelta,
+						destination : dummyNewPhi + dummyNewDelta,
 						callback : function() {
 							cheesecake.recoverCheesecake();
 						}
@@ -287,7 +292,6 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Cheesecake.prototype.addNewSector = function() {
 		var cheesecake = this;
 		var sectors = this.sectors;	
-		var dummySector = null;
 		var newSector;
 		var settings = {
 			parent : cheesecake,
@@ -407,12 +411,13 @@ var socialCheesecake = socialCheesecake || {};
 		}
 	}
 	
-	socialCheesecake.Cheesecake.prototype.getAuxiliarClone = function(sectorIndex){
+	socialCheesecake.Cheesecake.prototype.getAuxiliarClone = function(sectorIndex, options){
 		var dummy = null;
 		var cheesecake = this;
 		var sector = null;
 		var auxiliarSectors = cheesecake.auxiliarSectors;
 		var settings = {};
+		var options = options || {};
 		//Localize the dummy sector
 		for(var i in auxiliarSectors) {
 			if(auxiliarSectors[i].simulate != null) {
@@ -422,13 +427,13 @@ var socialCheesecake = socialCheesecake || {};
 		if( sectorIndex != null){
 			sector = cheesecake.sectors[sectorIndex];
 			settings = {
-				phi : sector.phi,
-				delta : sector.delta,
-				rOut : sector.rOut,
-				label : sector.label,
-				borderColor : socialCheesecake.colors[sector.type]["border"],
-				color : sector.color,
-				fontColor : socialCheesecake.colors[sector.type]["font"],
+				phi : options.phi || sector.phi,
+				delta : options.delta || sector.delta,
+				rOut : options.rOut || sector.rOut,
+				label : options.label || sector.label,
+				borderColor : options.borderColor || socialCheesecake.colors[sector.type]["border"],
+				color : options.color || sector.color,
+				fontColor : options.fontColor || socialCheesecake.colors[sector.type]["font"],
 				simulate : sectorIndex,
 				auxiliar : true,
 				type: "dummySector"
@@ -445,6 +450,7 @@ var socialCheesecake = socialCheesecake || {};
 				dummy[property] = settings[property];
 			}
 		}
+
 		return dummy;
 	}
 
