@@ -292,20 +292,18 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Sector.prototype.changeColor = function(color) {
-		var sector = this;
-		var stage = sector.getCheesecake().stage;
-		var context = stage.mainLayer.getContext();
-		sector.color = color;
-		context.restore();
-		context.save();
-		stage.draw();
+		this.changeProperty("color", color);
 	}
 	
 	socialCheesecake.Sector.prototype.changeLabel = function(label){
+		this.changeProperty("label", label);
+	}
+	
+	socialCheesecake.Sector.prototype.changeProperty = function (name, value){
 		var sector = this;
 		var stage = sector.getCheesecake().stage;
 		var context = stage.mainLayer.getContext();
-		sector.label = label;
+		sector[name] = value;
 		context.restore();
 		context.save();
 		stage.draw();
