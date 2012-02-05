@@ -301,6 +301,16 @@ var socialCheesecake = socialCheesecake || {};
 		stage.draw();
 	}
 	
+	socialCheesecake.Sector.prototype.changeLabel = function(label){
+		var sector = this;
+		var stage = sector.getCheesecake().stage;
+		var context = stage.mainLayer.getContext();
+		sector.label = label;
+		context.restore();
+		context.save();
+		stage.draw();
+	}
+	
 	/**
 	 	* Options: 
 		*	delta - new delta to achieve (default: Math.PI/2)
