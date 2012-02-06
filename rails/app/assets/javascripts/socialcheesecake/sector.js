@@ -590,6 +590,23 @@ var socialCheesecake = socialCheesecake || {};
 		}
 	}
 	
+	socialCheesecake.Sector.prototype.addNewSubsector = function (sectorIndex){
+		var subsectors = this.subsectors;
+		var settings = {
+			parent : this,
+			center : this.center,
+			/*id : jsonSectors[i].id,*/
+			label : "New Subsector"
+		};
+		var separation = (this.rOut - this.rIn)/ (subsectors.length + 1);
+		
+		/*Rearrange subsectors*/
+		for(var i = subsectors.length -1 ; i >= sectorIndex ; i--){ 
+			subsectors[i+1] = subsectors[i];
+		}
+		subsectors[sectorIndex]= new socialCheesecake.Subsector(settings);
+	}
+	
 	socialCheesecake.Sector.prototype.addActor = function(actorInfo , subsector){
 		var actors = this.actors;
 		var actor;
