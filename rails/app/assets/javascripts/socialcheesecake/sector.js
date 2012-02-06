@@ -594,17 +594,35 @@ var socialCheesecake = socialCheesecake || {};
 		var subsectors = this.subsectors;
 		var settings = {
 			parent : this,
-			center : this.center,
-			/*id : jsonSectors[i].id,*/
-			label : "New Subsector"
+			x : this.x,
+			y : this.y,
+			delta : this.delta,
+			phi : this.phi /*,
+			id : jsonSectors[i].id,*/
 		};
-		var separation = (this.rOut - this.rIn)/ (subsectors.length + 1);
-		
-		/*Rearrange subsectors*/
-		for(var i = subsectors.length -1 ; i >= sectorIndex ; i--){ 
-			subsectors[i+1] = subsectors[i];
+		var rOut = this.rOut;
+		var rIn = this.rIn;
+		var separation = (rOut - rIn)/ (subsectors.length + 1);
+		/*Rearrange subsectors*/		
+		for(var i = subsectors.length ; i >= 0 ; i--){
+			rIn = rOut - separation;
+			console.log(i);
+			if( i > sectorIndex){
+				subsectors[i] = subsectors[i-1];
+				console.log(subsectors[i].label);
+			}
+			if( i == sectorIndex ){
+				console.log("new subsector "+ i);
+				settings.rIn = rIn;
+				settings.rOut = rOut;
+				settings.label = "New Subsector "+ i;
+				subsectors[i]= new socialCheesecake.Subsector(settings);
+			}else{
+				subsectors[i].rIn = rIn;
+				subsectors[i].rOut = rOut;
+			}
+			rOut = rIn;
 		}
-		subsectors[sectorIndex]= new socialCheesecake.Subsector(settings);
 	}
 	
 	socialCheesecake.Sector.prototype.addActor = function(actorInfo , subsector){
