@@ -105,8 +105,8 @@ var socialCheesecake = socialCheesecake || {};
 					priority : true
 				})
 			},
-			click : function() {
-				return;
+			click : function(subsector) {
+				//subsector.parent.addNewSubsector(subsector.simulate);
 			},
 			mouseup : function() {
 				return;

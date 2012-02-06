@@ -13,7 +13,8 @@ var socialCheesecake = socialCheesecake || {};
 		this.delta = settings.delta;
 		this.actors = [];
 		this.auxiliar = (settings.auxiliar) ? settings.auxiliar : false;
-		this.type = (settings.type) ? settings.type : "normalSubsector"
+		this.type = (settings.type) ? settings.type : "normalSubsector";
+		if(settings.simulate != null) this.simulate = settings.simulate;
 		if(settings.color) this.color = settings.color;
 		if(settings.fontColor) this.fontColor = settings.fontColor;
 		if(settings.borderColor) this.borderColor = settings.borderColor;
@@ -45,7 +46,8 @@ var socialCheesecake = socialCheesecake || {};
 			borderColor : this.borderColor,
 			label : this.label,
 			auxiliar : this.auxiliar,
-			type: this.type
+			type: this.type,
+			simulate : this.simulate
 		};
 	}
 	
@@ -63,6 +65,7 @@ var socialCheesecake = socialCheesecake || {};
 		fontColor : this.fontColor,
 		borderColor : this.borderColor,
 		type : this.type,
+		simulate : this.simulate,
 		
 		mouseover : this.mouseover,
 		mouseout : this.mouseout,

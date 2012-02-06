@@ -209,7 +209,7 @@ var socialCheesecake = socialCheesecake || {};
 			delta : delta,
 			phi : phi,
 			label : "+",
-			parent : this,
+			parent : sector,
 			auxiliar : true,
 			color : socialCheesecake.colors.extraSector.background,
 			type : "extraSubsector"
@@ -236,7 +236,7 @@ var socialCheesecake = socialCheesecake || {};
 					delta : delta,
 					phi : phi,
 					label : "+",
-					parent : this,
+					parent : sector,
 					auxiliar : true,
 					color : socialCheesecake.colors.extraSector.background,
 					mouseover : {
@@ -258,12 +258,14 @@ var socialCheesecake = socialCheesecake || {};
 							})
 						}
 					},
-					type : "extraSubsector"
+					type : "extraSubsector",
+					simulate : i
 				}
 				var extraSector = new socialCheesecake.Subsector(extraSettingsFirst);  
 			}else{
 				extraSettings["rIn"]= rIn;
 				extraSettings["rOut"]= rIn + extraWidth;
+				extraSettings["simulate"] = i;
 				var extraSector = new socialCheesecake.Subsector(extraSettings); 
 			}
 			mainLayer.add(extraSector.getRegion());
