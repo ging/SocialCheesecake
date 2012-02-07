@@ -178,8 +178,7 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Sector.prototype.getCheesecake = function () {
-		var sector = this;
-		return sector.parent;
+		return this.parent;
 	}
 	
 	socialCheesecake.Sector.prototype.splitUp = function() {
@@ -227,6 +226,7 @@ var socialCheesecake = socialCheesecake || {};
 		var cheesecake = this.getCheesecake();
 		var sector = this;
 		var subsectors = this.subsectors;
+		var extraSubsectors = this.extraSubsectors || [];
 		var extraSettings = {
 			x : cheesecake.center.x,
 			y : cheesecake.center.y,
@@ -236,12 +236,13 @@ var socialCheesecake = socialCheesecake || {};
 			color : socialCheesecake.colors.extraSector.background,
 			type : "extraSubsector"
 		}		
-		
+		//Remove extra subsectors if any
+		extraSubsectors.splice(0, extraSubsectors.length);
 		//Add extra subsectors
 		for(var i = 0; i< subsectors.length + 1; i++){			
 			extraSettings["simulate"] = i;
 			var extraSector = new socialCheesecake.Subsector(extraSettings);
-			sector.extraSubsectors.push(extraSector);
+			extraSubsectors.push(extraSector);
 		}
 	}
 	
