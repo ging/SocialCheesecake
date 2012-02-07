@@ -453,6 +453,16 @@ var socialCheesecake = socialCheesecake || {};
 
 		return dummy;
 	}
+	
+	socialCheesecake.Cheesecake.prototype.getFocusedSector = function(){
+		var dummy = this.getAuxiliarClone();
+		var sectors = this.sectors;
+		var sector = null;
+		if(dummy){
+			sector = sectors[dummy.simulate];
+		}
+		return sector;
+	}
 
 	socialCheesecake.Cheesecake.prototype.getSectorById = function(id) {
 		var sectors = this.sectors;
