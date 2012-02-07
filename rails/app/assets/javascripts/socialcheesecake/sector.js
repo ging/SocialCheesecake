@@ -370,7 +370,7 @@ var socialCheesecake = socialCheesecake || {};
 				sector.resizeDelta(options);
 			});
 		}else{
-			sector.growDelta = undefined;
+			sector.growDelta = null;
 			if(options.callback) {
 				options.callback();
 			}
@@ -451,7 +451,7 @@ var socialCheesecake = socialCheesecake || {};
 				sector.resizeWidth(options);
 			});
 		} else{
-			sector.grow= undefined;
+			sector.grow= null;
 			if(options.callback) {
 				options.callback();
 			}

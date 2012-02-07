@@ -28,8 +28,8 @@ var socialCheesecake = socialCheesecake || {};
 			},
 			click : function(sector) {
 				var cheesecake = sector.getCheesecake();
-				
 				cheesecake.focusAndBlurCheesecake(sector);
+				cheesecake.grid.unfocus(sector.actors);
 			}
 		},
 		extraSector : {
@@ -100,7 +100,7 @@ var socialCheesecake = socialCheesecake || {};
 			mouseout : function(sector) {
 				sector.resizeWidth({
 					width : (sector.originalAttr.rOut - sector.originalAttr.rIn),
-					anchor : "m",
+					anchor : (sector.rIn == 0 ) ? "rin" : "m",
 					step : 1,
 					priority : true
 				})
