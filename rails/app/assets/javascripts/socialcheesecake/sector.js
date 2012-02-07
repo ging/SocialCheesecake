@@ -239,41 +239,8 @@ var socialCheesecake = socialCheesecake || {};
 		
 		//Add extra subsectors
 		for(var i = 0; i< subsectors.length + 1; i++){			
-			if(i == 0){
-				var extraSettingsFirst = {
-					x : cheesecake.center.x,
-					y : cheesecake.center.y,
-					label : "+",
-					parent : sector,
-					auxiliar : true,
-					color : socialCheesecake.colors.extraSector.background,
-					mouseover : {
-						callback : function (extraSubsector){
-							extraSubsector.resizeWidth({
-								width : (extraSubsector.originalAttr.rOut - extraSubsector.originalAttr.rIn)*1.5,
-								anchor : "rin",
-								step : 1 
-							});
-						}
-					},
-					mouseout : {
-						callback : function(extraSubsector){
-							extraSubsector.resizeWidth({
-								width : (extraSubsector.originalAttr.rOut - extraSubsector.originalAttr.rIn),
-								anchor : "rin",
-								step : 1,
-								priority : true 
-							})
-						}
-					},
-					type : "extraSubsector",
-					simulate : i
-				}
-				var extraSector = new socialCheesecake.Subsector(extraSettingsFirst);  
-			}else{
-				extraSettings["simulate"] = i;
-				var extraSector = new socialCheesecake.Subsector(extraSettings); 
-			}
+			extraSettings["simulate"] = i;
+			var extraSector = new socialCheesecake.Subsector(extraSettings);
 			sector.extraSubsectors.push(extraSector);
 		}
 	}
@@ -431,7 +398,6 @@ var socialCheesecake = socialCheesecake || {};
 		var goalWidth = currentWidth;
 		var anchor = 1;
 		var grow = 0;
-		var error = false;
 		var goOn = true;
 		if(options.step) step = options.step;
 		if(options.width) goalWidth = options.width;
@@ -469,19 +435,18 @@ var socialCheesecake = socialCheesecake || {};
 		currentROut = currentROut + (grow * anchor * step);
 		currentRIn = currentRIn - (grow * (1 - anchor) * step);
 		currentWidth = currentROut - currentRIn;
-		if(currentRIn <0 || currentROut <0){
-			console.log("WARNING!! Width cannot change anymore. It has reached it maximum/ minimum level.");
-			error =true;
-		}else{
-			sector.rOut = currentROut;
-			sector.rIn = currentRIn;
-			//Redraw
-			context.restore();
-			context.save();
-			stage.draw();
+		if(currentRIn <0 ){
+			currentROut += (this.rIn - currentRIn);
+			currentRIn = 0;
 		}
+		sector.rOut = currentROut;
+		sector.rIn = currentRIn;
+		//Redraw
+		context.restore();
+		context.save();
+		stage.draw();
 		//Repeat if necessary
-		if ((goOn) &&(!error && Math.round(currentWidth *1000) != Math.round(goalWidth *1000))) {
+		if ((goOn) &&(Math.round(currentWidth *1000) != Math.round(goalWidth *1000))) {
 			requestAnimFrame(function() {
 				sector.resizeWidth(options);
 			});
