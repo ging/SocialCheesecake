@@ -14,7 +14,6 @@ var socialCheesecake = socialCheesecake || {};
 		}
 		if(!settings){
 			settings = defaultSettings;
-			console.log("no hay settings");
 		}
 		for(var property in defaultSettings) {
 			if(!(property in settings) || (settings[property]===undefined)) {
@@ -52,24 +51,20 @@ var socialCheesecake = socialCheesecake || {};
 		this.type = settings.type;
 		
 		if(settings.subsectors != null) {
-			var rInSubsector = this.rIn;
-			var separation = (this.rOut - this.rIn) / settings.subsectors.length;
 			for(var i in settings.subsectors) {
-				var rOutSubsector = rInSubsector + separation;
 				var subsector = new socialCheesecake.Subsector({
 					id : settings.subsectors[i].id,
 					label : settings.subsectors[i].name,
 					parent : this,
 					x : this.x,
 					y : this.y,
-					phi : this.phi,
-					delta : this.delta,
-					rIn : rInSubsector,
-					rOut : rOutSubsector,
+					phi : null,
+					delta : null,
+					rIn : null,
+					rOut : null,
 					actors : settings.subsectors[i].actors,
 					color : socialCheesecake.colors.normalSector.background,
 				});
-				rInSubsector = rOutSubsector;
 				this.subsectors.push(subsector);
 			}
 		}
@@ -138,7 +133,7 @@ var socialCheesecake = socialCheesecake || {};
 			sector._region = new Kinetic.Shape(function() {
 				var context = this.getContext();
 				sector._draw(context);
-			});
+			}, sector.label);
 			sector._region.on('mouseover', function() {
 				sector.eventHandler('mouseover');
 			});
@@ -190,24 +185,24 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Sector.prototype.splitUp = function() {
 		var cheesecake = this.getCheesecake();
 		var callback = cheesecake.onSectorFocusEnd;
-		var mainLayer = cheesecake.stage.mainLayer;
+		var mainLayer = cheesecake.stage.mainLayer;/*
 		var phi = this.phi;
 		var delta = this.delta;
 		var rOut = this.rOut;
-		var rIn = this.rIn;
+		var rIn = this.rIn;*/
 		var sector = (this.simulate != null) ? cheesecake.sectors[this.simulate] :  this;
 		var subsectors = sector.subsectors;
 		var parts = subsectors.length * 2 + 1;
 
 		//Draw sector's subsectors over it
-		var subsectorRIn = rIn;
+		/*
 		var extraWidth = (rOut - rIn) * 0.06;
-		var sectorWidth = (rOut - rIn - (parts - subsectors.length) * extraWidth) / subsectors.length;
+		var sectorWidth = (rOut - rIn - (parts - subsectors.length) * extraWidth) / subsectors.length;*/
 		var extraSettings = {
 			x : cheesecake.center.x,
 			y : cheesecake.center.y,
-			delta : delta,
-			phi : phi,
+			/*delta : delta,
+			phi : phi,*/
 			label : "+",
 			parent : sector,
 			auxiliar : true,
@@ -215,7 +210,7 @@ var socialCheesecake = socialCheesecake || {};
 			type : "extraSubsector"
 		}		
 		//Add sector's subsectors
-		for(var i in subsectors){			
+		/*for(var i in subsectors){			
 			rIn += extraWidth;
 			subsectors[i].rIn = rIn;
 			subsectors[i].rOut = rIn + sectorWidth;
@@ -223,18 +218,18 @@ var socialCheesecake = socialCheesecake || {};
 			subsectors[i].delta = delta;
 			mainLayer.add(subsectors[i].getRegion());
 			rIn += sectorWidth;
-		}
+		}*/
 		//Add extra subsectors
-		rIn = 0;
+		/*rIn = 0;*/
 		for(var i = 0; i< parts- subsectors.length; i++){			
 			if(i == 0){
 				var extraSettingsFirst = {
 					x : cheesecake.center.x,
 					y : cheesecake.center.y,
-					rIn : rIn,
+					/*rIn : rIn,
 					rOut : rIn +extraWidth,
 					delta : delta,
-					phi : phi,
+					phi : phi,*/
 					label : "+",
 					parent : sector,
 					auxiliar : true,
@@ -263,14 +258,21 @@ var socialCheesecake = socialCheesecake || {};
 				}
 				var extraSector = new socialCheesecake.Subsector(extraSettingsFirst);  
 			}else{
-				extraSettings["rIn"]= rIn;
-				extraSettings["rOut"]= rIn + extraWidth;
+				/*extraSettings["rIn"]= rIn;
+				extraSettings["rOut"]= rIn + extraWidth;*/
 				extraSettings["simulate"] = i;
 				var extraSector = new socialCheesecake.Subsector(extraSettings); 
 			}
-			mainLayer.add(extraSector.getRegion());
-			this.extraSubsectors.push(extraSector);
-			rIn += extraWidth + sectorWidth;
+			//mainLayer.add(extraSector.getRegion());
+			sector.extraSubsectors.push(extraSector);
+			//rIn += extraWidth + sectorWidth;
+		}
+		sector.calculateSubportions();
+		for(var i in subsectors){
+			mainLayer.add(subsectors[i].getRegion());
+		}
+		for(var i in sector.extraSubsectors){
+			mainLayer.add(sector.extraSubsectors[i].getRegion());
 		}
 		if(callback){
 			callback(cheesecake);
@@ -280,17 +282,51 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Sector.prototype.putTogether = function() {
 		var cheesecake = this.getCheesecake();
-		var mainLayer = cheesecake.stage.mainLayer;
+		var layer = null;
 		var sector = (this.simulate != null) ? cheesecake.sectors[this.simulate] : this;
 		var subsectors = sector.subsectors;
 		var extraSubsectors = this.extraSubsectors;
 		//Clear subsectors from stage
 		for(var i = extraSubsectors.length ; i>0 ; i--){
-			mainLayer.remove((extraSubsectors.pop()).getRegion());
+			var subsectorRegion = (extraSubsectors.pop()).getRegion();
+			layer = subsectorRegion.getLayer();
+			if(layer) layer.remove(subsectorRegion);
 		}
 		for(var i in subsectors) {
-			mainLayer.remove(subsectors[i].getRegion());
+			layer = subsectors[i].getRegion().getLayer();
+			if(layer) layer.remove(subsectors[i].getRegion());
 		}
+	}
+	
+	socialCheesecake.Sector.prototype.calculateSubportions = function(auxSubsectors){
+		var cheesecake = this.getCheesecake();
+		var subsectors = this.subsectors;
+		var extraSubsectors = this.extraSubsectors;
+		console.log(extraSubsectors);
+		var phi = this.phi;
+		var delta = this.delta;
+		var rOut = this.rOut;
+		var rIn = this.rIn;
+		var extraWidth = (rOut - rIn) * 0.06;
+		var sectorWidth = (rOut - rIn - (extraSubsectors.length * extraWidth)) / subsectors.length;
+		
+		for(var i in subsectors){			
+			rIn += extraWidth;
+			subsectors[i].rIn = rIn;
+			subsectors[i].rOut = rIn + sectorWidth;
+			subsectors[i].phi = phi;
+			subsectors[i].delta = delta;
+			rIn += sectorWidth;
+		}
+		rIn = this.rIn;
+		for(var i in extraSubsectors){
+			extraSubsectors[i].rIn = rIn;
+			extraSubsectors[i].rOut = rIn + extraWidth;
+			extraSubsectors[i].delta = delta;
+			extraSubsectors[i].phi = phi;
+			rIn += extraWidth + sectorWidth;
+		}
+
 	}
 	
 	socialCheesecake.Sector.prototype.changeColor = function(color) {
@@ -608,13 +644,10 @@ var socialCheesecake = socialCheesecake || {};
 		/*Rearrange subsectors*/		
 		for(var i = subsectors.length ; i >= 0 ; i--){
 			rIn = rOut - separation;
-			console.log(i);
 			if( i > sectorIndex){
 				subsectors[i] = subsectors[i-1];
-				console.log(subsectors[i].label);
 			}
 			if( i == sectorIndex ){
-				console.log("new subsector "+ i);
 				settings.rIn = rIn;
 				settings.rOut = rOut;
 				settings.label = "New Subsector "+ i;
@@ -625,6 +658,7 @@ var socialCheesecake = socialCheesecake || {};
 			}
 			rOut = rIn;
 		}
+		return subsectors[sectorIndex];
 	}
 	
 	socialCheesecake.Sector.prototype.addActor = function(actorInfo , subsector){
