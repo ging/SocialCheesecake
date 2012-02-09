@@ -225,19 +225,20 @@ var socialCheesecake = socialCheesecake || {};
 		//Animate
 		for(var i in dummyExtra){
 			if(i == subsectorIndex){
+				dummyExtra[subsectorIndex].type = "normalSubsector";
+				dummyExtra[subsectorIndex].color = normalSubsectors[subsectorIndex].color;
+				dummyExtra[subsectorIndex].label = "";
 				dummyExtra[subsectorIndex].resizeWidth({
 					width : dummyExtra[subsectorIndex].getWidth() + normalSubsectors[subsectorIndex].getWidth(),
 					anchor : (dummyExtra[subsectorIndex].rIn == 0) ? "rin" : "rout",
 					step : step,
 					callback : function(){
-						var layer = dummyExtra[subsectorIndex].getRegion().getLayer();
-						if(layer) layer.remove(dummyExtra[subsectorIndex].getRegion());
+						dummyExtra[subsectorIndex].label = normalSubsectors[subsectorIndex].label;
 						var settings = {
 							label : "+",
 							x : extraSubsectors[subsectorIndex].x,
 							y : extraSubsectors[subsectorIndex].y,
-							rIn : extraSubsectors[subsectorIndex].rIn,
-							rOut : extraSubsectors[subsectorIndex].rIn,
+							rIn : (subsectorIndex == 0) ? extraSubsectors[subsectorIndex].rIn : (extraSubsectors[subsectorIndex].rIn + extraSubsectors[subsectorIndex].rOut)/2 ,
 							phi : dummyExtra[subsectorIndex].phi,
 							delta : dummyExtra[subsectorIndex].delta,
 							type : "extraSubsector",
@@ -245,20 +246,26 @@ var socialCheesecake = socialCheesecake || {};
 							parent : dummyExtra[subsectorIndex].parent,
 							color : extraSubsectors[subsectorIndex].color
 						};
+						settings.rOut = settings.rIn;
 						var prevExtra = new socialCheesecake.Subsector(settings);
 						mainLayer.add(prevExtra.getRegion());
-						settings.rIn = dummyExtra[subsectorIndex].rOut;
+						settings.rIn = (subsectorIndex == dummyExtra.length -1 ) ? extraSubsectors[subsectorIndex+1].rOut : (extraSubsectors[subsectorIndex+1].rIn + extraSubsectors[subsectorIndex+1].rOut)/2;
 						settings.rOut = settings.rIn;
 						var postExtra = new socialCheesecake.Subsector(settings);
 						mainLayer.add(postExtra.getRegion());
+						dummyExtra[subsectorIndex].resizeWidth({
+							width : normalSubsectors[subsectorIndex].getWidth(),
+							anchor : (subsectorIndex == 0) ? "rout" : "rin",
+							step : step
+						});
 						prevExtra.resizeWidth({
 							width : extraSubsectors[subsectorIndex].getWidth(),
-							anchor : "rin",
+							anchor : (subsectorIndex == 0) ? "rin" : "m",
 							step : step
 						});
 						postExtra.resizeWidth({
 							width : extraSubsectors[subsectorIndex+1].getWidth(),
-							anchor : "rin",
+							anchor : (subsectorIndex == dummyExtra.length -1 ) ? "rout" : "m",
 							step : step
 						});
 					}
