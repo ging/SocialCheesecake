@@ -184,8 +184,12 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Sector.prototype.turnExtraIntoNewSubsector = function (subsectorIndex){
 		var sector = this;
 		var mainLayer = this.getCheesecake().stage.mainLayer;
-		var allSubsectors = (this.extraSubsectors).concat(this.subsectors);
-		var dummySectors = [];
+		var extraSubsectors = this.extraSubsectors;
+		var normalSubsectors = this.subsectors;
+		var allSubsectors = extraSubsectors.concat(normalSubsectors);
+		var dummyNormal = [];
+		var dummyExtra = [];
+		var step = 1.5;
 
 		//Create dummies for the animation
 		for(var i in allSubsectors){
@@ -202,8 +206,13 @@ var socialCheesecake = socialCheesecake || {};
 				parent : allSubsectors[i].parent,
 				color : allSubsectors[i].color
 			};
-			dummySectors.push(new socialCheesecake.Subsector(settings));
-			var region = dummySectors[i].getRegion();
+			if(i < extraSubsectors.length){
+				dummyExtra.push(new socialCheesecake.Subsector(settings));
+				var region = dummyExtra[i].getRegion();
+			}else{
+				dummyNormal.push(new socialCheesecake.Subsector(settings));
+				var region = dummyNormal[i - dummyExtra.length].getRegion();
+			}
 			region.off('mouseover');
 			region.off('mouseout');
 			region.off('click');
@@ -213,15 +222,70 @@ var socialCheesecake = socialCheesecake || {};
 		this.addNewSubsector(subsectorIndex);
 		this.createExtraSubsectors();
 		this.getCheesecake().getAuxiliarClone().calculateSubportions();
-		
-		dummySectors[subsectorIndex].resizeWidth({
-			width : this.subsectors[subsectorIndex].rOut - this.subsectors[subsectorIndex].rIn,
-			anchor : (allSubsectors[subsectorIndex].rIn == 0) ? "rin" : "rout"
-		});
-		
 		//Animate
-		
-		return dummySectors;
+		for(var i in dummyExtra){
+			if(i == subsectorIndex){
+				dummyExtra[subsectorIndex].resizeWidth({
+					width : dummyExtra[subsectorIndex].getWidth() + normalSubsectors[subsectorIndex].getWidth(),
+					anchor : (dummyExtra[subsectorIndex].rIn == 0) ? "rin" : "rout",
+					step : step,
+					callback : function(){
+						var layer = dummyExtra[subsectorIndex].getRegion().getLayer();
+						if(layer) layer.remove(dummyExtra[subsectorIndex].getRegion());
+						var settings = {
+							label : "+",
+							x : extraSubsectors[subsectorIndex].x,
+							y : extraSubsectors[subsectorIndex].y,
+							rIn : extraSubsectors[subsectorIndex].rIn,
+							rOut : extraSubsectors[subsectorIndex].rIn,
+							phi : dummyExtra[subsectorIndex].phi,
+							delta : dummyExtra[subsectorIndex].delta,
+							type : "extraSubsector",
+							auxiliar : true ,
+							parent : dummyExtra[subsectorIndex].parent,
+							color : extraSubsectors[subsectorIndex].color
+						};
+						var prevExtra = new socialCheesecake.Subsector(settings);
+						mainLayer.add(prevExtra.getRegion());
+						settings.rIn = dummyExtra[subsectorIndex].rOut;
+						settings.rOut = settings.rIn;
+						var postExtra = new socialCheesecake.Subsector(settings);
+						mainLayer.add(postExtra.getRegion());
+						prevExtra.resizeWidth({
+							width : extraSubsectors[subsectorIndex].getWidth(),
+							anchor : "rin",
+							step : step
+						});
+						postExtra.resizeWidth({
+							width : extraSubsectors[subsectorIndex+1].getWidth(),
+							anchor : "rin",
+							step : step
+						});
+					}
+				});
+			}else{
+				/* TODO */
+			}
+		}
+		for(var i = 0; i < dummyNormal.length; i++){
+			if(i < subsectorIndex){
+				console.log("if "+i);
+				console.log(normalSubsectors[i])
+				dummyNormal[i].resizeWidth({
+						width : normalSubsectors[i].getWidth(),
+						anchor : "rin",
+						step: step
+				});
+			}else {
+				console.log("else " + i);
+				dummyNormal[i].resizeWidth({
+					width : normalSubsectors[i].getWidth(),
+					anchor : "rout",
+					step: step
+				});
+			}
+		}
+		return dummyExtra.concat(dummyNormal);
 	}
 	
 	socialCheesecake.Sector.prototype.splitUp = function() {
@@ -711,5 +775,9 @@ var socialCheesecake = socialCheesecake || {};
 				}
 			}
 		}
+	}
+	
+	socialCheesecake.Sector.prototype.getWidth = function (){
+		return (this.rOut - this.rIn);
 	}
 })();
