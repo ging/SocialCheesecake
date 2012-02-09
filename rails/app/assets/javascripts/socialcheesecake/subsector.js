@@ -1,7 +1,7 @@
 var socialCheesecake = socialCheesecake || {};
 (function() {
 	socialCheesecake.Subsector = function(settings) {
-		this.id = settings.id;
+		this.id = settings.id || null;
 		if(settings.parent != null) this.parent = settings.parent;		
 		this.label = "";
 		if(settings.label != null) this.label = settings.label;

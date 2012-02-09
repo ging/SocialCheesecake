@@ -181,6 +181,49 @@ var socialCheesecake = socialCheesecake || {};
 		return this.parent;
 	}
 	
+	socialCheesecake.Sector.prototype.turnExtraIntoNewSubsector = function (subsectorIndex){
+		var sector = this;
+		var mainLayer = this.getCheesecake().stage.mainLayer;
+		var allSubsectors = (this.extraSubsectors).concat(this.subsectors);
+		var dummySectors = [];
+
+		//Create dummies for the animation
+		for(var i in allSubsectors){
+			var settings = {
+				label : allSubsectors[i].label,
+				x : allSubsectors[i].x,
+				y : allSubsectors[i].y,
+				rIn : allSubsectors[i].rIn,
+				rOut : allSubsectors[i].rOut,
+				phi : allSubsectors[i].phi,
+				delta : allSubsectors[i].delta,
+				type : allSubsectors[i].type,
+				auxiliar : allSubsectors[i].auxiliar || null,
+				parent : allSubsectors[i].parent,
+				color : allSubsectors[i].color
+			};
+			dummySectors.push(new socialCheesecake.Subsector(settings));
+			var region = dummySectors[i].getRegion();
+			region.off('mouseover');
+			region.off('mouseout');
+			region.off('click');
+			mainLayer.add(region);
+		}
+		//Add new Subsector and calculate subsector's new sizes
+		this.addNewSubsector(subsectorIndex);
+		this.createExtraSubsectors();
+		this.getCheesecake().getAuxiliarClone().calculateSubportions();
+		
+		dummySectors[subsectorIndex].resizeWidth({
+			width : this.subsectors[subsectorIndex].rOut - this.subsectors[subsectorIndex].rIn,
+			anchor : (allSubsectors[subsectorIndex].rIn == 0) ? "rin" : "rout"
+		});
+		
+		//Animate
+		
+		return dummySectors;
+	}
+	
 	socialCheesecake.Sector.prototype.splitUp = function() {
 		var cheesecake = this.getCheesecake();
 		var callback = cheesecake.onSectorFocusEnd;
@@ -514,7 +557,7 @@ var socialCheesecake = socialCheesecake || {};
 		var step = 0.05;
 		var anchor = 0;
 		var stage = sector.getCheesecake().stage;
-		var context = stage.mainLayer.getContext();
+		var context = sector.getRegion().getLayer().getContext();
 		if(!options) throw "No arguments passed to the function";
 		if(options.step) step = options.step;
 		if(options.destination == null) throw "destination must be defined";
@@ -582,6 +625,7 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Sector.prototype.addNewSubsector = function (sectorIndex){
+		/* TODO */
 		var subsectors = this.subsectors;
 		var settings = {
 			parent : this,
