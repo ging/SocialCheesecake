@@ -87,7 +87,7 @@ var socialCheesecake = socialCheesecake || {};
 		this._region = null;
 	}
 	
-	socialCheesecake.Sector.prototype._draw = function(context, options) {
+	socialCheesecake.Sector.prototype._draw = function(context) {
 		var x = this.x;
 		var y = this.y;
 		var phi = this.phi;
@@ -219,6 +219,7 @@ var socialCheesecake = socialCheesecake || {};
 			mainLayer.add(region);
 		}
 		//Add new Subsector and calculate subsector's new sizes
+		this.putTogether();
 		this.addNewSubsector(subsectorIndex);
 		this.createExtraSubsectors();
 		this.getCheesecake().getAuxiliarClone().calculateSubportions();
@@ -238,7 +239,7 @@ var socialCheesecake = socialCheesecake || {};
 							label : "+",
 							x : extraSubsectors[subsectorIndex].x,
 							y : extraSubsectors[subsectorIndex].y,
-							rIn : (subsectorIndex == 0) ? extraSubsectors[subsectorIndex].rIn : (extraSubsectors[subsectorIndex].rIn + extraSubsectors[subsectorIndex].rOut)/2 ,
+							rIn : (subsectorIndex == 0) ? extraSubsectors[subsectorIndex].rIn : extraSubsectors[subsectorIndex].getMediumRadius(),
 							phi : dummyExtra[subsectorIndex].phi,
 							delta : dummyExtra[subsectorIndex].delta,
 							type : "extraSubsector",
@@ -249,14 +250,31 @@ var socialCheesecake = socialCheesecake || {};
 						settings.rOut = settings.rIn;
 						var prevExtra = new socialCheesecake.Subsector(settings);
 						mainLayer.add(prevExtra.getRegion());
-						settings.rIn = (subsectorIndex == dummyExtra.length -1 ) ? extraSubsectors[subsectorIndex+1].rOut : (extraSubsectors[subsectorIndex+1].rIn + extraSubsectors[subsectorIndex+1].rOut)/2;
+						dummyExtra.push(prevExtra);
+						settings.rIn = (subsectorIndex == dummyExtra.length -1 ) ? extraSubsectors[subsectorIndex+1].rOut : extraSubsectors[subsectorIndex+1].getMediumRadius();
 						settings.rOut = settings.rIn;
 						var postExtra = new socialCheesecake.Subsector(settings);
+						dummyExtra.push(postExtra);
 						mainLayer.add(postExtra.getRegion());
 						dummyExtra[subsectorIndex].resizeWidth({
 							width : normalSubsectors[subsectorIndex].getWidth(),
 							anchor : (subsectorIndex == 0) ? "rout" : "rin",
-							step : step
+							step : step,
+							callback : function(){
+								for(var i in normalSubsectors){
+									mainLayer.add(normalSubsectors[i].getRegion());
+								}
+								for (var i in extraSubsectors){
+									mainLayer.add(extraSubsectors[i].getRegion());
+								}
+								for (var i in dummyExtra){
+									mainLayer.remove(dummyExtra[i].getRegion());
+								}
+								for (var i in dummyNormal){
+									mainLayer.remove(dummyNormal[i].getRegion());
+								}
+								mainLayer.draw();
+							}
 						});
 						prevExtra.resizeWidth({
 							width : extraSubsectors[subsectorIndex].getWidth(),
@@ -328,7 +346,9 @@ var socialCheesecake = socialCheesecake || {};
 		for(var i = extraSubsectors.length ; i>0 ; i--){
 			var subsectorRegion = (extraSubsectors.pop()).getRegion();
 			layer = subsectorRegion.getLayer();
-			if(layer) layer.remove(subsectorRegion);
+			if(layer){
+				layer.remove(subsectorRegion);
+			}
 		}
 		for(var i in subsectors) {
 			layer = subsectors[i].getRegion().getLayer();
@@ -787,4 +807,9 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Sector.prototype.getWidth = function (){
 		return (this.rOut - this.rIn);
 	}
+	
+	socialCheesecake.Sector.prototype.getMediumRadius = function (){
+		return (this.rOut + this.rIn)/2;
+	}
+	
 })();
