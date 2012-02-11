@@ -90,10 +90,7 @@ var socialCheesecake = socialCheesecake || {};
 
 	socialCheesecake.Cheesecake.prototype.draw = function() {
 		var sectors = this.sectors;
-		var mainLayer = this.stage.mainLayer;
-		for(var sector in sectors) {
-			mainLayer.add(sectors[sector].getRegion());
-		}
+		this.addToLayer(sectors);
 		this.stage.draw();
 	}
 
@@ -113,8 +110,6 @@ var socialCheesecake = socialCheesecake || {};
 
 	socialCheesecake.Cheesecake.prototype.focusAndBlurCheesecake = function(sector) {
 		var cheesecake = this;
-		var mainLayer = this.stage.mainLayer;
-		var regions = mainLayer.getShapes();
 		var sectorIndex;
 		for(var i in cheesecake.sectors) {
 			if(cheesecake.sectors[i] === sector)
@@ -122,13 +117,8 @@ var socialCheesecake = socialCheesecake || {};
 		}
 		if(sectorIndex == null)
 			throw "sector doesn't belong to this cheesecake"
-		for(var i = (regions.length - 1); i >= 0; i--) {
-			if(!regions[i].permanent) {
-				mainLayer.remove(regions[i]);
-			}
-		}
-		mainLayer.clear();
-		this.setHighlightedSector(sector);
+		cheesecake.clearLayer();
+		cheesecake.setHighlightedSector(sector);
 
 		//Add auxiliar sectors
 		var greySettings = {
@@ -145,8 +135,8 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.auxiliarSectors.push(greySector);
 		var dummySector = this.getAuxiliarClone(sectorIndex);
 
-		mainLayer.add(greySector.getRegion());
-		mainLayer.add(dummySector.getRegion());
+		cheesecake.addToLayer(greySector);
+		cheesecake.addToLayer(dummySector);
 		//Animations
 		var greyClickCallback = function() {
 			greySector.label = "";
@@ -208,12 +198,8 @@ var socialCheesecake = socialCheesecake || {};
 		var regions = mainLayer.getShapes();
 
 		//Delete the auxiliar sectors
-		for(var i = (regions.length - 1); i >= 0; i--) {
-			if(!regions[i].permanent) {
-				mainLayer.remove(regions[i]);
-				cheesecake.auxiliarSectors.pop();
-			}
-		}
+		cheesecake.removeFromLayer(cheesecake.auxiliarSectors);
+		cheesecake.auxiliarSectors = [];
 		mainLayer.clear();
 
 		// Add the former sectors and actors
@@ -400,6 +386,37 @@ var socialCheesecake = socialCheesecake || {};
 			sectors[i].originalAttr.delta = sectors[i].delta;
 			phi += sectors[i].delta;
 		}
+	}
+	
+	socialCheesecake.Cheesecake.prototype.addToLayer = function(sectors, layer){
+		var layer = layer || this.stage.mainLayer;
+		if(sectors instanceof Array){
+			for(var sector in sectors){
+				layer.add(sectors[sector].getRegion());
+			}
+		}else{
+			layer.add(sectors.getRegion());
+		}
+	}
+	
+	socialCheesecake.Cheesecake.prototype.removeFromLayer = function(sectors, layer){
+		var layer = layer || this.stage.mainLayer;
+		if(sectors instanceof Array){
+			for(var sector in sectors) {
+				layer.remove(sectors[sector].getRegion());
+			}
+		}else{
+			layer.remove(sectors.getRegion());
+		}
+	}
+	
+	socialCheesecake.Cheesecake.prototype.clearLayer = function(layer){
+		var layer = layer || this.stage.mainLayer;
+		var regions = layer.getShapes();
+		for(var i = (regions.length - 1); i >= 0; i--) {
+			layer.remove(regions[i]);
+		}
+		layer.clear();
 	}
 
 	socialCheesecake.Cheesecake.prototype.setHighlightedSector = function(sector) {
