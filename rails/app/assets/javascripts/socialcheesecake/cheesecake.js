@@ -403,7 +403,11 @@ var socialCheesecake = socialCheesecake || {};
 		var layer = layer || this.stage.mainLayer;
 		if(sectors instanceof Array){
 			for(var sector in sectors) {
-				layer.remove(sectors[sector].getRegion());
+				try{
+					layer.remove(sectors[sector].getRegion());
+				}catch(e){
+					
+				}
 			}
 		}else{
 			layer.remove(sectors.getRegion());

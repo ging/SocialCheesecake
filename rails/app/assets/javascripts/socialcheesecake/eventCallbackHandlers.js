@@ -106,14 +106,7 @@ var socialCheesecake = socialCheesecake || {};
 				})
 			},
 			click : function(subsector) {
-				subsector.getRegion().off("mouseover");
-				subsector.getRegion().off("mouseout");
-				var newSubsector = subsector.parent.addNewSubsector(subsector.simulate);
-				subsector.resizeWidth({
-					width : newSubsector.rOut - newSubsector.rIn,
-					anchor : "m",
-					step : 1
-				});
+				subsector.parent.turnExtraIntoNewSubsector(subsector.simulate);
 			},
 			mouseup : function() {
 				return;

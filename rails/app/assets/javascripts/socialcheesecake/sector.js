@@ -185,12 +185,11 @@ var socialCheesecake = socialCheesecake || {};
 		var sector = this;
 		var cheesecake = this.getCheesecake();
 		var mainLayer = cheesecake.stage.mainLayer;
-		var extraSubsectors = this.extraSubsectors;
-		var normalSubsectors = this.subsectors;
-		var allSubsectors = extraSubsectors.concat(normalSubsectors);
+		var allSubsectors = (this.extraSubsectors).concat(this.subsectors);
 		var dummyNormal = [];
 		var dummyExtra = [];
-		var step = 1.5;
+		var step = 0.5;
+		var mainExtraAnchor = "m";
 
 		//Create dummies for the animation
 		for(var i in allSubsectors){
@@ -207,7 +206,7 @@ var socialCheesecake = socialCheesecake || {};
 				parent : allSubsectors[i].parent,
 				color : allSubsectors[i].color
 			};
-			if(i < extraSubsectors.length){
+			if(i < this.extraSubsectors.length){
 				dummyExtra.push(new socialCheesecake.Subsector(settings));
 				dummyExtra[i].listen(false);
 			}else{
@@ -219,17 +218,27 @@ var socialCheesecake = socialCheesecake || {};
 		//Add new Subsector and calculate subsector's new sizes
 		this.putTogether();
 		this.addNewSubsector(subsectorIndex);
+		var normalSubsectors = this.subsectors;
 		this.createExtraSubsectors();
 		this.getCheesecake().getAuxiliarClone().calculateSubportions();
+		var extraSubsectors = this.extraSubsectors;
+		
 		//Animate
 		for(var i in dummyExtra){
 			if(i == subsectorIndex){
 				dummyExtra[subsectorIndex].type = "normalSubsector";
 				dummyExtra[subsectorIndex].color = normalSubsectors[subsectorIndex].color;
 				dummyExtra[subsectorIndex].label = "";
+				if(subsectorIndex == 0){
+					mainExtraAnchor = "rin";
+					console.log("primero");
+				}else if(subsectorIndex == dummyExtra.length -1){
+					mainExtraAnchor = "rout";
+					console.log("último")
+				}
 				dummyExtra[subsectorIndex].resizeWidth({
-					width : dummyExtra[subsectorIndex].getWidth() + normalSubsectors[subsectorIndex].getWidth(),
-					anchor : (dummyExtra[subsectorIndex].rIn == 0) ? "rin" : "rout",
+					width : (mainExtraAnchor == 'm') ?  normalSubsectors[subsectorIndex].getWidth() : extraSubsectors[subsectorIndex].getWidth() + normalSubsectors[subsectorIndex].getWidth(),
+					anchor : mainExtraAnchor,
 					step : step,
 					callback : function(){
 						dummyExtra[subsectorIndex].label = normalSubsectors[subsectorIndex].label;
@@ -260,7 +269,7 @@ var socialCheesecake = socialCheesecake || {};
 							step : step,
 							callback : function(){
 								cheesecake.addToLayer(normalSubsectors.concat(extraSubsectors));
-								cheesecake.removeFromLayer(dummyExtra.concat(dummyNormal));
+								//cheesecake.removeFromLayer(dummyExtra.concat(dummyNormal));
 							}
 						});
 						prevExtra.resizeWidth({
@@ -272,7 +281,23 @@ var socialCheesecake = socialCheesecake || {};
 							width : extraSubsectors[subsectorIndex+1].getWidth(),
 							anchor : (subsectorIndex == dummyExtra.length -1 ) ? "rout" : "m",
 							step : step
-						});
+						});/*
+						for(var i = 0; i< dummyExtra.length; i++){
+							if(i!= subsectorIndex){
+								dummyExtra[i].resizeWidth({
+									width : normalSubsectors[subsectorIndex].getWidth(),
+									anchor : (subsectorIndex == 0) ? "rout" : "rin",
+									step : step
+								});
+							}
+						}*/
+						/* */
+						for(var i in dummyExtra){
+							dummyExtra[i].rotateTo({destination: 3*Math.PI/2});
+						}
+						for(var i in dummyNormal){
+							dummyNormal[i].rotateTo({destination: 3*Math.PI/2});
+						}
 					}
 				});
 			}else{
@@ -312,6 +337,7 @@ var socialCheesecake = socialCheesecake || {};
 		//Calculate sizes and add regions to the layer
 		this.calculateSubportions();
 		cheesecake.addToLayer(subsectors.concat(sector.extraSubsectors));
+		mainLayer.draw();
 		if(callback){
 			callback(cheesecake);
 		}
@@ -564,7 +590,44 @@ var socialCheesecake = socialCheesecake || {};
 			}
 		}
 	}
+	
+	socialCheesecake.Sector.prototype.changeMediumRadius = function(options){
+		var sector = this;
+		var currentRIn = this.rIn;
+		var currentROut = this.rOut;
+		var currentMedRad = this.getMediumRadius();
+		var goalMedRad = options.radius || currentMedRad;
+		var step = options.step || 0.05;
+		var context = this.getCheesecake().stage.mainLayer.getContext();
 		
+		if(goalMedRad > currentMedRad){
+			if(goalMedRad - currentMedRad < step) step = goalMedRad - currentMedRad;
+			currentRIn += step;
+			currentROut += step;
+		}else{
+			if(currentMedRad - goalMedRad < step) step = currentMedRad - goalMedRad;
+			currentRIn -= step;
+			currentROut -= step;
+		}
+		this.rIn = currentRIn;
+		this.rOut = currentROut;
+		currentMedRad = this.getMediumRadius();
+		//Redraw
+		context.restore();
+		context.save();
+		this.getCheesecake().stage.draw();
+		//Repeat if necessary
+		if ((Math.round(currentMedRad *1000) != Math.round(goalMedRad *1000))) {
+			requestAnimFrame(function() {
+				sector.changeMediumRadius(options);
+			});
+		} else{
+			if(options.callback) {
+				options.callback();
+			}
+		}
+	}
+	
 	socialCheesecake.Sector.prototype.focus = function() {
 		var sector = this;
 		var stage = sector.getCheesecake().stage;
