@@ -184,7 +184,6 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Sector.prototype.turnExtraIntoNewSubsector = function (subsectorIndex){
 		var sector = this;
 		var cheesecake = this.getCheesecake();
-		var mainLayer = cheesecake.stage.mainLayer;
 		var allSubsectors = (this.extraSubsectors).concat(this.subsectors);
 		var dummyNormal = [];
 		var dummyExtra = [];
@@ -195,13 +194,13 @@ var socialCheesecake = socialCheesecake || {};
 		for(var i in allSubsectors){
 			var settings = {
 				label : allSubsectors[i].label,
-				x : allSubsectors[i].x,
-				y : allSubsectors[i].y,
-				rIn : allSubsectors[i].rIn,
-				rOut : allSubsectors[i].rOut,
-				phi : allSubsectors[i].phi,
+				x 		: allSubsectors[i].x,
+				y 		: allSubsectors[i].y,
+				rIn 	: allSubsectors[i].rIn,
+				rOut	: allSubsectors[i].rOut,
+				phi 	: allSubsectors[i].phi,
 				delta : allSubsectors[i].delta,
-				type : allSubsectors[i].type,
+				type 	: allSubsectors[i].type,
 				auxiliar : allSubsectors[i].auxiliar || null,
 				parent : allSubsectors[i].parent,
 				color : allSubsectors[i].color
@@ -223,6 +222,7 @@ var socialCheesecake = socialCheesecake || {};
 			this.createExtraSubsectors();
 		}else{
 			this.extraSubsectors = [];
+			console.log("no hay subsectores");
 			for(var i in dummyExtra){
 				if(i != subsectorIndex){
 					dummyExtra[i].resizeWidth({
@@ -271,11 +271,9 @@ var socialCheesecake = socialCheesecake || {};
 					settings.rOut = settings.rIn;
 					var prevExtra = new socialCheesecake.Subsector(settings);
 					cheesecake.addToLayer(prevExtra);
-					dummyExtra.push(prevExtra);
 					settings.rIn = (subsectorIndex == dummyExtra.length -1 ) ? extraSubsectors[subsectorIndex+1].rOut : extraSubsectors[subsectorIndex+1].getMediumRadius();
 					settings.rOut = settings.rIn;
 					var postExtra = new socialCheesecake.Subsector(settings);
-					dummyExtra.push(postExtra);
 					cheesecake.addToLayer(postExtra);
 					dummyExtra[subsectorIndex].resizeWidth({
 						width : normalSubsectors[subsectorIndex].getWidth(),
@@ -288,6 +286,8 @@ var socialCheesecake = socialCheesecake || {};
 							});
 							cheesecake.addToLayer(normalSubsectors.concat(extraSubsectors));
 							cheesecake.removeFromLayer(dummyExtra.concat(dummyNormal));
+							cheesecake.removeFromLayer(postExtra);
+							cheesecake.removeFromLayer(prevExtra);
 						}
 					});
 					prevExtra.resizeWidth({
@@ -300,22 +300,8 @@ var socialCheesecake = socialCheesecake || {};
 						anchor : (subsectorIndex == dummyExtra.length -1 ) ? "rout" : "m",
 						step : step
 					});
-					for(var i = 0; i< dummyExtra.length-2; i++){
-						if(i> subsectorIndex){
-							dummyExtra[i].changeMediumRadius({
-								radius : extraSubsectors[i+1].getMediumRadius(),
-								step : step
-							});
-						}
-						if(i< subsectorIndex){
-							dummyExtra[i].changeMediumRadius({
-								radius : extraSubsectors[i].getMediumRadius(),
-								step : step
-							});
-						}
-					}
+					
 				}else{
-					console.log("here");
 					cheesecake.addToLayer(normalSubsectors.concat(extraSubsectors));
 					cheesecake.removeFromLayer(dummyNormal.concat(dummyExtra));
 					cheesecake.drawLayer();
@@ -330,6 +316,23 @@ var socialCheesecake = socialCheesecake || {};
 				}*/
 			}
 		});
+		
+		if(normalSubsectors.length < 4 ){
+			for(var i = 0; i< dummyExtra.length; i++){
+				if(i> subsectorIndex){
+					dummyExtra[i].changeMediumRadius({
+						radius : extraSubsectors[i+1].getMediumRadius(),
+						step : step
+					});
+				}
+				if(i< subsectorIndex){
+					dummyExtra[i].changeMediumRadius({
+						radius : extraSubsectors[i].getMediumRadius(),
+						step : step
+					});
+				}
+			}
+		}
 		for(var i = 0; i < dummyNormal.length; i++){
 			var subsector = dummyNormal[i];
 			if(i != 0 && i!= dummyNormal.length -1){
@@ -345,7 +348,20 @@ var socialCheesecake = socialCheesecake || {};
 						});
 					}
 				});
-			}else{
+			}else{/*
+				console.log(subsector.label);
+				var width = normalSubsectors[i].getWidth();
+				subsector.changeMediumRadius({
+					radius : (i < subsectorIndex) ? normalSubsectors[i].getMediumRadius() : normalSubsectors[i+1].getMediumRadius(),
+					step: step,
+					callback: function(){
+						subsector.resizeWidth({
+							width : width,
+							anchor : (i < subsectorIndex) ? "rin" : "rout",
+							step: step
+						});
+					}
+				});*/
 				subsector.resizeWidth({
 						width : normalSubsectors[i].getWidth(),
 						anchor : (i < subsectorIndex) ? "rin" : "rout",
@@ -359,7 +375,6 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Sector.prototype.splitUp = function() {
 		var cheesecake = this.getCheesecake();
 		var callback = cheesecake.onSectorFocusEnd;
-		var mainLayer = cheesecake.stage.mainLayer;
 		var sector = (this.simulate != null) ? cheesecake.sectors[this.simulate] :  this;
 		var subsectors = sector.subsectors;
 
@@ -368,7 +383,7 @@ var socialCheesecake = socialCheesecake || {};
 		//Calculate sizes and add regions to the layer
 		this.calculateSubportions();
 		cheesecake.addToLayer(subsectors.concat(sector.extraSubsectors));
-		mainLayer.draw();
+		cheesecake.drawLayer();
 		if(callback){
 			callback(cheesecake);
 		}
@@ -627,6 +642,7 @@ var socialCheesecake = socialCheesecake || {};
 		var currentRIn = this.rIn;
 		var currentROut = this.rOut;
 		var currentMedRad = this.getMediumRadius();
+		if(options.radius - this.getWidth()/2 < 0) options.radius = this.getWidth()/2;
 		var goalMedRad = options.radius || currentMedRad;
 		var step = options.step || 0.05;
 		var context = this.getCheesecake().stage.mainLayer.getContext();
@@ -640,8 +656,10 @@ var socialCheesecake = socialCheesecake || {};
 			currentRIn -= step;
 			currentROut -= step;
 		}
-		this.rIn = currentRIn;
-		this.rOut = currentROut;
+		this.rIn = Math.round(currentRIn *1000)/1000;
+		this.rOut = Math.round(currentROut *1000)/1000;
+		if(this.rIn <0 ) console.log("rIn negativo "+this.rIn);
+		if(this.rOut <0 ) console.log("rOut negativo "+this.rOut);
 		currentMedRad = this.getMediumRadius();
 		//Redraw
 		context.restore();
