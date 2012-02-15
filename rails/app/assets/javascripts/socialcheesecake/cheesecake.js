@@ -414,6 +414,11 @@ var socialCheesecake = socialCheesecake || {};
 		}
 	}
 	
+	socialCheesecake.Cheesecake.prototype.drawLayer = function(layer){
+		var layer = layer || this.stage.mainLayer;
+		layer.draw();
+	}
+	
 	socialCheesecake.Cheesecake.prototype.clearLayer = function(layer){
 		var layer = layer || this.stage.mainLayer;
 		var regions = layer.getShapes();
@@ -471,7 +476,6 @@ var socialCheesecake = socialCheesecake || {};
 				dummy[property] = settings[property];
 			}
 		}
-
 		return dummy;
 	}
 	
