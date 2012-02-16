@@ -406,7 +406,6 @@ var socialCheesecake = socialCheesecake || {};
 				try{
 					layer.remove(sectors[sector].getRegion());
 				}catch(e){
-					
 				}
 			}
 		}else{

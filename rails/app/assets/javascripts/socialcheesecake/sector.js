@@ -187,7 +187,7 @@ var socialCheesecake = socialCheesecake || {};
 		var allSubsectors = (this.extraSubsectors).concat(this.subsectors);
 		var dummyNormal = [];
 		var dummyExtra = [];
-		var step = 0.5;
+		var step = 1.5;
 		var mainExtraAnchor = "m";
 
 		//Create dummies for the animation
@@ -218,158 +218,102 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.removeFromLayer(allSubsectors);
 		this.addNewSubsector(subsectorIndex);
 		var normalSubsectors = this.subsectors;
-		if(normalSubsectors.length < 4 ){
-			this.createExtraSubsectors();
-		}else{
-			this.extraSubsectors = [];
-			console.log("no hay subsectores");
-			for(var i in dummyExtra){
-				if(i != subsectorIndex){
-					dummyExtra[i].resizeWidth({
-						width : 0,
-						anchor : 'm',
-						step : step
-					});
-				}
-			}
-		}
+		this.extraSubsectors = [];
+		var extraSubsectors = sector.extraSubsectors;
 		var clone = this.getCheesecake().getAuxiliarClone();
 		clone.calculateSubportions();
 		clone.label="";
-		var extraSubsectors = this.extraSubsectors;
 		
-		//Animate
-		dummyExtra[subsectorIndex].type = "normalSubsector";
-		dummyExtra[subsectorIndex].color = normalSubsectors[subsectorIndex].color;
-		dummyExtra[subsectorIndex].label = "";
-		if(subsectorIndex == 0){
-			mainExtraAnchor = "rin";
-			console.log("primero");
-		}else if(subsectorIndex == dummyExtra.length -1){
-			mainExtraAnchor = "rout";
-			console.log("último")
-		}
-		dummyExtra[subsectorIndex].resizeWidth({
-			width : (mainExtraAnchor == 'm' || extraSubsectors.length == 0) ?  normalSubsectors[subsectorIndex].getWidth() : extraSubsectors[subsectorIndex].getWidth() + normalSubsectors[subsectorIndex].getWidth(),
-			anchor : mainExtraAnchor,
-			step : step,
-			callback : function(){
-				dummyExtra[subsectorIndex].label = normalSubsectors[subsectorIndex].label;
-				if(extraSubsectors.length > 0){
-					var settings = {
-						label : "+",
-						x : extraSubsectors[subsectorIndex].x,
-						y : extraSubsectors[subsectorIndex].y,
-						rIn : (subsectorIndex == 0) ? extraSubsectors[subsectorIndex].rIn : extraSubsectors[subsectorIndex].getMediumRadius(),
-						phi : dummyExtra[subsectorIndex].phi,
-						delta : dummyExtra[subsectorIndex].delta,
-						type : "extraSubsector",
-						auxiliar : true ,
-						parent : dummyExtra[subsectorIndex].parent,
-						color : extraSubsectors[subsectorIndex].color
-					};
-					settings.rOut = settings.rIn;
-					var prevExtra = new socialCheesecake.Subsector(settings);
-					cheesecake.addToLayer(prevExtra);
-					settings.rIn = (subsectorIndex == dummyExtra.length -1 ) ? extraSubsectors[subsectorIndex+1].rOut : extraSubsectors[subsectorIndex+1].getMediumRadius();
-					settings.rOut = settings.rIn;
-					var postExtra = new socialCheesecake.Subsector(settings);
-					cheesecake.addToLayer(postExtra);
-					dummyExtra[subsectorIndex].resizeWidth({
-						width : normalSubsectors[subsectorIndex].getWidth(),
-						anchor : (subsectorIndex == 0) ? "rout" : "rin",
-						step : step,
-						callback : function(){
-							dummyExtra[subsectorIndex].changeMediumRadius({
-								radius : normalSubsectors[subsectorIndex].getMediumRadius(),
-								step : step
-							});
-							cheesecake.addToLayer(normalSubsectors.concat(extraSubsectors));
-							cheesecake.removeFromLayer(dummyExtra.concat(dummyNormal));
-							cheesecake.removeFromLayer(postExtra);
-							cheesecake.removeFromLayer(prevExtra);
-						}
-					});
-					prevExtra.resizeWidth({
-						width : extraSubsectors[subsectorIndex].getWidth(),
-						anchor : (subsectorIndex == 0) ? "rin" : "m",
-						step : step
-					});
-					postExtra.resizeWidth({
-						width : extraSubsectors[subsectorIndex+1].getWidth(),
-						anchor : (subsectorIndex == dummyExtra.length -1 ) ? "rout" : "m",
-						step : step
-					});
-					
-				}else{
-					cheesecake.addToLayer(normalSubsectors.concat(extraSubsectors));
-					cheesecake.removeFromLayer(dummyNormal.concat(dummyExtra));
-					cheesecake.drawLayer();
-				}
-				/* */
-				/*
-				for(var i in dummyExtra){
-					dummyExtra[i].rotateTo({destination: 3*Math.PI/2});
-				}
-				for(var i in dummyNormal){
-					dummyNormal[i].rotateTo({destination: 3*Math.PI/2});
-				}*/
-			}
-		});
-		
-		if(normalSubsectors.length < 4 ){
-			for(var i = 0; i< dummyExtra.length; i++){
-				if(i> subsectorIndex){
-					dummyExtra[i].changeMediumRadius({
-						radius : extraSubsectors[i+1].getMediumRadius(),
-						step : step
-					});
-				}
-				if(i< subsectorIndex){
-					dummyExtra[i].changeMediumRadius({
-						radius : extraSubsectors[i].getMediumRadius(),
-						step : step
-					});
-				}
+		for(var i in dummyExtra){
+			if(i != subsectorIndex){
+				dummyExtra[i].resizeWidth({
+					width : 0,
+					anchor : 'm',
+					step : step
+				});
 			}
 		}
-		for(var i = 0; i < dummyNormal.length; i++){
-			var subsector = dummyNormal[i];
-			if(i != 0 && i!= dummyNormal.length -1){
-				var width = normalSubsectors[i].getWidth();
-				subsector.changeMediumRadius({
-					radius : (i < subsectorIndex) ? normalSubsectors[i].getMediumRadius() : normalSubsectors[i+1].getMediumRadius(),
-					step: step,
-					callback: function(){
-						subsector.resizeWidth({
-							width : width,
+		
+		var dummyNormalResizeCallback = function(){
+			for (var i = 0; i< dummyNormal.length; i++){
+				dummyNormal[i].changeMediumRadius({
+					radius: (i < subsectorIndex) ? normalSubsectors[i].getMediumRadius() : normalSubsectors[i+1].getMediumRadius(),
+					step : step
+				});
+			}
+			dummyExtra[subsectorIndex].type = "normalSubsector";
+			dummyExtra[subsectorIndex].color = normalSubsectors[subsectorIndex].color;
+			dummyExtra[subsectorIndex].label = "";
+			if(subsectorIndex == 0){
+				mainExtraAnchor = "rin";
+			}else if(subsectorIndex == dummyExtra.length -1){
+				mainExtraAnchor = "rout";
+			}
+			dummyExtra[subsectorIndex].resizeWidth({
+				width : (mainExtraAnchor == 'm' || extraSubsectors.length == 0) ?  normalSubsectors[subsectorIndex].getWidth() : extraSubsectors[subsectorIndex].getWidth() + normalSubsectors[subsectorIndex].getWidth(),
+				anchor : mainExtraAnchor,
+				step : step,
+				callback : mainDummyExtraCallback
+			});
+		};
+		
+		var mainDummyExtraCallback = function (){
+			dummyExtra[subsectorIndex].label = normalSubsectors[subsectorIndex].label;
+			dummyExtra[subsectorIndex].changeMediumRadius({
+				radius :  normalSubsectors[subsectorIndex].getMediumRadius(),
+				step : step,
+				callback : (normalSubsectors.length >= 4 ) ? finalAnimationCallback : function(){return;}
+			});
+			if(normalSubsectors.length < 4 ){
+				sector.createExtraSubsectors();
+				clone.calculateSubportions();
+				extraSubsectors = sector.extraSubsectors;
+				var settings = {
+					label : "+",
+					x : extraSubsectors[subsectorIndex].x,
+					y : extraSubsectors[subsectorIndex].y,
+					phi : dummyExtra[subsectorIndex].phi,
+					delta : dummyExtra[subsectorIndex].delta,
+					type : "extraSubsector",
+					auxiliar : true ,
+					parent : dummyExtra[subsectorIndex].parent,
+					color : extraSubsectors[subsectorIndex].color
+				};
+				dummyExtra.push(new socialCheesecake.Subsector(settings));
+				dummyExtra.push(new socialCheesecake.Subsector(settings));
+				for(var i = 0; i < dummyExtra.length; i++){
+					var done = false;
+					if(i != subsectorIndex){
+						dummyExtra[i].rIn = (i < subsectorIndex) ? extraSubsectors[i].getMediumRadius() : extraSubsectors[i-1].getMediumRadius();
+						dummyExtra[i].rOut = dummyExtra[i].rIn;
+						cheesecake.addToLayer(dummyExtra[i]);
+						dummyExtra[i].resizeWidth({
+							width : (i < subsectorIndex) ? extraSubsectors[i].getWidth() : extraSubsectors[i-1].getWidth(),
 							anchor : "m",
-							step: step
+							step : step,
+							callback : (!done) ? function (){
+								finalAnimationCallback();
+								done = true;
+							} : function(){return;}
 						});
 					}
-				});
-			}else{/*
-				console.log(subsector.label);
-				var width = normalSubsectors[i].getWidth();
-				subsector.changeMediumRadius({
-					radius : (i < subsectorIndex) ? normalSubsectors[i].getMediumRadius() : normalSubsectors[i+1].getMediumRadius(),
-					step: step,
-					callback: function(){
-						subsector.resizeWidth({
-							width : width,
-							anchor : (i < subsectorIndex) ? "rin" : "rout",
-							step: step
-						});
-					}
-				});*/
-				subsector.resizeWidth({
-						width : normalSubsectors[i].getWidth(),
-						anchor : (i < subsectorIndex) ? "rin" : "rout",
-						step: step
-				});
+				}
 			}
+		};
+		var finalAnimationCallback = function(){
+			cheesecake.removeFromLayer(dummyNormal.concat(dummyExtra));
+			cheesecake.addToLayer(normalSubsectors);	
+			if(extraSubsectors) cheesecake.addToLayer(extraSubsectors);
+			cheesecake.drawLayer();
+		};
+		for (var i = 0; i< dummyNormal.length; i++){
+			dummyNormal[i].resizeWidth({
+				width : (i < subsectorIndex) ? normalSubsectors[i].getWidth() : normalSubsectors[i+1].getWidth(),
+				anchor : 'm',
+				step : step,
+				callback : (i == 0) ? dummyNormalResizeCallback :function (){ return ;}
+			});
 		}
-		return dummyExtra.concat(dummyNormal);
 	}
 	
 	socialCheesecake.Sector.prototype.splitUp = function() {
@@ -618,6 +562,7 @@ var socialCheesecake = socialCheesecake || {};
 			currentROut += (this.rIn - currentRIn);
 			currentRIn = 0;
 		}
+		if(currentWidth <= 0) sector.getCheesecake().removeFromLayer(sector);
 		sector.rOut = currentROut;
 		sector.rIn = currentRIn;
 		//Redraw
@@ -658,8 +603,6 @@ var socialCheesecake = socialCheesecake || {};
 		}
 		this.rIn = Math.round(currentRIn *1000)/1000;
 		this.rOut = Math.round(currentROut *1000)/1000;
-		if(this.rIn <0 ) console.log("rIn negativo "+this.rIn);
-		if(this.rOut <0 ) console.log("rOut negativo "+this.rOut);
 		currentMedRad = this.getMediumRadius();
 		//Redraw
 		context.restore();
