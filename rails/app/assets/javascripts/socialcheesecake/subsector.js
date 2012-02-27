@@ -15,7 +15,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.auxiliar = (settings.auxiliar) ? settings.auxiliar : false;
 		this.type = (settings.type) ? settings.type : "normalSubsector";
 		if(settings.simulate != null) this.simulate = settings.simulate;
-		if(settings.color) this.color = settings.color;
+		this.color = settings.color || socialCheesecake.colors.normalSubsector.background;
 		if(settings.fontColor) this.fontColor = settings.fontColor;
 		if(settings.borderColor) this.borderColor = settings.borderColor;
 		if(settings.click != null) this.click = settings.click;

@@ -94,7 +94,7 @@ var socialCheesecake = socialCheesecake || {};
 		var delta = this.delta;
 		var rIn = this.rIn;
 		var rOut = this.rOut;
-		var color = this.color;
+		var color = this.color || socialCheesecake.colors[type]["background"];
 		var label = this.label;
 		var actors = this.actors;
 		var type = this.type;
@@ -194,7 +194,6 @@ var socialCheesecake = socialCheesecake || {};
 			console.log("Reached subsectors limit. No new subsectors will be added");
 			return;
 		}
-		console.log(this);
 		//Create dummies for the animation
 		for(var i in allSubsectors){
 			var settings = {
@@ -308,7 +307,7 @@ var socialCheesecake = socialCheesecake || {};
 		};
 		var finalAnimationCallback = function(){
 			cheesecake.removeFromLayer(dummyNormal.concat(dummyExtra));
-			cheesecake.addToLayer(normalSubsectors);	
+			cheesecake.addToLayer(normalSubsectors);
 			if(extraSubsectors) cheesecake.addToLayer(extraSubsectors);
 			cheesecake.drawLayer();
 		};
@@ -320,7 +319,7 @@ var socialCheesecake = socialCheesecake || {};
 				callback : (i == 0) ? dummyNormalResizeCallback :function (){ return ;}
 			});
 		}
-		if(cheesecake.onSubsectorAdded != null) cheesecake.onSubsectorAdded();
+		if(cheesecake.onSubsectorAdded != null) cheesecake.onSubsectorAdded(cheesecake);
 	}
 	
 	socialCheesecake.Sector.prototype.splitUp = function() {

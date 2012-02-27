@@ -295,6 +295,9 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.calculatePortions();
 	}
 	
+	/*
+	 * Add new Subsector to the Focused Sector
+	 */
 	socialCheesecake.Cheesecake.prototype.addNewSubsector = function(subsectorIndex){
 		var cheesecake = this;
 		var sector = this.getFocusedSector();
