@@ -194,7 +194,7 @@ var socialCheesecake = socialCheesecake || {};
 			console.log("Reached subsectors limit. No new subsectors will be added");
 			return;
 		}
-
+		console.log(this);
 		//Create dummies for the animation
 		for(var i in allSubsectors){
 			var settings = {
@@ -227,7 +227,8 @@ var socialCheesecake = socialCheesecake || {};
 		var extraSubsectors = sector.extraSubsectors;
 		var clone = this.getCheesecake().getAuxiliarClone();
 		clone.calculateSubportions();
-		clone.label="";
+		clone.label ="";
+		clone.color =socialCheesecake.colors.normalSector.background;
 		
 		for(var i in dummyExtra){
 			if(i != subsectorIndex){
@@ -319,6 +320,7 @@ var socialCheesecake = socialCheesecake || {};
 				callback : (i == 0) ? dummyNormalResizeCallback :function (){ return ;}
 			});
 		}
+		if(cheesecake.onSubsectorAdded != null) cheesecake.onSubsectorAdded();
 	}
 	
 	socialCheesecake.Sector.prototype.splitUp = function() {

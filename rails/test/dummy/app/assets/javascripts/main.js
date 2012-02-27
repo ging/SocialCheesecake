@@ -22,6 +22,9 @@ var cheesecakeData = {
 	onChange : function() {
 		console.log("Cambio detectado");
 	},
+	onSubsectorAdded : function(){
+		console.log("New subsector added");
+	},
 	text : {
 		newStyle : "bold italic 14px sans-serif"
 	}

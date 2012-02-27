@@ -12,6 +12,7 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.sectors = [];
 		cheesecake.highlightedSector = null;
 		cheesecake.onSectorHighlight = cheesecakeData.onSectorHighlight || null;
+		cheesecake.onSubsectorAdded = cheesecakeData.onSubsectorAdded || null;
 		cheesecake.onSectorFocusBegin = cheesecakeData.onSectorFocusBegin || null;
 		cheesecake.onSectorFocusEnd = cheesecakeData.onSectorFocusEnd || null;
 		cheesecake.onSectorUnfocusBegin = cheesecakeData.onSectorUnfocusBegin || null;
