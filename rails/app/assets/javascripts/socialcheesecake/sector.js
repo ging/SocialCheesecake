@@ -285,7 +285,9 @@ var socialCheesecake = socialCheesecake || {};
 					color : extraSubsectors[subsectorIndex].color
 				};
 				dummyExtra.push(new socialCheesecake.Subsector(settings));
+				dummyExtra[dummyExtra.length-1].listen(false);
 				dummyExtra.push(new socialCheesecake.Subsector(settings));
+				dummyExtra[dummyExtra.length-1].listen(false);
 				for(var i = 0; i < dummyExtra.length; i++){
 					var done = false;
 					if(i != subsectorIndex){
