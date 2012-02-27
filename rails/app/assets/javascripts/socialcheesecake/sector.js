@@ -188,7 +188,12 @@ var socialCheesecake = socialCheesecake || {};
 		var dummyNormal = [];
 		var dummyExtra = [];
 		var step = 1.5;
-		var mainExtraAnchor = "m";
+		var mainExtraAnchor = "m"
+		
+		if(this.subsectors.length >= 4){
+			console.log("Reached subsectors limit. No new subsectors will be added");
+			return;
+		}
 
 		//Create dummies for the animation
 		for(var i in allSubsectors){

@@ -294,6 +294,17 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.calculatePortions();
 	}
 	
+	socialCheesecake.Cheesecake.prototype.addNewSubsector = function(subsectorIndex){
+		var cheesecake = this;
+		var sector = this.getFocusedSector();
+		if(sector == null) return;
+		if(subsectorIndex > sector.subsectors.length ){
+			console.log("Cannot add new subsector in position "+ subsectorIndex+".This sector only has "+sector.subsectors.length+" subsectors");
+			return;
+		}
+		sector.turnExtraIntoNewSubsector(subsectorIndex);
+	}
+	
 	/**
 	 * actorId 		- actor which changes one of its parents
 	 */
