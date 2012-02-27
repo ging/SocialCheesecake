@@ -63,7 +63,7 @@ var socialCheesecake = socialCheesecake || {};
 					rIn : null,
 					rOut : null,
 					actors : settings.subsectors[i].actors,
-					color : socialCheesecake.colors.normalSector.background,
+					color : socialCheesecake.colors.normalSector.background
 				});
 				this.subsectors.push(subsector);
 			}
