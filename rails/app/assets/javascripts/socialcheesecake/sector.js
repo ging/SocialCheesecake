@@ -136,10 +136,13 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Sector.prototype.getRegion = function() {
 		if(this._region == null) {
 			var sector = this;
-			sector._region = new Kinetic.Shape(function() {
-				var context = this.getContext();
-				sector._draw(context);
-			}, sector.label);
+			sector._region = new Kinetic.Shape({
+				drawFunc : function() {
+					var context = this.getContext();
+					sector._draw(context);
+				}, 
+				name : sector.label
+			});
 			sector._region.on('mouseover', function() {
 				sector.eventHandler('mouseover');
 			});
@@ -154,6 +157,10 @@ var socialCheesecake = socialCheesecake || {};
 			});
 		}
 		return this._region
+	}
+	
+	socialCheesecake.Sector.prototype.getLayer = function(){
+		return this.getRegion().getLayer();
 	}
 	
 	socialCheesecake.Sector.prototype.eventHandler = function(eventName) {
@@ -442,12 +449,8 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Sector.prototype.changeProperty = function (name, value){
 		var sector = this;
-		var stage = sector.getCheesecake().stage;
-		var context = stage.mainLayer.getContext();
 		sector[name] = value;
-		context.restore();
-		context.save();
-		stage.draw();
+		sector.getCheesecake().drawLayer(sector.getLayer());
 	}
 	
 	/**
@@ -464,8 +467,6 @@ var socialCheesecake = socialCheesecake || {};
 		if(!options)
 			throw "No arguments passed to the function";
 		var sector = this;
-		var stage = sector.getCheesecake().stage;
-		var context = stage.mainLayer.getContext();
 		var currentDelta = sector.delta;
 		var currentPhi = sector.phi;
 		var step = 0.05;
@@ -510,9 +511,7 @@ var socialCheesecake = socialCheesecake || {};
 		sector.phi = currentPhi;
 		
 		//Redraw
-		context.restore();
-		context.save();
-		stage.draw();
+		sector.getCheesecake().drawLayer(sector.getLayer());
 		//Repeat if necessary
 		if(goOn && (Math.round(currentDelta*1000) != Math.round(goalDelta*1000))) {
 			requestAnimFrame(function() {
@@ -538,8 +537,6 @@ var socialCheesecake = socialCheesecake || {};
 	 */
 	socialCheesecake.Sector.prototype.resizeWidth = function(options) {
 		var sector = this;
-		var stage = sector.getCheesecake().stage;
-		var context = stage.mainLayer.getContext();
 		var currentRIn = this.rIn;
 		var currentROut = this.rOut;
 		var currentWidth = (currentROut - currentRIn);
@@ -592,9 +589,7 @@ var socialCheesecake = socialCheesecake || {};
 		sector.rOut = currentROut;
 		sector.rIn = currentRIn;
 		//Redraw
-		context.restore();
-		context.save();
-		stage.draw();
+		sector.getCheesecake().drawLayer(sector.getLayer());
 		//Repeat if necessary
 		if ((goOn) &&(Math.round(currentWidth *1000) != Math.round(goalWidth *1000))) {
 			requestAnimFrame(function() {
@@ -616,7 +611,6 @@ var socialCheesecake = socialCheesecake || {};
 		if(options.radius - this.getWidth()/2 < 0) options.radius = this.getWidth()/2;
 		var goalMedRad = options.radius || currentMedRad;
 		var step = options.step || 0.05;
-		var context = this.getCheesecake().stage.mainLayer.getContext();
 		
 		if(goalMedRad > currentMedRad){
 			if(goalMedRad - currentMedRad < step) step = goalMedRad - currentMedRad;
@@ -631,9 +625,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.rOut = Math.round(currentROut *1000)/1000;
 		currentMedRad = this.getMediumRadius();
 		//Redraw
-		context.restore();
-		context.save();
-		this.getCheesecake().stage.draw();
+		sector.getCheesecake().drawLayer(sector.getLayer());
 		//Repeat if necessary
 		if ((Math.round(currentMedRad *1000) != Math.round(goalMedRad *1000))) {
 			requestAnimFrame(function() {
@@ -648,22 +640,12 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Sector.prototype.focus = function() {
 		var sector = this;
-		var stage = sector.getCheesecake().stage;
-		var context = stage.mainLayer.getContext();
-		sector.rOut = sector.originalAttr.rOut * 1.05;
-		context.restore();
-		context.save();
-		stage.draw();
+		sector.changeProperty("rOut", sector.originalAttr.rOut * 1.05);
 	}
 	
 	socialCheesecake.Sector.prototype.unfocus = function() {
 		var sector = this;
-		var stage = sector.getCheesecake().stage;
-		var context = stage.mainLayer.getContext();
-		sector.rOut = sector.originalAttr.rOut;
-		context.restore();
-		context.save();
-		stage.draw();
+		sector.changeProperty("rOut", sector.originalAttr.rOut);
 	}
 	
 	/**
@@ -694,14 +676,11 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Sector.prototype.rotateTo = function(options) {
-		// update stage
 		var sector = this;
 		var currentPhi = this.phi % (2 * Math.PI);
 		var delta = this.delta;
 		var step = 0.05;
 		var anchor = 0;
-		var stage = sector.getCheesecake().stage;
-		var context = sector.getRegion().getLayer().getContext();
 		if(!options) throw "No arguments passed to the function";
 		if(options.step) step = options.step;
 		if(options.destination == null) throw "destination must be defined";
@@ -747,16 +726,13 @@ var socialCheesecake = socialCheesecake || {};
 		sector.phi = currentPhi;
 
 		// redraw
-		context.restore();
-		context.save();
-		stage.draw();
+		sector.getCheesecake().drawLayer(sector.getLayer());
 
 		// request new frame
 		if(Math.abs(currentPhi - phiDestination) > 0.001) {
 			sector.phi = currentPhi % (2 * Math.PI);
 			requestAnimFrame(function() {
 				sector.rotateTo({
-					context : context,
 					destination : options.destination,
 					step : step,
 					callback : options.callback,
