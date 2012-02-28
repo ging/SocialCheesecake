@@ -330,6 +330,7 @@ var socialCheesecake = socialCheesecake || {};
 			cheesecake.addToLayer(normalSubsectors);
 			if(extraSubsectors) cheesecake.addToLayer(extraSubsectors);
 			cheesecake.drawLayer();
+			if(cheesecake.onSubsectorAdded != null) cheesecake.onSubsectorAdded(sector.subsectors[subsectorIndex]);
 		};
 		for (var i = 0; i< dummyNormal.length; i++){
 			dummyNormal[i].resizeWidth({
@@ -339,7 +340,6 @@ var socialCheesecake = socialCheesecake || {};
 				callback : (i == 0) ? dummyNormalResizeCallback :function (){ return ;}
 			});
 		}
-		if(cheesecake.onSubsectorAdded != null) cheesecake.onSubsectorAdded(sector.subsectors[subsectorIndex]);
 	}
 	
 	socialCheesecake.Sector.prototype.splitUp = function() {
