@@ -59,6 +59,14 @@ var socialCheesecake = socialCheesecake || {};
 		},
 		writeCenterText : function(text, context, centerX, centerY) {
 			context.fillText(text, centerX - context.measureText(text).width / 2, centerY);
+		},
+		getTextHeight : function(text, style){
+			var div = document.createElement('div');
+			div.setAttribute('id','getTextHeight');
+			div.setAttribute('display','none');
+			/*div.setAttribute('font',) TODO*/
+			div.innerHTML = text;
+			document.body.appendChild(div);
 		}
 	}
 })();

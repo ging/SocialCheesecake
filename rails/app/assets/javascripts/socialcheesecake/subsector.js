@@ -78,6 +78,19 @@ var socialCheesecake = socialCheesecake || {};
 		return subsector.parent.parent;
 	}
 	
+	/*
+	 * Returns the subsector's index IN SOCIALCHEESECAKE
+	 */
+	socialCheesecake.Subsector.prototype.getIndex = function(){
+		var subsector = this;
+		var sector = subsector.parent;
+		var index = null;
+		for(var i in sector.subsectors){
+			if(sector.subsectors[i] === subsector ) index = i;
+		}
+		return index;
+	}
+	
 	socialCheesecake.Subsector.prototype.removeActor = function(actor){
 		var actors = this.actors;
 		var actorParents;

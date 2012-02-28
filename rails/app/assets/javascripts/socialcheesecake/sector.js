@@ -99,6 +99,8 @@ var socialCheesecake = socialCheesecake || {};
 		var actors = this.actors;
 		var type = this.type;
 		var fontColor = this.fontColor || socialCheesecake.colors[type]["font"];
+		var rLabel = 0.7*(rOut-rIn) + rIn;
+		var rNumber = rLabel;
 		
 		context.restore();
 		context.save();
@@ -112,19 +114,23 @@ var socialCheesecake = socialCheesecake || {};
 		context.lineWidth = 2;
 		context.strokeStyle = this.borderColor || socialCheesecake.colors[type]["border"];
 		context.stroke();
+		
+		//Write on them
 		if((this.auxiliar)&&(label=="+")){
 			socialCheesecake.text.addPlusCharacter(context, x, y, 0.5*(rOut-rIn) + rIn, 
 				phi, delta, fontColor);
 		}else if((this.parent.auxiliar)&&(this.parent.label=="+")){
-			socialCheesecake.text.writeCurvedText(label, context, x, y, 0.7*(rOut-rIn) + rIn, 
+			socialCheesecake.text.writeCurvedText(label, context, x, y, rLabel, 
 				phi, delta, fontColor, "newStyle");
 		}else{
-			socialCheesecake.text.writeCurvedText(label, context, x, y, 0.7*(rOut-rIn) + rIn, 
+			socialCheesecake.text.writeCurvedText(label, context, x, y, rLabel, 
 				phi, delta, fontColor);
 		}				
-		if(!this.auxiliar)
+		if(!this.auxiliar){
+			rNumber -= 14;/* TODO!!*/
 			socialCheesecake.text.writeCurvedText("(" + actors.length + ")", context, x, y, 
-				0.55*(rOut-rIn) + rIn, phi, delta, fontColor);
+				rNumber, phi, delta, fontColor);
+		}
 	}
 	
 	socialCheesecake.Sector.prototype.getRegion = function() {
@@ -179,6 +185,18 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Sector.prototype.getCheesecake = function () {
 		return this.parent;
+	}
+	/*
+	 * Returns the sector's index IN CHEESECAKE
+	 */
+	socialCheesecake.Sector.prototype.getIndex = function(){
+		var sector = this;
+		var cheesecake = sector.getCheesecake();
+		var index = null;
+		for(var i in cheesecake.sectors){
+			if(cheesecake.sectors[i] === sector ) index = i;
+		}
+		return index;
 	}
 	
 	socialCheesecake.Sector.prototype.turnExtraIntoNewSubsector = function (subsectorIndex){
@@ -321,7 +339,7 @@ var socialCheesecake = socialCheesecake || {};
 				callback : (i == 0) ? dummyNormalResizeCallback :function (){ return ;}
 			});
 		}
-		if(cheesecake.onSubsectorAdded != null) cheesecake.onSubsectorAdded(cheesecake);
+		if(cheesecake.onSubsectorAdded != null) cheesecake.onSubsectorAdded(sector.subsectors[subsectorIndex]);
 	}
 	
 	socialCheesecake.Sector.prototype.splitUp = function() {
