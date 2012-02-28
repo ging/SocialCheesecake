@@ -127,7 +127,7 @@ var socialCheesecake = socialCheesecake || {};
 				phi, delta, fontColor);
 		}				
 		if(!this.auxiliar){
-			rNumber -= 14;/* TODO!!*/
+			rNumber -= socialCheesecake.text.getTextHeight(label);
 			socialCheesecake.text.writeCurvedText("(" + actors.length + ")", context, x, y, 
 				rNumber, phi, delta, fontColor);
 		}
@@ -223,7 +223,7 @@ var socialCheesecake = socialCheesecake || {};
 				phi 	: allSubsectors[i].phi,
 				delta : allSubsectors[i].delta,
 				type 	: allSubsectors[i].type,
-				auxiliar : allSubsectors[i].auxiliar || null,
+				auxiliar : true,
 				parent : allSubsectors[i].parent,
 				color : allSubsectors[i].color
 			};

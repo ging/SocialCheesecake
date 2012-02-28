@@ -61,12 +61,17 @@ var socialCheesecake = socialCheesecake || {};
 			context.fillText(text, centerX - context.measureText(text).width / 2, centerY);
 		},
 		getTextHeight : function(text, style){
+			var style = style || socialCheesecake.text.style;
 			var div = document.createElement('div');
+			var height = 0;
 			div.setAttribute('id','getTextHeight');
 			div.setAttribute('display','none');
-			/*div.setAttribute('font',) TODO*/
+			div.setAttribute('style', 'font: '+style);
 			div.innerHTML = text;
 			document.body.appendChild(div);
+			height = parseInt(window.getComputedStyle(div).fontSize);
+			document.body.removeChild(div);
+			return height;
 		}
 	}
 })();
