@@ -136,7 +136,7 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Sector.prototype.getRegion = function() {
 		if(this._region == null) {
 			var sector = this;
-			sector._region = new Kinetic.Shape({
+			sector._region = new Kinetic.Geometry({
 				drawFunc : function() {
 					var context = this.getContext();
 					sector._draw(context);
@@ -239,12 +239,11 @@ var socialCheesecake = socialCheesecake || {};
 			};
 			if(i < this.extraSubsectors.length){
 				dummyExtra.push(new socialCheesecake.Subsector(settings));
-				dummyExtra[i].listen(false);
 			}else{
 				dummyNormal.push(new socialCheesecake.Subsector(settings));
-				dummyNormal[i - dummyExtra.length].listen(false);
 			}
 		}
+		cheesecake.disable();
 		cheesecake.addToLayer(dummyNormal.concat(dummyExtra));
 		//Add new Subsector and calculate subsector's new sizes
 		cheesecake.removeFromLayer(allSubsectors);
@@ -313,9 +312,7 @@ var socialCheesecake = socialCheesecake || {};
 					color : extraSubsectors[subsectorIndex].color
 				};
 				dummyExtra.push(new socialCheesecake.Subsector(settings));
-				dummyExtra[dummyExtra.length-1].listen(false);
 				dummyExtra.push(new socialCheesecake.Subsector(settings));
-				dummyExtra[dummyExtra.length-1].listen(false);
 				var done = false;
 				for(var i = 0; i < dummyExtra.length; i++){
 					if(i != subsectorIndex){
@@ -341,6 +338,7 @@ var socialCheesecake = socialCheesecake || {};
 			cheesecake.addToLayer(normalSubsectors);
 			if(extraSubsectors) cheesecake.addToLayer(extraSubsectors);
 			cheesecake.drawLayer();
+			cheesecake.enable();
 			if(cheesecake.onSubsectorAddedEnd != null) cheesecake.onSubsectorAddedEnd(sector.subsectors[subsectorIndex]);
 		};
 		for (var i = 0; i< dummyNormal.length; i++){

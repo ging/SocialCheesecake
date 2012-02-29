@@ -94,14 +94,14 @@ var socialCheesecake = socialCheesecake || {};
 	}
 
 	socialCheesecake.Cheesecake.prototype.disable = function() {
-		var layers = this.stage.layers;
+		var layers = this.stage.getChildren();
 		for(var layer in layers) {
 			layers[layer].listen(false);
 		}
 	}
 
 	socialCheesecake.Cheesecake.prototype.enable = function() {
-		var layers = this.stage.layers;
+		var layers = this.stage.getChildren();
 		for(var layer in layers) {
 			layers[layer].listen(true);
 		}
@@ -118,6 +118,7 @@ var socialCheesecake = socialCheesecake || {};
 			throw "sector doesn't belong to this cheesecake"
 		cheesecake.clearLayer();
 		cheesecake.setHighlightedSector(sector);
+		cheesecake.disable();
 
 		//Add auxiliar sectors
 		var greySettings = {
@@ -137,15 +138,9 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.addToLayer(greySector);
 		cheesecake.addToLayer(dummySector);
 		//Animations
-		var greyClickCallback = function() {
-			greySector.label = "";
-			cheesecake.unfocusAndUnblurCheesecake();
-		};
 		var greyResizeCallback = function() {
-			greySector.click = {
-				callback : greyClickCallback
-			}
-			greySector.label = "GO BACK";
+			greySector.changeProperty("label", "GO BACK");
+			cheesecake.enable();
 		};
 		var greyRotateToCallback = function() {
 			greySector.resizeDelta({

@@ -56,8 +56,9 @@ var socialCheesecake = socialCheesecake || {};
 			mouseout : function() {
 				document.body.style.cursor = "default";
 			},
-			click : function() {
-				return;
+			click : function(sector) {
+				sector.changeProperty("label","");
+				sector.getCheesecake().unfocusAndUnblurCheesecake();
 			},
 			mouseup : function() {
 				return;
