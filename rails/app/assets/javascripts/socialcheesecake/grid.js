@@ -10,8 +10,8 @@ var socialCheesecake = socialCheesecake || {};
 		this.parent = settings.parent;
 		this.id = settings.grid_id;
 		this.divIdPrefix = settings.divIdPrefix;
-		socialCheesecake.Grid.maxOpacity = settings.maxOpacity;
-		socialCheesecake.Grid.minOpacity = settings.minOpacity;
+		this.maxOpacity = settings.maxOpacity;
+		this.minOpacity = settings.minOpacity;
 	}
 
 	socialCheesecake.Grid.prototype.addActor = function(actor_info, subsector) {
@@ -37,6 +37,7 @@ var socialCheesecake = socialCheesecake || {};
 		// If the actor was not in the array, create it and add it to the array
 		if(!actorAlreadyDeclared) {
 			actor_info.parent = subsector;
+			actor_info.grid = this;
 			actor = new socialCheesecake.Actor(actor_info);
 			actors.push(actor);
 		}

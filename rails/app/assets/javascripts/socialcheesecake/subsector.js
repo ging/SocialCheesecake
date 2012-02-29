@@ -23,7 +23,7 @@ var socialCheesecake = socialCheesecake || {};
 		if(settings.mouseover != null) this.mouseover = settings.mouseover; 
 		if(settings.mouseout != null) this.mouseout = settings.mouseout;
 
-		var grid = this.getCheesecake().grid;
+		var grid = this.getCheesecake().mainGrid;
 		if (settings.actors){
 			for(var actor in settings.actors){
 				var actor_info = {

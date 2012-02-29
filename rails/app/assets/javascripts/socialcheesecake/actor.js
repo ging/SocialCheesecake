@@ -9,7 +9,8 @@ var socialCheesecake = socialCheesecake || {};
 		this.id = settings.id;
 		this.name = settings.name;
 		this.extraInfo = (settings.extraInfo) ? settings.extraInfo : undefined;
-		this.opacity = socialCheesecake.Grid.maxOpacity;
+		this.grid = settings.grid;
+		this.opacity = this.grid.maxOpacity || null;
 		this._focused = false;
 		this._selected = false;
 		this._hidden = true;
@@ -121,7 +122,7 @@ var socialCheesecake = socialCheesecake || {};
 
 	socialCheesecake.Actor.prototype.isFocused = function() {
 		var actor = this;
-		var gridIdPrefix = this.getCheesecake().grid.divIdPrefix;
+		var gridIdPrefix = this.getCheesecake().mainGrid.divIdPrefix;
 		return this._focused;
 	}
 
@@ -198,8 +199,8 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Actor.prototype.fade = function(time, modifyDisplay) {
 		var actor = this;
 		var time = (time) ? time : 300;
-		var minOpacity = socialCheesecake.Grid.minOpacity;
-		var maxOpacity = socialCheesecake.Grid.maxOpacity;
+		var minOpacity = this.grid.minOpacity;
+		var maxOpacity = this.grid.maxOpacity;
 		var deltaOpacity = ((maxOpacity - minOpacity)* 1000.0) / (60.0 * time);
 		var grow = 0;
 		
@@ -227,7 +228,7 @@ var socialCheesecake = socialCheesecake || {};
 	}
 
 	socialCheesecake.Actor.prototype.fadeOut = function(time, modifyDisplay) {
-		var maxOpacity = socialCheesecake.Grid.maxOpacity;
+		var maxOpacity = this.grid.maxOpacity;
 		this.fading = "out";
 		this.setDivOpacity(maxOpacity);
 		this.fade(time, modifyDisplay);
@@ -235,7 +236,7 @@ var socialCheesecake = socialCheesecake || {};
 
 	socialCheesecake.Actor.prototype.fadeIn = function(time, modifyDisplay) {
 		var actor = this;
-		var minOpacity = socialCheesecake.Grid.minOpacity;
+		var minOpacity = this.grid.minOpacity;
 
 		if(actor.isFiltered())
 			return;
@@ -251,7 +252,7 @@ var socialCheesecake = socialCheesecake || {};
 	}
 
 	socialCheesecake.Actor.prototype.getDiv = function() {
-		var gridIdPrefix = this.getCheesecake().grid.divIdPrefix;
+		var gridIdPrefix = this.getCheesecake().mainGrid.divIdPrefix;
 		var actor_id = this.id;
 		var actor_div = document.getElementById(gridIdPrefix + actor_id);
 		return actor_div;

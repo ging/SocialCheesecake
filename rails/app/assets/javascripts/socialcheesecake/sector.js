@@ -220,6 +220,8 @@ var socialCheesecake = socialCheesecake || {};
 			console.log("Reached subsectors limit. No new subsectors will be added");
 			return;
 		}
+		//Initial callback
+		if(cheesecake.onSubsectorAddedBegin != null) cheesecake.onSubsectorAddedBegin(sector.subsectors[subsectorIndex]);
 		//Create dummies for the animation
 		for(var i in allSubsectors){
 			var settings = {
@@ -339,7 +341,7 @@ var socialCheesecake = socialCheesecake || {};
 			cheesecake.addToLayer(normalSubsectors);
 			if(extraSubsectors) cheesecake.addToLayer(extraSubsectors);
 			cheesecake.drawLayer();
-			if(cheesecake.onSubsectorAdded != null) cheesecake.onSubsectorAdded(sector.subsectors[subsectorIndex]);
+			if(cheesecake.onSubsectorAddedEnd != null) cheesecake.onSubsectorAddedEnd(sector.subsectors[subsectorIndex]);
 		};
 		for (var i = 0; i< dummyNormal.length; i++){
 			dummyNormal[i].resizeWidth({
@@ -791,7 +793,7 @@ var socialCheesecake = socialCheesecake || {};
 			if (this == subsector){
 				actor = this.parent.addActor(actorInfo, subsector);
 			}else{
-				actor = this.parent.grid.addActor(actorInfo, subsector);
+				actor = this.parent.mainGrid.addActor(actorInfo, subsector);
 			}
 			actors.push(actor);
 		}

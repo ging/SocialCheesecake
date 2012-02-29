@@ -22,7 +22,10 @@ var cheesecakeData = {
 	onChange : function() {
 		console.log("Cambio detectado");
 	},
-	onSubsectorAdded : function(subsector){
+	onSubsectorAddedBegin : function(subsector){
+		console.log("New subsector "+ subsector.getIndex() +" BEGIN IN "+subsector.parent.getIndex());
+	},
+	onSubsectorAddedEnd : function(subsector){
 		console.log("New subsector "+ subsector.getIndex() +" added in sector "+subsector.parent.getIndex());
 		console.log(subsector.getCheesecake());
 	},

@@ -12,7 +12,8 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.sectors = [];
 		cheesecake.highlightedSector = null;
 		cheesecake.onSectorHighlight = cheesecakeData.onSectorHighlight || null;
-		cheesecake.onSubsectorAdded = cheesecakeData.onSubsectorAdded || null;
+		cheesecake.onSubsectorAddedBegin = cheesecakeData.onSubsectorAddedBegin || null;
+		cheesecake.onSubsectorAddedEnd = cheesecakeData.onSubsectorAddedEnd || null;
 		cheesecake.onSectorFocusBegin = cheesecakeData.onSectorFocusBegin || null;
 		cheesecake.onSectorFocusEnd = cheesecakeData.onSectorFocusEnd || null;
 		cheesecake.onSectorUnfocusBegin = cheesecakeData.onSectorUnfocusBegin || null;
@@ -21,13 +22,14 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.auxiliarSectors = [];
 		cheesecake.stage = new Kinetic.Stage(cheesecakeData.container.id, cheesecakeData.container.width, cheesecakeData.container.height);
 		cheesecake.stage.add(new Kinetic.Layer({name: "main"}));
-		cheesecake.grid = new socialCheesecake.Grid({
+		cheesecake.mainGrid = new socialCheesecake.Grid({
 			parent : this,
 			grid_id : cheesecakeData.grid.id,
 			divIdPrefix : cheesecakeData.grid.divIdPrefix || "actor_",
 			maxOpacity : cheesecakeData.grid.maxOpacity || 1,
 			minOpacity : cheesecakeData.grid.minOpacity || 0
 		});
+		cheesecake.limboGrid = new socialCheesecake.Grid({ parent : this });
 		cheesecake.matchActorsNumber = cheesecakeData.match;
 		if(cheesecake.matchActorsNumber == null)
 			cheesecake.matchActorsNumber = true;
@@ -153,7 +155,7 @@ var socialCheesecake = socialCheesecake || {};
 			});
 		};
 		var dummyResizeCallback = function() {
-			var grid = cheesecake.grid;
+			var grid = cheesecake.mainGrid;
 			grid.hideAll();
 			grid.show(cheesecake.sectors[sectorIndex].actors);
 			dummySector.splitUp();
@@ -241,7 +243,7 @@ var socialCheesecake = socialCheesecake || {};
 					if(cheesecake.onSectorUnfocusEnd) {
 						cheesecake.onSectorUnfocusEnd(cheesecake);
 					}
-					cheesecake.grid.showAll();
+					cheesecake.mainGrid.showAll();
 					dummySector.rotateTo({
 						destination : dummyNewPhi
 					});
@@ -310,7 +312,7 @@ var socialCheesecake = socialCheesecake || {};
 	 */
 	socialCheesecake.Cheesecake.prototype.updateActorMembership = function(actor) {
 		var changes = this._changes;
-		var grid = this.grid;
+		var grid = this.mainGrid;
 		var changesInActors;
 		var alreadyChanged = false;
 		var actorId = actor.id;
@@ -542,7 +544,8 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Cheesecake.prototype.filter = function(pattern) {
-		var grid = this.grid;
+		console.log("search")
+		var grid = this.mainGrid;
 		var highlightedSector = this.highlightedSector;
 		socialCheesecake.SearchEngine.filter(pattern, grid.actors);
 		if(highlightedSector) {
@@ -554,7 +557,7 @@ var socialCheesecake = socialCheesecake || {};
 
 	socialCheesecake.Cheesecake.prototype._setInitialState = function() {
 		var state = this._initialState;
-		var actors = this.grid.actors;
+		var actors = this.mainGrid.actors;
 
 		state.actors = [];
 		for(var actor in actors ) {
