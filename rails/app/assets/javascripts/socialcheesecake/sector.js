@@ -221,7 +221,7 @@ var socialCheesecake = socialCheesecake || {};
 			return;
 		}
 		//Initial callback
-		if(cheesecake.onSubsectorAddedBegin != null) cheesecake.onSubsectorAddedBegin(sector.subsectors[subsectorIndex]);
+		if(cheesecake.onSubsectorAddedBegin != null) cheesecake.onSubsectorAddedBegin(cheesecake);
 		//Create dummies for the animation
 		for(var i in allSubsectors){
 			var settings = {
