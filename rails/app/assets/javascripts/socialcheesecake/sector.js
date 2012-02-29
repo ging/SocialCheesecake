@@ -160,7 +160,8 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Sector.prototype.getLayer = function(){
-		return this.getRegion().getLayer();
+		if(this.getRegion().getParent()) return this.getRegion().getLayer(); /*KINETIC FIX*/
+		return undefined;
 	}
 	
 	socialCheesecake.Sector.prototype.eventHandler = function(eventName) {
@@ -450,8 +451,9 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Sector.prototype.changeProperty = function (name, value){
 		var sector = this;
+		var layer = sector.getLayer();
 		sector[name] = value;
-		sector.getCheesecake().drawLayer(sector.getLayer());
+		if(layer) sector.getCheesecake().drawLayer(layer);
 	}
 	
 	/**

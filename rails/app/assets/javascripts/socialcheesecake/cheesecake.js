@@ -28,9 +28,6 @@ var socialCheesecake = socialCheesecake || {};
 			maxOpacity : cheesecakeData.grid.maxOpacity || 1,
 			minOpacity : cheesecakeData.grid.minOpacity || 0
 		});
-		cheesecake.searchEngine = new socialCheesecake.SearchEngine({
-			parent : this
-		});
 		cheesecake.matchActorsNumber = cheesecakeData.match;
 		if(cheesecake.matchActorsNumber == null)
 			cheesecake.matchActorsNumber = true;
@@ -542,6 +539,17 @@ var socialCheesecake = socialCheesecake || {};
 
 	socialCheesecake.Cheesecake.prototype.getInitialState = function() {
 		return this._initialState;
+	}
+	
+	socialCheesecake.Cheesecake.prototype.filter = function(pattern) {
+		var grid = this.grid;
+		var highlightedSector = this.highlightedSector;
+		socialCheesecake.SearchEngine.filter(pattern, grid.actors);
+		if(highlightedSector) {
+			grid.fadeIn(highlightedSector.actors, 100, true);
+		} else {
+			grid.fadeIn(grid.actors, 100, true);
+		}
 	}
 
 	socialCheesecake.Cheesecake.prototype._setInitialState = function() {
