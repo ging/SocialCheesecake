@@ -17,6 +17,7 @@ var socialCheesecake = socialCheesecake || {};
 
 	socialCheesecake.Grid.prototype.addActor = function(actorInfo, subsector) {
 		var actors = this.actors;
+		var orphans = this.orphans;
 		var actor = null;
 
 		//Check if the actor is already in the array
@@ -35,11 +36,25 @@ var socialCheesecake = socialCheesecake || {};
 					actor.parents.push(subsector);
 			}
 		}
-		// If the actor was not in the array, create it and add it to the array
+		// If the actor was not in the array:
 		if(!actorAlreadyDeclared) {
-			actorInfo.parent = subsector;
-			actorInfo.grid = this;
-			actor = new socialCheesecake.Actor(actorInfo);
+			//Check if the actor exists as an orphan (with no subsectors parents)
+			var orphanActor = false;
+			for(var i in orphans){
+				//If it exists, take it out from this array and add its new parent
+				if(orphans[i].id == actorInfo.id){
+					orphanActor = true;
+					actor = orphans[i];
+					orphans.splice(i, 1);
+					actor.removeClass("orphan");
+					actor.parents.push(subsector);
+				}
+			}//If it doesn't, create new Actor and add its parent.
+			if(!orphanActor){
+				actorInfo.parent = subsector;
+				actorInfo.grid = this;
+				actor = new socialCheesecake.Actor(actorInfo);
+			}
 			actors.push(actor);
 		}
 		return actor;
@@ -50,7 +65,8 @@ var socialCheesecake = socialCheesecake || {};
 		var orphans = this.orphans;
 		for(var actorIndex in actors) {
 			if((actors[actorIndex].id == actor.id) && (actor.isOrphan())) {
-				orphans.push(actors.splice(actorIndex, 1));
+				actors.splice(actorIndex, 1);
+				orphans.push(actor);
 				actor.addClass("orphan");
 			}
 		}
@@ -68,10 +84,15 @@ var socialCheesecake = socialCheesecake || {};
 
 	socialCheesecake.Grid.prototype.getSelectedActors = function() {
 		var actors = this.actors;
+		var orphans = this.orphans;
 		var selectedActors = [];
 		for(var i in actors) {
-			if(actors[i] && actors[i].isSelected())
+			if(actors[i].isSelected())
 				selectedActors.push(actors[i]);
+		}
+		for (var i in orphans){
+			if(orphans[i].isSelected())
+				selectedActors.push(orphans[i]);
 		}
 		return selectedActors;
 	}

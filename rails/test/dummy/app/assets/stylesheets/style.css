@@ -116,6 +116,15 @@ canvas {
   margin: 1px;
   opacity: 1;
 }
+#grid .actor.selected {
+  border: 2px solid #8E846B;
+  background-color: #ffe481;
+  margin: 1px;
+  opacity: 1;
+}
+#grid .actor.orphan {
+  border: 2px solid #BD1823 !important;
+}
 #grid .actor img {
   width: 64px;
   height: 64px;
