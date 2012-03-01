@@ -220,8 +220,7 @@ var socialCheesecake = socialCheesecake || {};
 			console.log("Reached subsectors limit. No new subsectors will be added");
 			return;
 		}
-		//Initial callback
-		if(cheesecake.onSubsectorAddedBegin != null) cheesecake.onSubsectorAddedBegin(cheesecake);
+		
 		//Create dummies for the animation
 		for(var i in allSubsectors){
 			var settings = {
@@ -248,6 +247,8 @@ var socialCheesecake = socialCheesecake || {};
 		//Add new Subsector and calculate subsector's new sizes
 		cheesecake.removeFromLayer(allSubsectors);
 		this.addNewSubsector(subsectorIndex);
+		//Initial callback
+		if(cheesecake.onSubsectorAddedBegin != null) cheesecake.onSubsectorAddedBegin(sector.subsectors[subsectorIndex]);
 		var normalSubsectors = this.subsectors;
 		this.extraSubsectors = [];
 		var extraSubsectors = sector.extraSubsectors;
