@@ -791,7 +791,7 @@ var socialCheesecake = socialCheesecake || {};
 			if (this == subsector){
 				actor = this.parent.addActor(actorInfo, subsector);
 			}else{
-				actor = this.parent.mainGrid.addActor(actorInfo, subsector);
+				actor = this.parent.grid.addActor(actorInfo, subsector);
 			}
 			actors.push(actor);
 		}
@@ -802,6 +802,7 @@ var socialCheesecake = socialCheesecake || {};
 		var actors = this.actors;
 		var actorParents;
 		var actorPresentInSector = false;
+		var grid = this.getCheesecake().grid;
 		
 		for(var actorIndex in actors){
 			if(actors[actorIndex].id == actor.id){
@@ -818,6 +819,7 @@ var socialCheesecake = socialCheesecake || {};
 				//If there isn't, remove the actor from the array and tell the Grid
 				if(!actorPresentInSector){
 					actors.splice(actorIndex,1);
+					grid.removeActor(actor);
 				}
 			}
 		}

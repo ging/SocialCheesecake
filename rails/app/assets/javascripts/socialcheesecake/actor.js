@@ -2,15 +2,13 @@ var socialCheesecake = socialCheesecake || {};
 (function() {
 	socialCheesecake.Actor = function(settings) {
 		if(!settings)
-			throw "No arguments passed to the function"
-		if(!settings.parent)
-			throw "Actor must be associated to at least a subsector"
+			throw "No arguments passed to the function";
 		
 		this.id = settings.id;
 		this.name = settings.name;
-		this.extraInfo = (settings.extraInfo) ? settings.extraInfo : undefined;
 		this.grid = settings.grid;
-		this.opacity = this.grid.maxOpacity || null;
+		this.extraInfo = (settings.extraInfo) ? settings.extraInfo : undefined;
+		this.opacity = this.grid.maxOpacity || 1;
 		this._focused = false;
 		this._selected = false;
 		this._hidden = true;
@@ -26,21 +24,25 @@ var socialCheesecake = socialCheesecake || {};
 		actor_div.addEventListener("mouseover", function() {
 			var sector;
 			actor.focus();
-			for(var subsector in actor.parents) {
-				sector = actor.parents[subsector].parent;
-				sector.focus();
-				sector.colorHandler("mouseover");
-				actor.parents[subsector].colorHandler("mouseover");
+			if(!actor.isOrphan()){
+				for(var subsector in actor.parents) {
+					sector = actor.parents[subsector].parent;
+					sector.focus();
+					sector.colorHandler("mouseover");
+					actor.parents[subsector].colorHandler("mouseover");
+				}
 			}
 		}, false);
 		actor_div.addEventListener("mouseout", function() {
 			var sector;
 			actor.unfocus();
-			for(var subsector in actor.parents) {
-				sector = actor.parents[subsector].parent;
-				sector.unfocus();
-				sector.colorHandler("mouseout");
-				actor.parents[subsector].colorHandler("mouseout");
+			if(!actor.isOrphan()){
+				for(var subsector in actor.parents) {
+					sector = actor.parents[subsector].parent;
+					sector.unfocus();
+					sector.colorHandler("mouseout");
+					actor.parents[subsector].colorHandler("mouseout");
+				}
 			}
 		}, false);
 		actor_div.addEventListener("click", function() {
@@ -122,8 +124,15 @@ var socialCheesecake = socialCheesecake || {};
 
 	socialCheesecake.Actor.prototype.isFocused = function() {
 		var actor = this;
-		var gridIdPrefix = this.getCheesecake().mainGrid.divIdPrefix;
+		var gridIdPrefix = this.getCheesecake().grid.divIdPrefix;
 		return this._focused;
+	}
+	
+	socialCheesecake.Actor.prototype.isOrphan = function (){
+		var actor = this;
+		var orphan = false;
+		if( actor.parents.length <1) orphan = true;
+		return orphan;
 	}
 
 	socialCheesecake.Actor.prototype.hide = function() {
@@ -248,11 +257,11 @@ var socialCheesecake = socialCheesecake || {};
 	}
 
 	socialCheesecake.Actor.prototype.getCheesecake = function() {
-		return this.parents[0].parent.parent;
+		return this.grid.parent;
 	}
 
 	socialCheesecake.Actor.prototype.getDiv = function() {
-		var gridIdPrefix = this.getCheesecake().mainGrid.divIdPrefix;
+		var gridIdPrefix = this.grid.divIdPrefix;
 		var actor_id = this.id;
 		var actor_div = document.getElementById(gridIdPrefix + actor_id);
 		return actor_div;

@@ -6,7 +6,7 @@ var socialCheesecake = socialCheesecake || {};
 				var cheesecake = sector.getCheesecake();
 
 				document.body.style.cursor = "pointer";
-				cheesecake.mainGrid.focus(sector.actors);
+				cheesecake.grid.focus(sector.actors);
 				sector.focus();
 				if(cheesecake.highlightedSector != null) {
 					cheesecake.highlightedSector.fan(false, function() {
@@ -21,7 +21,7 @@ var socialCheesecake = socialCheesecake || {};
 				var cheesecake = sector.getCheesecake();
 
 				document.body.style.cursor = "default";
-				cheesecake.mainGrid.unfocusAll();
+				cheesecake.grid.unfocusAll();
 				sector.unfocus();
 				cheesecake.setHighlightedSector(null);
 				sector.fan(false);
@@ -29,7 +29,7 @@ var socialCheesecake = socialCheesecake || {};
 			click : function(sector) {
 				var cheesecake = sector.getCheesecake();
 				cheesecake.focusAndBlurCheesecake(sector);
-				cheesecake.mainGrid.unfocus(sector.actors);
+				cheesecake.grid.unfocus(sector.actors);
 			}
 		},
 		extraSector : {
@@ -71,18 +71,18 @@ var socialCheesecake = socialCheesecake || {};
 			mouseover : function(subsector) {
 				var cheesecake = subsector.getCheesecake();
 				document.body.style.cursor = "pointer";
-				if(subsector.parent.subsectors.length < 1) cheesecake.mainGrid.focus(subsector.actors);
+				if(subsector.parent.subsectors.length < 1) cheesecake.grid.focus(subsector.actors);
 				cheesecake.setHighlightedSector(subsector);
 			},
 			mouseout : function(subsector) {
 				var cheesecake = subsector.getCheesecake();
 				document.body.style.cursor = "default";
-				if(subsector.parent.subsectors.length < 1) cheesecake.mainGrid.unfocus(subsector.actors);
+				if(subsector.parent.subsectors.length < 1) cheesecake.grid.unfocus(subsector.actors);
 				cheesecake.setHighlightedSector(subsector.parent);
 			},
 			click : function(subsector) {
 				var cheesecake = subsector.getCheesecake();
-				var selectedActors = cheesecake.mainGrid.getSelectedActors();
+				var selectedActors = cheesecake.grid.getSelectedActors();
 				if(selectedActors.length > 0)
 					subsector.changeMembership(selectedActors);
 			},

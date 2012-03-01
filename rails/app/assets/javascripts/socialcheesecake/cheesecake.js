@@ -22,23 +22,18 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.auxiliarSectors = [];
 		cheesecake.stage = new Kinetic.Stage(cheesecakeData.container.id, cheesecakeData.container.width, cheesecakeData.container.height);
 		cheesecake.stage.add(new Kinetic.Layer({name: "main"}));
-		cheesecake.mainGrid = new socialCheesecake.Grid({
+		cheesecake.grid = new socialCheesecake.Grid({
 			parent : this,
 			grid_id : cheesecakeData.grid.id,
 			divIdPrefix : cheesecakeData.grid.divIdPrefix || "actor_",
 			maxOpacity : cheesecakeData.grid.maxOpacity || 1,
 			minOpacity : cheesecakeData.grid.minOpacity || 0
 		});
-		cheesecake.limboGrid = new socialCheesecake.Grid({ parent : this });
 		cheesecake.matchActorsNumber = cheesecakeData.match;
-		if(cheesecake.matchActorsNumber == null)
-			cheesecake.matchActorsNumber = true;
+		if(cheesecake.matchActorsNumber == null) cheesecake.matchActorsNumber = true;
 		cheesecake._initialState = {};
 		cheesecake._changes = {};
-		cheesecake.onChange = function(cheesecake) {
-		};
-		if(cheesecakeData.onChange)
-			cheesecake.onChange = cheesecakeData.onChange;
+		if(cheesecakeData.onChange) cheesecake.onChange = cheesecakeData.onChange;
 		//Text settings
 		if(cheesecakeData.text) {
 			for(var style in cheesecakeData.text) {
@@ -150,7 +145,7 @@ var socialCheesecake = socialCheesecake || {};
 			});
 		};
 		var dummyResizeCallback = function() {
-			var grid = cheesecake.mainGrid;
+			var grid = cheesecake.grid;
 			grid.hideAll();
 			grid.show(cheesecake.sectors[sectorIndex].actors);
 			dummySector.splitUp();
@@ -238,7 +233,7 @@ var socialCheesecake = socialCheesecake || {};
 					if(cheesecake.onSectorUnfocusEnd) {
 						cheesecake.onSectorUnfocusEnd(cheesecake);
 					}
-					cheesecake.mainGrid.showAll();
+					cheesecake.grid.showAll();
 					dummySector.rotateTo({
 						destination : dummyNewPhi
 					});
@@ -307,7 +302,7 @@ var socialCheesecake = socialCheesecake || {};
 	 */
 	socialCheesecake.Cheesecake.prototype.updateActorMembership = function(actor) {
 		var changes = this._changes;
-		var grid = this.mainGrid;
+		var grid = this.grid;
 		var changesInActors;
 		var alreadyChanged = false;
 		var actorId = actor.id;
@@ -540,7 +535,7 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Cheesecake.prototype.filter = function(pattern) {
 		console.log("search")
-		var grid = this.mainGrid;
+		var grid = this.grid;
 		var highlightedSector = this.highlightedSector;
 		socialCheesecake.SearchEngine.filter(pattern, grid.actors);
 		if(highlightedSector) {
@@ -552,7 +547,7 @@ var socialCheesecake = socialCheesecake || {};
 
 	socialCheesecake.Cheesecake.prototype._setInitialState = function() {
 		var state = this._initialState;
-		var actors = this.mainGrid.actors;
+		var actors = this.grid.actors;
 
 		state.actors = [];
 		for(var actor in actors ) {

@@ -7,6 +7,7 @@ var socialCheesecake = socialCheesecake || {};
 
 		//Actors dimensions and positions
 		this.actors = [];
+		this.orphans = [];
 		this.parent = settings.parent;
 		this.id = settings.grid_id;
 		this.divIdPrefix = settings.divIdPrefix;
@@ -14,14 +15,14 @@ var socialCheesecake = socialCheesecake || {};
 		this.minOpacity = settings.minOpacity;
 	}
 
-	socialCheesecake.Grid.prototype.addActor = function(actor_info, subsector) {
+	socialCheesecake.Grid.prototype.addActor = function(actorInfo, subsector) {
 		var actors = this.actors;
-		var actor;
+		var actor = null;
 
 		//Check if the actor is already in the array
 		var actorAlreadyDeclared = false;
 		for(var i in actors) {
-			if(actors[i].id == actor_info.id) {
+			if(actors[i].id == actorInfo.id) {
 				actorAlreadyDeclared = true;
 				actor = actors[i];
 				//Check if the subsector has already been declared a parent of the actor
@@ -36,9 +37,9 @@ var socialCheesecake = socialCheesecake || {};
 		}
 		// If the actor was not in the array, create it and add it to the array
 		if(!actorAlreadyDeclared) {
-			actor_info.parent = subsector;
-			actor_info.grid = this;
-			actor = new socialCheesecake.Actor(actor_info);
+			actorInfo.parent = subsector;
+			actorInfo.grid = this;
+			actor = new socialCheesecake.Actor(actorInfo);
 			actors.push(actor);
 		}
 		return actor;
@@ -46,9 +47,11 @@ var socialCheesecake = socialCheesecake || {};
 
 	socialCheesecake.Grid.prototype.removeActor = function(actor) {
 		var actors = this.actors;
+		var orphans = this.orphans;
 		for(var actorIndex in actors) {
-			if((actors[actorIndex].id == actor.id) && (actor.parents.length <= 0 )) {
-				actors.splice(actorIndex, 1);
+			if((actors[actorIndex].id == actor.id) && (actor.isOrphan())) {
+				orphans.push(actors.splice(actorIndex, 1));
+				actor.addClass("orphan");
 			}
 		}
 	}
