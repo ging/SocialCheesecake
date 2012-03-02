@@ -216,7 +216,9 @@ var socialCheesecake = socialCheesecake || {};
 		var dummyNormal = [];
 		var dummyExtra = [];
 		var step = 1.5;
-		var mainExtraAnchor = "m"
+		var mainExtraAnchor = "m";
+		var onSubsectorAddedBegin = socialCheesecake.eventCallbackHandlers.onSubsectorAddedBegin;
+		var onSubsectorAddedEnd = socialCheesecake.eventCallbackHandlers.onSubsectorAddedEnd;
 		
 		if(this.subsectors.length >= 4){
 			console.log("Reached subsectors limit. No new subsectors will be added");
@@ -250,7 +252,7 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.removeFromLayer(allSubsectors);
 		this.addNewSubsector(subsectorIndex);
 		//Initial callback
-		if(cheesecake.onSubsectorAddedBegin != null) cheesecake.onSubsectorAddedBegin(sector.subsectors[subsectorIndex]);
+		if(onSubsectorAddedBegin != null) onSubsectorAddedBegin(sector.subsectors[subsectorIndex]);
 		var normalSubsectors = this.subsectors;
 		this.extraSubsectors = [];
 		var extraSubsectors = sector.extraSubsectors;
@@ -342,7 +344,7 @@ var socialCheesecake = socialCheesecake || {};
 			if(extraSubsectors) cheesecake.addToLayer(extraSubsectors);
 			cheesecake.drawLayer();
 			cheesecake.enable();
-			if(cheesecake.onSubsectorAddedEnd != null) cheesecake.onSubsectorAddedEnd(sector.subsectors[subsectorIndex]);
+			if(onSubsectorAddedEnd != null) onSubsectorAddedEnd(sector.subsectors[subsectorIndex]);
 		};
 		for (var i = 0; i< dummyNormal.length; i++){
 			dummyNormal[i].resizeWidth({
@@ -356,7 +358,7 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Sector.prototype.splitUp = function() {
 		var cheesecake = this.getCheesecake();
-		var callback = cheesecake.onSectorFocusEnd;
+		var onSectorFocusEnd = socialCheesecake.eventCallbackHandlers.onSectorFocusEnd;
 		var sector = (this.simulate != null) ? cheesecake.sectors[this.simulate] :  this;
 		var subsectors = sector.subsectors;
 
@@ -366,9 +368,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.calculateSubportions();
 		cheesecake.addToLayer(subsectors.concat(sector.extraSubsectors));
 		cheesecake.drawLayer();
-		if(callback){
-			callback(cheesecake);
-		}
+		if(onSectorFocusEnd) onSectorFocusEnd(cheesecake);
 	}
 	
 	socialCheesecake.Sector.prototype.putTogether = function() {

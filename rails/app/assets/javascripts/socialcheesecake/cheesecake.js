@@ -11,14 +11,6 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.rMax = cheesecakeData.rMax;
 		cheesecake.sectors = [];
 		cheesecake.highlightedSector = null;
-		cheesecake.onSectorHighlight = cheesecakeData.onSectorHighlight || null;
-		cheesecake.onSubsectorAddedBegin = cheesecakeData.onSubsectorAddedBegin || null;
-		cheesecake.onSubsectorAddedEnd = cheesecakeData.onSubsectorAddedEnd || null;
-		cheesecake.onSectorFocusBegin = cheesecakeData.onSectorFocusBegin || null;
-		cheesecake.onSectorFocusEnd = cheesecakeData.onSectorFocusEnd || null;
-		cheesecake.onSectorUnfocusBegin = cheesecakeData.onSectorUnfocusBegin || null;
-		cheesecake.onSectorUnfocusEnd = cheesecakeData.onSectorUnfocusEnd || null;
-		cheesecake.syncSectorFocusCallbacks = cheesecake.syncSectorFocusCallbacks || false;
 		cheesecake.auxiliarSectors = [];
 		cheesecake.stage = new Kinetic.Stage(cheesecakeData.container.id, cheesecakeData.container.width, cheesecakeData.container.height);
 		cheesecake.stage.add(new Kinetic.Layer({name: "main"}));
@@ -33,7 +25,6 @@ var socialCheesecake = socialCheesecake || {};
 		if(cheesecake.matchActorsNumber == null) cheesecake.matchActorsNumber = true;
 		cheesecake._initialState = {};
 		cheesecake._changes = {};
-		if(cheesecakeData.onChange) cheesecake.onChange = cheesecakeData.onChange;
 		//Text settings
 		if(cheesecakeData.text) {
 			for(var style in cheesecakeData.text) {
@@ -48,6 +39,13 @@ var socialCheesecake = socialCheesecake || {};
 				}
 			}
 		}
+		//Callback settings
+		if(cheesecakeData.callbacks){
+			for(var type in cheesecakeData.callbacks) {
+				socialCheesecake.eventCallbackHandlers[type] = cheesecakeData.callbacks[type];
+			}
+		}
+		cheesecake.syncSectorFocusCallbacks = cheesecake.syncSectorFocusCallbacks || false;
 		//Extra sector if necessary
 		if(jsonSectors.length < 16) {
 			var extraSector = new socialCheesecake.Sector({
@@ -105,6 +103,7 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Cheesecake.prototype.focusAndBlurCheesecake = function(sector) {
 		var cheesecake = this;
 		var sectorIndex;
+		var onSectorFocusBegin = socialCheesecake.eventCallbackHandlers.onSectorFocusBegin;
 		for(var i in cheesecake.sectors) {
 			if(cheesecake.sectors[i] === sector)
 				sectorIndex = i;
@@ -157,11 +156,11 @@ var socialCheesecake = socialCheesecake || {};
 					callback : dummyResizeCallback
 				});
 			}
-			if(cheesecake.onSectorFocusBegin) {
+			if(onSectorFocusBegin) {
 				if(cheesecake.syncSectorFocusCallbacks) {
-					cheesecake.onSectorFocusBegin(cheesecake, callback);
+					onSectorFocusBegin(cheesecake, callback);
 				} else {
-					cheesecake.onSectorFocusBegin(cheesecake);
+					onSectorFocusBegin(cheesecake);
 					callback();
 				}
 			} else {
@@ -203,6 +202,8 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Cheesecake.prototype.unfocusAndUnblurCheesecake = function() {
 		var cheesecake = this;
 		var auxiliarSectors = this.auxiliarSectors;
+		var onSectorUnfocusEnd = socialCheesecake.eventCallbackHandlers.onSectorUnfocusEnd;
+		var onSectorUnfocusBegin = socialCheesecake.eventCallbackHandlers.onSectorUnfocusBegin;
 		var dummySector;
 		var sectorNewDelta;
 		var sectorNewPhi;
@@ -230,8 +231,8 @@ var socialCheesecake = socialCheesecake || {};
 				anchor : "M",
 				delta : dummyNewDelta,
 				callback : function() {
-					if(cheesecake.onSectorUnfocusEnd) {
-						cheesecake.onSectorUnfocusEnd(cheesecake);
+					if(onSectorUnfocusEnd) {
+						onSectorUnfocusEnd(cheesecake);
 					}
 					cheesecake.grid.showAll();
 					dummySector.rotateTo({
@@ -252,11 +253,11 @@ var socialCheesecake = socialCheesecake || {};
 				}
 			});
 		}
-		if(cheesecake.onSectorUnfocusBegin) {
+		if(onSectorUnfocusBegin) {
 			if(cheesecake.syncSectorFocusCallbacks) {
-				cheesecake.onSectorUnfocusBegin(cheesecake, actions);
+				onSectorUnfocusBegin(cheesecake, actions);
 			} else {
-				cheesecake.onSectorUnfocusBegin(cheesecake);
+				onSectorUnfocusBegin(cheesecake);
 				actions();
 			}
 		} else {
@@ -312,7 +313,7 @@ var socialCheesecake = socialCheesecake || {};
 		var actorParents = actor.getParentsIds();
 		var actorName = actor.name;
 		var actorExtraInfo = actor.extraInfo;
-		var onChange = this.onChange;
+		var onChange = socialCheesecake.eventCallbackHandlers.onChange;
 
 		for(var a in changesInActors) {
 			if(changesInActors[a].id == actorId) {
@@ -330,7 +331,7 @@ var socialCheesecake = socialCheesecake || {};
 			});
 		}
 		//Execute onChange Callback
-		onChange(this);
+		if(onChange) onChange(this);
 	}
 	
 	/*
@@ -451,11 +452,10 @@ var socialCheesecake = socialCheesecake || {};
 	}
 
 	socialCheesecake.Cheesecake.prototype.setHighlightedSector = function(sector) {
+		var onSectorHighlight = socialCheesecake.eventCallbackHandlers.onSectorHighlight;
 		if(this.highlightedSector != sector) {
 			this.highlightedSector = sector;
-			if(this.onSectorHighlight) {
-				this.onSectorHighlight(this);
-			}
+			if(onSectorHighlight) onSectorHighlight(this);
 		}
 	}
 	

@@ -112,6 +112,14 @@ var socialCheesecake = socialCheesecake || {};
 			mouseup : function() {
 				return;
 			}
-		}
+		},
+		onSectorHighlight : null,
+		onSubsectorAddedBegin : null,
+		onSubsectorAddedEnd : null,
+		onSectorFocusBegin : null,
+		onSectorFocusEnd : null,
+		onSectorUnfocusBegin : null,
+		onSectorUnfocusEnd : null,
+		onChange : null
 	}
 })();

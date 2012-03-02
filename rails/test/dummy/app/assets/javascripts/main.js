@@ -3,7 +3,6 @@ window.requestAnimFrame = (function(callback) {
 	function(callback) {
 		window.setTimeout(callback, 1000 / 60);
 	};
-
 })();
 var sectorsCounter = 0;
 var subsectorsCounter = [0];
@@ -19,16 +18,33 @@ var cheesecakeData = {
 		id : "grid",
 		divIdPrefix : "actor_"
 	},
-	onChange : function() {
-		console.log("Cambio detectado");
-	},
-	onSubsectorAddedBegin : function(subsector){
-		console.log("New subsector is going to be added.");
-		console.log(subsector);
-	},
-	onSubsectorAddedEnd : function(subsector){
-		console.log("New subsector "+ subsector.getIndex() +" added in sector "+subsector.parent.getIndex());
-		console.log(subsector.getCheesecake());
+	callbacks : {
+		onChange : function() {
+			console.log("Cambio detectado");
+		},
+		onSubsectorAddedBegin : function(subsector){
+			console.log("New subsector is going to be added.");
+			console.log(subsector);
+		},
+		onSubsectorAddedEnd : function(subsector){
+			console.log("New subsector "+ subsector.getIndex() +" added in sector "+subsector.parent.getIndex());
+			console.log(subsector.getCheesecake());
+		},
+		onSectorHighlight : function(){
+			console.log("sector HIGHLIGHTED");
+		},
+		onSectorFocusBegin : function(){
+			console.log("going to FOCUS sector ");
+		},
+		onSectorFocusEnd : function(){
+			console.log("sector FOCUSED");
+		},
+		onSectorUnfocusBegin : function(){
+			console.log("going to UNFOCUS sector");
+		},
+		onSectorUnfocusEnd : function(sector){
+			console.log("sector UNFOCUSED");
+		}
 	},
 	text : {
 		newStyle : "bold italic 14px sans-serif"
