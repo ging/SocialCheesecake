@@ -131,7 +131,8 @@ function createCheese() {
 		}
 		var sector = {
 			name : $("#label_s" + i).val(),
-			subsectors : subsectors
+			subsectors : subsectors,
+			id : i
 		};
 		sectors.push(sector);
 	}

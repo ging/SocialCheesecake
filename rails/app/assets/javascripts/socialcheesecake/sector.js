@@ -24,10 +24,10 @@ var socialCheesecake = socialCheesecake || {};
 		while(settings.phi <0){
 			settings.phi += 2*Math.PI;
 		}
-		if(settings.delta <= 0 || settings.delta > 2 * Math.PI) {
+		// Possible exceptions
+		if(settings.delta <= 0 || settings.delta > 2 * Math.PI) 
 			throw "Delta must be greater than 0 and less than 2*pi";
-		}
-		if(settings.id) this.id = settings.id;
+		if(settings.id != undefined) this.id = settings.id;
 		this.x = settings.center.x;
 		this.y = settings.center.y;
 		this.rOut = settings.rOut;
@@ -86,6 +86,8 @@ var socialCheesecake = socialCheesecake || {};
 		
 		this._region = null;
 	}
+	//ID beginning fot the new subsectors created by the user.
+	socialCheesecake.Sector.newSubsectorIdRoot = "new_";
 	
 	socialCheesecake.Sector.prototype._draw = function(context) {
 		var x = this.x;
@@ -748,25 +750,27 @@ var socialCheesecake = socialCheesecake || {};
 		}
 	}
 	
-	socialCheesecake.Sector.prototype.addNewSubsector = function (sectorIndex){
+	socialCheesecake.Sector.prototype.addNewSubsector = function (subectorIndex){
 		var subsectors = this.subsectors;
 		var settings = {
 			parent : this,
 			x : this.x,
 			y : this.y,
 			delta : this.delta,
-			phi : this.phi /*,
-			id : jsonSectors[i].id,*/
+			phi : this.phi,
+			id : socialCheesecake.Sector.newSubsectorIdRoot +'S'+ this.getIndex() +'s'+subectorIndex
 		};
-		/*Rearrange subsectors*/		
+		//Rearrange subsectors
 		for(var i = subsectors.length ; i >= 0 ; i--){
-			if( i > sectorIndex) subsectors[i] = subsectors[i-1];
-			if( i == sectorIndex ){
+			if( i > subectorIndex) subsectors[i] = subsectors[i-1];
+			if( i == subectorIndex ){
 				settings.label = "New Subsector "+ i;
 				subsectors[i]= new socialCheesecake.Subsector(settings);
 			}
 		}
-		return subsectors[sectorIndex];
+		//Communicate changes to Cheesecake
+		this.getCheesecake().updateSectorChanges(this);
+		return subsectors[subectorIndex];
 	}
 	
 	socialCheesecake.Sector.prototype.addActor = function(actorInfo , subsector){
@@ -832,6 +836,14 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Sector.prototype.getMediumRadius = function (){
 		return (this.rOut + this.rIn)/2;
+	}
+	
+	socialCheesecake.Sector.prototype.getSubsectorsIds = function(){
+		var subsectors = [];
+		for(var subsector in this.subsectors){
+			subsectors.push(this.subsectors[subsector].id);
+		}
+		return subsectors;
 	}
 	
 	socialCheesecake.Sector.prototype.listen = function (on){

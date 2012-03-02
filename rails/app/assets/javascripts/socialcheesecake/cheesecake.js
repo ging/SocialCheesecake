@@ -303,7 +303,7 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Cheesecake.prototype.updateActorMembership = function(actor) {
 		var changes = this._changes;
 		var grid = this.grid;
-		var changesInActors;
+		var changesInActors = null;
 		var alreadyChanged = false;
 		var actorId = actor.id;
 		var actorParents = actor.getParentsIds();
@@ -340,6 +340,31 @@ var socialCheesecake = socialCheesecake || {};
 		}
 		//Execute onChange Callback
 		onChange(this);
+	}
+	
+	/*
+	 * Executes when a sector is removed / added and/or subsectors are added or removed from them
+	 */
+	socialCheesecake.Cheesecake.prototype.updateSectorChanges = function(sector){
+		var changes = this._changes;
+		changes.sectors = changes.sectors || [];
+		var changesInSectors = changes.sectors;
+		var alreadyChanged = false;
+		
+		for(var s in changesInSectors){
+			if(changesInSectors[s].id == sector.id){
+				alreadyChanged = true;
+				changesInSectors[s].subsectors = sector.getSubsectorsIds();
+				changesInSectors[s].label = sector.label;
+			}
+		}if(!alreadyChanged){
+			changesInSectors.push({
+				id : sector.id,
+				subsectors : sector.getSubsectorsIds(),
+				name : sector.label
+			});
+		}
+		console.log("updating subsectors");
 	}
 
 	socialCheesecake.Cheesecake.prototype.calculatePortions = function() {
@@ -548,15 +573,27 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Cheesecake.prototype._setInitialState = function() {
 		var state = this._initialState;
 		var actors = this.grid.actors;
+		var sectors = this.sectors;
 
 		state.actors = [];
-		for(var actor in actors ) {
+		for(var actor in actors){
 			state.actors.push({
 				id : actors[actor].id,
 				subsectors : actors[actor].getParentsIds(),
 				name : actors[actor].name,
 				extraInfo : actors[actor].extraInfo
-			})
+			});
+		}
+		state.sectors = [];
+		for(var sector in sectors){
+			console.log(sectors);
+			if(sectors[sector].type == "normalSector"){
+				state.sectors.push({
+					id : sectors[sector].id,
+					name : sectors[sector].label,
+					subsectors : sectors[sector].getSubsectorsIds()
+				});
+			}
 		}
 	}
 })();
