@@ -454,9 +454,11 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Sector.prototype.changeProperty = function (name, value){
 		var sector = this;
+		var cheesecake = sector.getCheesecake();
 		var layer = sector.getLayer();
 		sector[name] = value;
-		if(layer) sector.getCheesecake().drawLayer(layer);
+		if((sector.type == "normalSector") && (name == "label")) cheesecake.updateSectorChanges(sector);
+		if(layer) cheesecake.drawLayer(layer);
 	}
 	
 	/**

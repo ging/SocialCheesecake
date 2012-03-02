@@ -266,12 +266,14 @@ var socialCheesecake = socialCheesecake || {};
 	
 	socialCheesecake.Cheesecake.prototype.addNewSector = function() {
 		var cheesecake = this;
-		var sectors = this.sectors;	
+		var sectors = this.sectors;
+		var id = this.getInitialState().sectors.length;
+		console.log(id);
 		var newSector;
 		var settings = {
 			parent : cheesecake,
 			center : cheesecake.center,
-			/*id : jsonSectors[i].id,*/
+			id : id,
 			label : "New Sector",
 			rOut : cheesecake.rMax,
 			subsectors : [{name : "New Subsector 1"}]
@@ -303,7 +305,8 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Cheesecake.prototype.updateActorMembership = function(actor) {
 		var changes = this._changes;
 		var grid = this.grid;
-		var changesInActors = null;
+		changes.actors = changes.actors || [];
+		var changesInActors = changes.actors;
 		var alreadyChanged = false;
 		var actorId = actor.id;
 		var actorParents = actor.getParentsIds();
@@ -311,26 +314,14 @@ var socialCheesecake = socialCheesecake || {};
 		var actorExtraInfo = actor.extraInfo;
 		var onChange = this.onChange;
 
-		if(changes.actors != undefined) {
-			changesInActors = changes.actors
-			for(var a in changesInActors) {
-				if(changesInActors[a].id == actorId) {
-					alreadyChanged = true;
-					changesInActors[a].subsectors = actorParents;
-				}
+		for(var a in changesInActors) {
+			if(changesInActors[a].id == actorId) {
+				alreadyChanged = true;
+				changesInActors[a].subsectors = actorParents;
 			}
-			if(!alreadyChanged) {
-				changesInActors.push({
-					id : actorId,
-					subsectors : actorParents,
-					name : actorName,
-					extraInfo : actorExtraInfo,
-					justAdded : false
-				});
-			}
-		} else {
-			changes.actors = [];
-			changes.actors.push({
+		}
+		if(!alreadyChanged) {
+			changesInActors.push({
 				id : actorId,
 				subsectors : actorParents,
 				name : actorName,
@@ -350,12 +341,11 @@ var socialCheesecake = socialCheesecake || {};
 		changes.sectors = changes.sectors || [];
 		var changesInSectors = changes.sectors;
 		var alreadyChanged = false;
-		
 		for(var s in changesInSectors){
 			if(changesInSectors[s].id == sector.id){
 				alreadyChanged = true;
 				changesInSectors[s].subsectors = sector.getSubsectorsIds();
-				changesInSectors[s].label = sector.label;
+				changesInSectors[s].name = sector.label;
 			}
 		}if(!alreadyChanged){
 			changesInSectors.push({
@@ -364,7 +354,6 @@ var socialCheesecake = socialCheesecake || {};
 				name : sector.label
 			});
 		}
-		console.log("updating subsectors");
 	}
 
 	socialCheesecake.Cheesecake.prototype.calculatePortions = function() {
@@ -586,7 +575,6 @@ var socialCheesecake = socialCheesecake || {};
 		}
 		state.sectors = [];
 		for(var sector in sectors){
-			console.log(sectors);
 			if(sectors[sector].type == "normalSector"){
 				state.sectors.push({
 					id : sectors[sector].id,
