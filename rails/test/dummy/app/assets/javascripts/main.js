@@ -162,12 +162,19 @@ function createCheese() {
 	if(cheese)
 		deleteCheese();
 	cheese = new socialCheesecake.Cheesecake(cheesecakeData);
+	$('.actor').css('display','none');
+	cheese.grid.showAll();
 }
 
 function deleteCheese() {
 	$('canvas').detach();
 	cheese.grid.hideAll();
 	cheese = 0;
+	var clone = $("#cheesecake").clone();
+	clone.attr("id","cheesecake2");
+	$("#cheesecake").after(clone);
+	$("#cheesecake").remove();
+	clone.attr("id","cheesecake");
 }
 
 function randomName() {

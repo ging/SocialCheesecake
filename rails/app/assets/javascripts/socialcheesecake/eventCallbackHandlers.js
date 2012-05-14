@@ -71,13 +71,13 @@ var socialCheesecake = socialCheesecake || {};
 			mouseover : function(subsector) {
 				var cheesecake = subsector.getCheesecake();
 				document.body.style.cursor = "pointer";
-				if(subsector.parent.subsectors.length < 1) cheesecake.grid.focus(subsector.actors);
+				cheesecake.grid.focus(subsector.actors);
 				cheesecake.setHighlightedSector(subsector);
 			},
 			mouseout : function(subsector) {
 				var cheesecake = subsector.getCheesecake();
 				document.body.style.cursor = "default";
-				if(subsector.parent.subsectors.length < 1) cheesecake.grid.unfocus(subsector.actors);
+				cheesecake.grid.unfocus(subsector.actors);
 				cheesecake.setHighlightedSector(subsector.parent);
 			},
 			click : function(subsector) {
