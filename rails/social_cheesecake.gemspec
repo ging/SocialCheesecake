@@ -20,9 +20,4 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_runtime_dependency('railties', '>= 3.1.3')
-
-  s.add_development_dependency('rails', '>= 3.1.3')
-  s.add_development_dependency('sqlite3')
-  s.add_development_dependency('rspec-rails')
-  s.add_development_dependency('jasmine')
 end

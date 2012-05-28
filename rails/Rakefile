@@ -1,5 +1,19 @@
 require "bundler/gem_tasks"
-require "rails"
+
+require 'jasmine'
+
+require File.expand_path('../spec/dummy/config/application', __FILE__)
+
+Dummy::Application.load_tasks
+
+require 'rspec/core'
+require 'rspec/core/rake_task'
+
+
+RSpec::Core::RakeTask.new(:spec)
+
+task :default => 'jasmine:ci'
+
 
 # configure these defaults based on Your needs :
 JS_FILES_DIR = 'app/assets/javascripts/socialcheesecake' # the javascripts base directory
@@ -110,3 +124,4 @@ namespace :cheesecake do
   end
 
 end
+
