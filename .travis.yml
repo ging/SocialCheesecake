@@ -2,3 +2,7 @@ language: ruby
 rvm:
   - 1.9.3
 script: "cd rails && bundle exec rake"
+env:
+  - DISPLAY=:99.0
+before_install: sh -e /etc/init.d/xvfb start
+
