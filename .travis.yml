@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - 1.9.3
+  - 1.9.2
 script: "cd rails && bundle exec rake"
 env:
   - DISPLAY=:99.0
