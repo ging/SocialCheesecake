@@ -77,7 +77,7 @@ describe("Cheesecake", function() {
 				sectorsLength = cheesecake.sectors.length;
 				spyOn(cheesecake, 'addNewSector').andCallThrough();
 
-				extraSector._region._handleEvents('onclick');
+				extraSector._region.simulate('click');
 			});
 
 			it("should call cheesecake.addNewSector", function() {

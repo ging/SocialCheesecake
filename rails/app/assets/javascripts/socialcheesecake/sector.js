@@ -134,7 +134,7 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Sector.prototype.getRegion = function() {
 		if(this._region == null) {
 			var sector = this;
-			sector._region = new Kinetic.Geometry({
+			sector._region = new Kinetic.Shape({
 				drawFunc : function() {
 					var context = this.getContext();
 					sector._draw(context);

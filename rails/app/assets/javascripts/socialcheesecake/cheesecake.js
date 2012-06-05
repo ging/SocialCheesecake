@@ -12,7 +12,12 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.sectors = [];
 		cheesecake.highlightedSector = null;
 		cheesecake.auxiliarSectors = [];
-		cheesecake.stage = new Kinetic.Stage(cheesecakeData.container.id, cheesecakeData.container.width, cheesecakeData.container.height);
+		cheesecake.stage = new Kinetic.Stage({
+			container: cheesecakeData.container.id,
+			width: cheesecakeData.container.width,
+			height: cheesecakeData.container.height
+
+		});
 		cheesecake.stage.add(new Kinetic.Layer({name: "main"}));
 		cheesecake.grid = new socialCheesecake.Grid({
 			parent : this,
@@ -177,7 +182,7 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Cheesecake.prototype.recoverCheesecake = function() {
 		var cheesecake = this;
 		var lastSector = this.highlightedSector;
-		var mainLayer = this.stage.getChild("main");
+		var mainLayer = this.stage.getChildren("main")[0];
 		var regions = mainLayer.getChildren();
 
 		//Delete the auxiliar sectors
@@ -402,7 +407,7 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Cheesecake.prototype.addToLayer = function(sectors, layer){
-		var layer = layer || this.stage.getChild("main");
+		var layer = layer || this.stage.getChildren("main")[0];
 		if(sectors instanceof Array){
 			for(var sector in sectors){
 				layer.add(sectors[sector].getRegion());
@@ -413,7 +418,7 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Cheesecake.prototype.removeFromLayer = function(sectors, layer){
-		var layer = layer || this.stage.getChild("main");
+		var layer = layer || this.stage.getChildren("main")[0];
 		if(sectors instanceof Array){
 			for(var sector in sectors) {
 				try{
@@ -427,7 +432,7 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Cheesecake.prototype.drawLayer = function(layer, initialContextState){
-		var layer = layer || this.stage.getChild("main");
+		var layer = layer || this.stage.getChildren("main")[0];
 		initialContextState = (initialContextState != null)? initialContextState : true;
 		if(initialContextState){
 			var context = layer.getContext();
@@ -438,7 +443,7 @@ var socialCheesecake = socialCheesecake || {};
 	}
 	
 	socialCheesecake.Cheesecake.prototype.clearLayer = function(layer){
-		var layer = layer || this.stage.getChild("main");
+		var layer = layer || this.stage.getChildren("main")[0];
 		var regions = layer.getChildren();
 		for(var i = (regions.length - 1); i >= 0; i--) {
 			layer.remove(regions[i]);
