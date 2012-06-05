@@ -167,14 +167,9 @@ function createCheese() {
 }
 
 function deleteCheese() {
-	$('canvas').detach();
-	cheese.grid.hideAll();
-	cheese = 0;
-	var clone = $("#cheesecake").clone();
-	clone.attr("id","cheesecake2");
-	$("#cheesecake").after(clone);
-	$("#cheesecake").remove();
-	clone.attr("id","cheesecake");
+	var newCheese = $('<div/>');
+	$('#cheesecake').after(newCheese).remove();
+	newCheese.attr('id', 'cheesecake');
 }
 
 function randomName() {
