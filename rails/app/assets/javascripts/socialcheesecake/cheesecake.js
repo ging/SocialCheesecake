@@ -48,15 +48,9 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.syncSectorFocusCallbacks = cheesecake.syncSectorFocusCallbacks || false;
 		//Extra sector if necessary
 		if(jsonSectors.length < 16) {
-			var extraSector = new socialCheesecake.Sector({
-				parent : cheesecake,
-				center : cheesecake.center,
+			var extraSector = cheesecake.newSector({
 				label : "+",
-				rOut : cheesecakeData.rMax,
 				color : socialCheesecake.colors.extraSector.background,
-				subsectors : [{
-					name : "New Subsector 1"
-				}],
 				auxiliar : true,
 				type : "extraSector"
 			});
@@ -122,6 +116,7 @@ var socialCheesecake = socialCheesecake || {};
 			delta : 2 * Math.PI - sector.delta,
 			rOut : cheesecake.rMax,
 			color : socialCheesecake.colors.greySector.background,
+			label : "",
 			auxiliar : true,
 			type : "greySector"
 		};
@@ -263,29 +258,29 @@ var socialCheesecake = socialCheesecake || {};
 		} else {
 			actions();
 		}
-	}
-	
-	socialCheesecake.Cheesecake.prototype.addNewSector = function() {
-		var cheesecake = this;
-		var sectors = this.sectors;
-		var id = this.getInitialState().sectors.length;
-		console.log(id);
-		var newSector;
-		var settings = {
-			parent : cheesecake,
-			center : cheesecake.center,
-			id : id,
-			label : "New Sector",
-			rOut : cheesecake.rMax,
-			subsectors : [{name : "New Subsector 1"}]
-		};
-		//move the extra sector to its new position, create new sector.
-		sectors.push(sectors[sectors.length-1]);
-		newSector = new socialCheesecake.Sector(settings);
-		cheesecake.sectors[sectors.length-2] = newSector;
-		cheesecake.calculatePortions();
-	}
-	
+	};
+
+	socialCheesecake.Cheesecake.prototype.newSector = function(settings) {
+		settings = settings || {};
+		settings.parent = this;
+		settings.center = this.center;
+		// Do we really need id?
+		//settings.id = this.getInitialState().sectors.length;
+		settings.rOut = this.rMax;
+
+		return new socialCheesecake.Sector(settings);
+	};
+
+	socialCheesecake.Cheesecake.prototype.addNewSector = function(settings) {
+		var newSector = this.newSector(settings);
+
+		this.sectors.push(this.sectors[this.sectors.length - 1]);
+		this.sectors[this.sectors.length - 2 ] = newSector;
+//		cheesecake.calculatePortions();
+
+
+	};
+
 	/*
 	 * Add new Subsector to the Focused Sector
 	 */

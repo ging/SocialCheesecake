@@ -50,6 +50,7 @@ var socialCheesecake = socialCheesecake || {};
 
 				cheesecake.focusAndBlurCheesecake(sector);
 				cheesecake.addNewSector();
+				cheesecake.calculatePortions();
 			}
 		},
 		greySector : {

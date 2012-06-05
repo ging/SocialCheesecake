@@ -4,8 +4,8 @@ var socialCheesecake = socialCheesecake || {};
 		this.id = null;
 		if(settings.id != undefined ) this.id = settings.id;
 		if(settings.parent != null) this.parent = settings.parent;		
-		this.label = "";
-		if(settings.label != null) this.label = settings.label;
+		this.label = settings.label || "";
+
 		this.x = settings.x; 
 		this.y = settings.y; 
 		this.rOut = settings.rOut;
@@ -50,7 +50,7 @@ var socialCheesecake = socialCheesecake || {};
 			type: this.type,
 			simulate : this.simulate
 		};
-	}
+	};
 	
 	socialCheesecake.Subsector.prototype = new socialCheesecake.Sector({
 		id : this.id,
@@ -67,6 +67,7 @@ var socialCheesecake = socialCheesecake || {};
 		borderColor : this.borderColor,
 		type : this.type,
 		simulate : this.simulate,
+		subsectors : [],
 		
 		mouseover : this.mouseover,
 		mouseout : this.mouseout,
@@ -77,7 +78,7 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Subsector.prototype.getCheesecake = function () {
 		var subsector = this;
 		return subsector.parent.parent;
-	}
+	};
 	
 	/*
 	 * Returns the subsector's index IN SOCIALCHEESECAKE

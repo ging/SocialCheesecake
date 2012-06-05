@@ -1,25 +1,21 @@
 var socialCheesecake = socialCheesecake || {};
+
 (function() {
+	var defaultSettings = {
+		center : { x : 0,  y : 0 },
+		rIn : 0,
+		rOut : 300,
+		delta : Math.PI /2 ,
+		phi : 0,
+		label : "New Sector",
+		color : socialCheesecake.colors.normalSector.background,
+		auxiliar : false,
+		type : "normalSector",
+		subsectors : [{ name : "New Subsector 1" }]
+	};
+
 	socialCheesecake.Sector = function(settings) {
-		var defaultSettings = {
-			center : { x : 0,  y : 0 },
-			rIn : 0,
-			rOut : 300,
-			delta : Math.PI /2 ,
-			phi : 0,
-			label : "",
-			color : socialCheesecake.colors.normalSector.background,
-			auxiliar : false,
-			type : "normalSector"
-		}
-		if(!settings){
-			settings = defaultSettings;
-		}
-		for(var property in defaultSettings) {
-			if(!(property in settings) || (settings[property]===undefined)) {
-				settings[property] = defaultSettings[property];
-			}
-		}
+		socialCheesecake.mergeDeep(defaultSettings, settings);
 		settings.phi %= 2*Math.PI;
 		while(settings.phi <0){
 			settings.phi += 2*Math.PI;
@@ -45,12 +41,12 @@ var socialCheesecake = socialCheesecake || {};
 		this.subsectors = [];
 		this.extraSubsectors = [];
 		this.actors = [];
-		if(settings.parent != null) this.parent = settings.parent;
-		if(settings.simulate != null) this.simulate = settings.simulate;
+		if(settings.parent !== null) this.parent = settings.parent;
+		if(settings.simulate !== null) this.simulate = settings.simulate;
 		this.auxiliar = settings.auxiliar;
 		this.type = settings.type;
 		
-		if(settings.subsectors != null) {
+		if(settings.subsectors !== null) {
 			for(var i in settings.subsectors) {
 				var subsector = new socialCheesecake.Subsector({
 					id : settings.subsectors[i].id,
@@ -85,7 +81,7 @@ var socialCheesecake = socialCheesecake || {};
 		};
 		
 		this._region = null;
-	}
+	};
 	//ID beginning fot the new subsectors created by the user.
 	socialCheesecake.Sector.newSubsectorIdRoot = "new_";
 	
