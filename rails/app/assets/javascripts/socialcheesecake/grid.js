@@ -13,7 +13,22 @@ var socialCheesecake = socialCheesecake || {};
 		this.divIdPrefix = settings.divIdPrefix;
 		this.maxOpacity = settings.maxOpacity;
 		this.minOpacity = settings.minOpacity;
-	}
+	};
+
+	socialCheesecake.Grid.prototype.newActorElement = function(info) {
+		var grid = document.getElementById(this.id + '_available');
+		var div = document.createElement('div');
+		div.setAttribute('id', 'actor_' + info.id);
+		div.setAttribute('class', 'actor orphan');
+		div.appendChild(info.html);
+
+		grid.appendChild(div);
+
+		info.grid = this;
+		actor = new socialCheesecake.Actor(info);
+
+		this.actors.push(actor);
+	};
 
 	socialCheesecake.Grid.prototype.addActor = function(actorInfo, subsector) {
 		var actors = this.actors;
@@ -198,11 +213,11 @@ var socialCheesecake = socialCheesecake || {};
 			}
 			actor.hide();
 		}
-	}
+	};
 
 	socialCheesecake.Grid.prototype.hideAll = function() {
 		this.hide(this.actors);
-	}
+	};
 
 	socialCheesecake.Grid.prototype.show = function(actor_ids, ignoreSelected) {
 		var actor;

@@ -1,6 +1,6 @@
 var socialCheesecake = socialCheesecake || {};
 (function() {
-	socialCheesecake.Cheesecake = function(cheesecakeData) {
+	socialCheesecake.Cheesecake = function(cheesecakeData, callback) {
 		var jsonSectors = cheesecakeData.sectors;
 		var cheesecake = this;
 		//Properties
@@ -77,7 +77,11 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.calculatePortions();
 		cheesecake._setInitialState();
 		cheesecake.draw();
-	}
+
+		if (typeof callback == "function") {
+			callback(this);
+		}
+	};
 
 	socialCheesecake.Cheesecake.prototype.draw = function() {
 		var sectors = this.sectors;

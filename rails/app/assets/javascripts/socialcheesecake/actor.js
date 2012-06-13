@@ -120,20 +120,17 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Actor.prototype.unfocus = function() {
 		this._focused = false;
 		this.removeClass("focused");
-	}
+	};
 
 	socialCheesecake.Actor.prototype.isFocused = function() {
 		var actor = this;
 		var gridIdPrefix = this.getCheesecake().grid.divIdPrefix;
 		return this._focused;
-	}
+	};
 	
 	socialCheesecake.Actor.prototype.isOrphan = function (){
-		var actor = this;
-		var orphan = false;
-		if( actor.parents.length <1) orphan = true;
-		return orphan;
-	}
+		return this.parents.length < 1;
+	};
 
 	socialCheesecake.Actor.prototype.hide = function() {
 		var actor_div = this.getDiv();
@@ -259,6 +256,7 @@ var socialCheesecake = socialCheesecake || {};
 	socialCheesecake.Actor.prototype.getCheesecake = function() {
 		return this.grid.parent;
 	}
+
 
 	socialCheesecake.Actor.prototype.getDiv = function() {
 		var gridIdPrefix = this.grid.divIdPrefix;
