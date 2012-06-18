@@ -51,16 +51,37 @@ var socialCheesecake = socialCheesecake || {};
 			}
 		}
 		cheesecake.syncSectorFocusCallbacks = cheesecake.syncSectorFocusCallbacks || false;
+		if (jsonSectors.length === 0) {
+			var blackSector = cheesecake.newSector({
+				parent : cheesecake,
+				center : cheesecake.center,
+				rOut : cheesecake.rMax,
+				color : socialCheesecake.colors.blackSector.background,
+				label : "",
+				auxiliar : true,
+				type : "blackSector"
+			});
+
+			cheesecake.sectors[0] = blackSector;
+		}
+
 		//Extra sector if necessary
 		if(jsonSectors.length < 16) {
+			var pos = jsonSectors.length;
+			if (pos === 0)
+				pos = 1;
+
 			var extraSector = cheesecake.newSector({
 				label : "+",
 				color : socialCheesecake.colors.extraSector.background,
 				auxiliar : true,
 				type : "extraSector"
 			});
-			cheesecake.sectors[jsonSectors.length] = extraSector;
+
+			cheesecake.sectors[pos] = extraSector;
 		}
+
+
 		var minNumSectors = Math.min(jsonSectors.length, 16);
 		for(var i = 0; i < minNumSectors; i++) {
 			var settings = {
@@ -107,6 +128,11 @@ var socialCheesecake = socialCheesecake || {};
 		var cheesecake = this;
 		var sectorIndex;
 		var onSectorFocusBegin = socialCheesecake.eventCallbackHandlers.onSectorFocusBegin;
+
+		// hack remove black sector
+		if (cheesecake.sectors[0].type === "blackSector")
+			cheesecake.sectors.shift();
+
 		for(var i in cheesecake.sectors) {
 			if(cheesecake.sectors[i] === sector)
 				sectorIndex = i;
@@ -137,7 +163,7 @@ var socialCheesecake = socialCheesecake || {};
 		cheesecake.addToLayer(dummySector);
 		//Animations
 		var greyResizeCallback = function() {
-			greySector.changeProperty("label", "GO BACK");
+			greySector.changeProperty("label", "BACK");
 			cheesecake.enable();
 		};
 		var greyRotateToCallback = function() {
@@ -285,6 +311,7 @@ var socialCheesecake = socialCheesecake || {};
 
 		this.sectors.push(this.sectors[this.sectors.length - 1]);
 		this.sectors[this.sectors.length - 2 ] = newSector;
+
 //		cheesecake.calculatePortions();
 
 

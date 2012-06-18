@@ -28,7 +28,17 @@ var socialCheesecake = socialCheesecake || {};
 			mouseup : "#f5f5f5",
 			font : "#666",
 			border : "#666"
+		},
+		blackSector : {
+			background : "#000",
+			click : "#000",
+			mouseover : "#000",
+			mouseout : "#000",
+			mouseup : "#000",
+			font : "#000",
+			border : "#000"
 		}
+
 	};
 	socialCheesecake.colors.normalSubsector = socialCheesecake.colors.normalSector;
 	socialCheesecake.colors.extraSubsector = socialCheesecake.colors.extraSector;
