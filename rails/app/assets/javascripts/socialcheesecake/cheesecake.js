@@ -578,6 +578,38 @@ var socialCheesecake = socialCheesecake || {};
 		return this._initialState;
 	}
 	
+	socialCheesecake.Cheesecake.prototype.getCurrentState = function() {
+		var state = [];
+
+		for (var s in this.sectors) {
+			var sector = this.sectors[s];
+
+			if (sector.type !== "normalSector")
+				continue;
+
+			var jsonSector = state[s] = {};
+
+			jsonSector.id = sector.id;
+			jsonSector.label = sector.label;
+			jsonSector.subsectors = [];
+
+			for (var ss in sector.subsectors) {
+				var subsector = sector.subsectors[ss];
+				var jsonSubsector = jsonSector.subsectors[ss] = {};
+
+				jsonSubsector.id = subsector.id;
+				jsonSubsector.label = subsector.label;
+				jsonSubsector.actors = [];
+
+				for (var ac in subsector.actors) {
+					jsonSubsector.actors.push(subsector.actors[ac].id);
+				}
+			}
+		}
+
+		return state;
+	};
+
 	socialCheesecake.Cheesecake.prototype.filter = function(pattern) {
 		console.log("search")
 		var grid = this.grid;
