@@ -15,6 +15,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.minOpacity = settings.minOpacity;
 	};
 
+
 	socialCheesecake.Grid.prototype.newActorElement = function(info) {
 		var grid = document.getElementById(this.id + '_available');
 		var div = document.createElement('div');

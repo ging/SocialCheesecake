@@ -108,21 +108,26 @@ var socialCheesecake = socialCheesecake || {};
 		var sectors = this.sectors;
 		this.addToLayer(sectors);
 		this.stage.draw();
-	}
+	};
 
 	socialCheesecake.Cheesecake.prototype.disable = function() {
 		var layers = this.stage.getChildren();
 		for(var layer in layers) {
 			layers[layer].listen(false);
 		}
-	}
+	};
 
 	socialCheesecake.Cheesecake.prototype.enable = function() {
 		var layers = this.stage.getChildren();
 		for(var layer in layers) {
 			layers[layer].listen(true);
 		}
-	}
+	};
+
+	socialCheesecake.Cheesecake.prototype.saved = function() {
+		this.saveState();
+		this.enable();
+	};
 
 	socialCheesecake.Cheesecake.prototype.focusAndBlurCheesecake = function(sector) {
 		var cheesecake = this;
@@ -610,8 +615,13 @@ var socialCheesecake = socialCheesecake || {};
 		return state;
 	};
 
+	socialCheesecake.Cheesecake.prototype.saveState = function() {
+		//TODO: save initalstate
+		this._changes = {};
+	};
+
 	socialCheesecake.Cheesecake.prototype.filter = function(pattern) {
-		console.log("search")
+		console.log("search");
 		var grid = this.grid;
 		var highlightedSector = this.highlightedSector;
 		socialCheesecake.SearchEngine.filter(pattern, grid.actors);

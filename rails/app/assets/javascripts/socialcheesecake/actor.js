@@ -45,6 +45,7 @@ var socialCheesecake = socialCheesecake || {};
 				}
 			}
 		}, false);
+
 		actor_div.addEventListener("click", function() {
 			var sector;
 			if(actor.isSelected()) {
@@ -145,7 +146,7 @@ var socialCheesecake = socialCheesecake || {};
 		}
 		actor_div.setAttribute("style", newStyle);
 		this.fading = "none";
-	}
+	};
 	
 	socialCheesecake.Actor.prototype.show = function() {
 		var actor_div = this.getDiv();
