@@ -27,15 +27,18 @@ var socialCheesecake = socialCheesecake || {};
 			minOpacity : cheesecakeData.grid.minOpacity || 0
 		});
 		cheesecake.matchActorsNumber = cheesecakeData.match;
-		if(cheesecake.matchActorsNumber == null) cheesecake.matchActorsNumber = true;
+		if(cheesecake.matchActorsNumber === null) cheesecake.matchActorsNumber = true;
+
 		cheesecake._initialState = {};
 		cheesecake._changes = {};
+
 		//Text settings
 		if(cheesecakeData.text) {
 			for(var style in cheesecakeData.text) {
 				socialCheesecake.text[style] = cheesecakeData.text[style];
 			}
 		}
+
 		//Color settings
 		if(cheesecakeData.colors) {
 			for(var type in cheesecakeData.colors) {
@@ -51,6 +54,7 @@ var socialCheesecake = socialCheesecake || {};
 			}
 		}
 		cheesecake.syncSectorFocusCallbacks = cheesecake.syncSectorFocusCallbacks || false;
+
 		if (jsonSectors.length === 0) {
 			var blackSector = cheesecake.newSector({
 				parent : cheesecake,
@@ -95,6 +99,7 @@ var socialCheesecake = socialCheesecake || {};
 			};
 			cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
 		}
+
 		cheesecake.calculatePortions();
 		cheesecake._setInitialState();
 		cheesecake.draw();
