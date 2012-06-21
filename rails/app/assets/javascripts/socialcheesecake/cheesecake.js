@@ -134,14 +134,18 @@ var socialCheesecake = socialCheesecake || {};
 		this.enable();
 	};
 
+		// hack remove black sector
+	socialCheesecake.Cheesecake.prototype.clearBlackSector = function() {
+		if (this.sectors[0].type === "blackSector")
+			this.sectors.shift();
+	};
+
 	socialCheesecake.Cheesecake.prototype.focusAndBlurCheesecake = function(sector) {
 		var cheesecake = this;
 		var sectorIndex;
 		var onSectorFocusBegin = socialCheesecake.eventCallbackHandlers.onSectorFocusBegin;
 
-		// hack remove black sector
-		if (cheesecake.sectors[0].type === "blackSector")
-			cheesecake.sectors.shift();
+		this.clearBlackSector();
 
 		for(var i in cheesecake.sectors) {
 			if(cheesecake.sectors[i] === sector)
@@ -328,6 +332,8 @@ var socialCheesecake = socialCheesecake || {};
 	};
 
 	socialCheesecake.Cheesecake.prototype.addNewSector = function(settings) {
+		this.clearBlackSector();
+
 		var newSector = this.newSector(settings);
 
 		this.sectors.push(this.sectors[this.sectors.length - 1]);
