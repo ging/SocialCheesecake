@@ -848,7 +848,7 @@ var socialCheesecake = socialCheesecake || {};
 		var index;
 
 		for(var index in this.subsectors) {
-			if ($.inArray(this.subsectors[index], actor.parents)) {
+			if ($.inArray(this.subsectors[index], actor.parents) !== -1) {
 				// Actor is still in other subsector of this sector
 				return;
 			}
