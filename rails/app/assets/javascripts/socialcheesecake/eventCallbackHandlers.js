@@ -6,9 +6,11 @@ var socialCheesecake = socialCheesecake || {};
 				var cheesecake = sector.getCheesecake();
 
 				document.body.style.cursor = "pointer";
-				cheesecake.grid.focus(sector.actors);
+
 				sector.focus();
-				if(cheesecake.highlightedSector != null) {
+				sector.focusActors();
+
+				if(cheesecake.highlightedSector !== null) {
 					cheesecake.highlightedSector.fan(false, function() {
 						sector.fan(true);
 					});
@@ -21,15 +23,17 @@ var socialCheesecake = socialCheesecake || {};
 				var cheesecake = sector.getCheesecake();
 
 				document.body.style.cursor = "default";
-				cheesecake.grid.unfocusAll();
+
 				sector.unfocus();
+				sector.unfocusActors();
+
 				cheesecake.setHighlightedSector(null);
 				sector.fan(false);
 			},
 			click : function(sector) {
 				var cheesecake = sector.getCheesecake();
 				cheesecake.focusAndBlurCheesecake(sector);
-				cheesecake.grid.unfocus(sector.actors);
+				sector.unfocusActors();
 			}
 		},
 		extraSector : {
@@ -72,13 +76,13 @@ var socialCheesecake = socialCheesecake || {};
 			mouseover : function(subsector) {
 				var cheesecake = subsector.getCheesecake();
 				document.body.style.cursor = "pointer";
-				cheesecake.grid.focus(subsector.actors);
+				subsector.focusActors();
 				cheesecake.setHighlightedSector(subsector);
 			},
 			mouseout : function(subsector) {
 				var cheesecake = subsector.getCheesecake();
 				document.body.style.cursor = "default";
-				cheesecake.grid.unfocus(subsector.actors);
+				subsector.unfocusActors();
 				cheesecake.setHighlightedSector(subsector.parent);
 			},
 			click : function(subsector) {

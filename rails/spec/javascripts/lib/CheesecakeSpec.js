@@ -37,7 +37,7 @@ describe("Cheesecake", function() {
 					label: "dynamic sector",
 					subsectors: [{
 						id: 11,
-						name: "dynamic subsector"
+						label: "dynamic subsector"
 					}]
 				});
 			});
@@ -55,8 +55,8 @@ describe("Cheesecake", function() {
 		beforeEach(function() {
 			opts = $.extend(cheesecakeDefaults, {
 				sectors: [
-					{ id: 1, name: "test" },
-					{ id: 2, name: "spec" }
+					{ id: 1, label: "test" },
+					{ id: 2, label: "spec" }
 				]
 			});
 			cheesecake = new socialCheesecake.Cheesecake(opts);
@@ -95,14 +95,14 @@ describe("Cheesecake", function() {
 				opts = $.extend(cheesecakeDefaults, {
 					sectors: [{
 						id: 1,
-						name: "test",
+						label: "test",
 						subsectors: [{
 							id: 2,
-							name: "subtest"
+							label: "subtest"
 						},
 						{
 							id: 3,
-							name: "subspec"
+							label: "subspec"
 						}]
 					}]
 				});

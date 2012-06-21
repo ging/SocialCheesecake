@@ -32,6 +32,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.delta = settings.delta;
 		this.label = settings.label;
 		this.color = settings.color;
+
 		if(settings.fontColor) this.fontColor = settings.fontColor;
 		if(settings.borderColor) this.borderColor = settings.borderColor;
 		if(settings.mouseover) this.mouseover = settings.mouseover;
@@ -50,7 +51,7 @@ var socialCheesecake = socialCheesecake || {};
 			for(var i in settings.subsectors) {
 				var subsector = new socialCheesecake.Subsector({
 					id : settings.subsectors[i].id,
-					label : settings.subsectors[i].name,
+					label : settings.subsectors[i].label,
 					parent : this,
 					x : this.x,
 					y : this.y,
@@ -61,6 +62,7 @@ var socialCheesecake = socialCheesecake || {};
 					actors : settings.subsectors[i].actors,
 					color : socialCheesecake.colors.normalSector.background
 				});
+
 				this.subsectors.push(subsector);
 			}
 		}
@@ -82,6 +84,7 @@ var socialCheesecake = socialCheesecake || {};
 		
 		this._region = null;
 	};
+
 	//ID beginning fot the new subsectors created by the user.
 	socialCheesecake.Sector.newSubsectorIdRoot = "new_";
 	
@@ -139,7 +142,7 @@ var socialCheesecake = socialCheesecake || {};
 					var context = this.getContext();
 					sector._draw(context);
 				}, 
-				name : sector.label
+				label : sector.label
 			});
 			sector._region.on('mouseover', function() {
 				sector.eventHandler('mouseover');
@@ -154,18 +157,18 @@ var socialCheesecake = socialCheesecake || {};
 				sector.eventHandler('mouseup');
 			});
 		}
-		return this._region
-	}
+		return this._region;
+	};
 	
 	socialCheesecake.Sector.prototype.getLayer = function(){
 		if(this.getRegion().getParent()) return this.getRegion().getLayer(); /*KINETIC FIX*/
 		return undefined;
-	}
+	};
 	
 	socialCheesecake.Sector.prototype.eventHandler = function(eventName) {
 		this.colorHandler(eventName);
 		this.callbackHandler(eventName);
-	}
+	};
 	
 	socialCheesecake.Sector.prototype.colorHandler = function(eventName) {
 		var sector = this;
@@ -187,11 +190,15 @@ var socialCheesecake = socialCheesecake || {};
 		}else	if(socialCheesecake.eventCallbackHandlers[type] && socialCheesecake.eventCallbackHandlers[type][eventName]){
 			socialCheesecake.eventCallbackHandlers[type][eventName](sector);
 		}
-	}
+	};
 	
 	socialCheesecake.Sector.prototype.getCheesecake = function () {
 		return this.parent;
-	}
+	};
+
+	socialCheesecake.Sector.prototype.getGrid = function () {
+		return this.getCheesecake().getGrid();
+	};
 	/*
 	 * Returns the sector's index IN CHEESECAKE
 	 */
@@ -646,11 +653,24 @@ var socialCheesecake = socialCheesecake || {};
 		var sector = this;
 		sector.changeProperty("rOut", sector.originalAttr.rOut * 1.05);
 	}
+
+	socialCheesecake.Sector.prototype.focusActors = function() {
+		this.eachActor(function(actor) {
+			actor.focus();
+		});
+	};
 	
 	socialCheesecake.Sector.prototype.unfocus = function() {
 		var sector = this;
 		sector.changeProperty("rOut", sector.originalAttr.rOut);
 	}
+
+	socialCheesecake.Sector.prototype.unfocusActors = function() {
+		this.eachActor(function(actor) {
+			actor.unfocus();
+		});
+	};
+
 	
 	/**
 	 * open - true: expand sector
@@ -771,63 +791,76 @@ var socialCheesecake = socialCheesecake || {};
 		return subsectors[subectorIndex];
 	}
 	
-	socialCheesecake.Sector.prototype.addActor = function(actorInfo , subsector){
-		var actors = this.actors;
+	/*
+	 * Get the Actor object from an id, asking the grid for it
+	 *
+	 * @param {String} the id of the actor
+	 * @return {Actor} The actor object
+	 *
+	 */
+	socialCheesecake.Sector.prototype.getActor = function(id){
+		return this.getGrid().getActor(id);
+	};
+
+	/* 
+	 * Iterates through all the actors in this sector
+	 *
+	 * @param {function} callback function
+	 */
+	socialCheesecake.Sector.prototype.eachActor = function(callback){
+		var sector = this;
+
+		$.each(this.actors, function(i, actorId) {
+			callback(sector.getActor(actorId));
+		});
+	};
+
+	/*
+	 * Add an actor to the list of actors in this sector
+	 *
+	 * @param {Object} the id of the actor or and Actor object
+	 * @return {Actor} The actor object
+	 *
+	 */
+	socialCheesecake.Sector.prototype.addActor = function(obj){
 		var actor;
-		
-		//Check if the actor is already in the array
-		var actorAlreadyDeclared = false;
-		for (var i in actors){
-			if (actors[i].id == actorInfo.id){
-				actorAlreadyDeclared = true;
-				actor = actors[i];
-				//Check if the subsector has already been declared a parent of the actor
-				var subsectorAlreadyDeclared = false;
-				for ( var parent in actor.parents){
-					if (actor.parents[parent] == subsector) subsectorAlreadyDeclared=true;
-				}
-				if (!subsectorAlreadyDeclared) actor.parents.push(subsector);
-			}
+
+		switch(typeof obj) {
+			case "string":
+				actor = this.getActor(obj);
+				break;
+			case "object":
+				actor = obj
+				break;
+			default:
+				throw("Unable to get actor from " + typeof(obj));
+			
 		}
-		// If the actor was not in the array, ask the parent or the grid for it
-		if(!actorAlreadyDeclared){		
-			if (this == subsector){
-				actor = this.parent.addActor(actorInfo, subsector);
-			}else{
-				actor = this.parent.grid.addActor(actorInfo, subsector);
-			}
-			actors.push(actor);
-		}
+	       
+		// Include the array in the list of actors in this sector
+		if ($.inArray(actor.id, this.actors) === -1)
+			this.actors.push(actor.id);
+
 		return actor;
 	}
 	
 	socialCheesecake.Sector.prototype.removeActor = function (actor){
-		var actors = this.actors;
-		var actorParents;
-		var actorPresentInSector = false;
-		var grid = this.getCheesecake().grid;
-		
-		for(var actorIndex in actors){
-			if(actors[actorIndex].id == actor.id){
-				actorParents = actor.parents;
-				//Find out if there is a subsector in this sector with this actor
-				for (var parent in actorParents){
-					for (var subsector in this.subsectors){
-						if(actorParents[parent] === this.subsectors[subsector]){
-							actorPresentInSector = true;
-							break;
-						}
-					}						
-				}
-				//If there isn't, remove the actor from the array and tell the Grid
-				if(!actorPresentInSector){
-					actors.splice(actorIndex,1);
-					grid.removeActor(actor);
-				}
+		var index;
+
+		for(var index in this.subsectors) {
+			if ($.inArray(this.subsectors[index], actor.parents)) {
+				// Actor is still in other subsector of this sector
+				return;
 			}
 		}
+
+		index = $.inArray(actor.id, this.actors)
+
+		if (index !== -1)
+			this.actors.splice(index, 1);
 	}
-	
+
+
 	socialCheesecake.Sector.prototype.getWidth = function (){
 		return (this.rOut - this.rIn);
 	}

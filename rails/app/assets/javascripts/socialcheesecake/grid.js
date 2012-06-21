@@ -6,8 +6,8 @@ var socialCheesecake = socialCheesecake || {};
 			throw "No arguments passed to the function";
 
 		//Actors dimensions and positions
+		this.actorsList = {};
 		this.actors = [];
-		this.orphans = [];
 		this.parent = settings.parent;
 		this.id = settings.grid_id;
 		this.divIdPrefix = settings.divIdPrefix;
@@ -15,103 +15,36 @@ var socialCheesecake = socialCheesecake || {};
 		this.minOpacity = settings.minOpacity;
 	};
 
+	// The HTML Element that contains all the available actors
+	socialCheesecake.Grid.prototype.getAvailableActorsContainer = function() {
+		if (this.availableActorsContainer)
+			return this.availableActorsContainer;
 
-	socialCheesecake.Grid.prototype.newActorElement = function(info) {
-		var grid = document.getElementById(this.id + '_available');
-		var div = document.createElement('div');
-		div.setAttribute('id', 'actor_' + info.id);
-		div.setAttribute('class', 'actor orphan');
-		div.appendChild(info.html);
-
-		grid.appendChild(div);
-
-		info.grid = this;
-		actor = new socialCheesecake.Actor(info);
-
-		this.actors.push(actor);
+		this.availableActorsContainer = $('#' + this.id + '_available');
+		return this.availableActorsContainer;
 	};
 
-	socialCheesecake.Grid.prototype.addActor = function(actorInfo, subsector) {
-		var actors = this.actors;
-		var orphans = this.orphans;
-		var actor = null;
-
-		//Check if the actor is already in the array
-		var actorAlreadyDeclared = false;
-		for(var i in actors) {
-			if(actors[i].id == actorInfo.id) {
-				actorAlreadyDeclared = true;
-				actor = actors[i];
-				//Check if the subsector has already been declared a parent of the actor
-				var subsectorAlreadyDeclared = false;
-				for(var parent in actor.parents) {
-					if(actor.parents[parent] == subsector)
-						subsectorAlreadyDeclared = true;
-				}
-				if(!subsectorAlreadyDeclared)
-					actor.parents.push(subsector);
-			}
-		}
-		// If the actor was not in the array:
-		if(!actorAlreadyDeclared) {
-			//Check if the actor exists as an orphan (with no subsectors parents)
-			var orphanActor = false;
-			for(var i in orphans){
-				//If it exists, take it out from this array and add its new parent
-				if(orphans[i].id == actorInfo.id){
-					orphanActor = true;
-					actor = orphans[i];
-					orphans.splice(i, 1);
-					actor.removeClass("orphan");
-					actor.parents.push(subsector);
-				}
-			}//If it doesn't, create new Actor and add its parent.
-			if(!orphanActor){
-				actorInfo.parent = subsector;
-				actorInfo.grid = this;
-				actor = new socialCheesecake.Actor(actorInfo);
-			}
-			actors.push(actor);
-		}
-		return actor;
-	}
-
-	socialCheesecake.Grid.prototype.removeActor = function(actor) {
-		var actors = this.actors;
-		var orphans = this.orphans;
-		for(var actorIndex in actors) {
-			if((actors[actorIndex].id == actor.id) && (actor.isOrphan())) {
-				actors.splice(actorIndex, 1);
-				orphans.push(actor);
-				actor.addClass("orphan");
-			}
-		}
-	}
-
 	socialCheesecake.Grid.prototype.getActor = function(id) {
-		var actors = this.actors;
-		for(var i in actors) {
-			if(this.actors[i].id == id) {
-				return this.actors[i];
-			}
-		}
-		return null
-	}
+		this.actorsList[id] = this.actorsList[id] || new socialCheesecake.Actor({
+			id: id,
+			grid: this
+		});
+
+		this.actors.push(this.actorsList[id]);
+
+		return this.actorsList[id];
+	};
 
 	socialCheesecake.Grid.prototype.getSelectedActors = function() {
-		var actors = this.actors;
-		var orphans = this.orphans;
 		var selectedActors = [];
-		for(var i in actors) {
-			if(actors[i].isSelected())
-				selectedActors.push(actors[i]);
-		}
-		for (var i in orphans){
-			if(orphans[i].isSelected())
-				selectedActors.push(orphans[i]);
-		}
+
+		$.each(this.actorsList, function(id, obj) {
+			if (obj.isSelected())
+				selectedActors.push(obj);
+		});
+
 		return selectedActors;
-	}
+	};
 
 	socialCheesecake.Grid.prototype.select = function(actor_ids) {
 		var actor;
@@ -267,11 +200,7 @@ var socialCheesecake = socialCheesecake || {};
 			}
 			actor.unfocus();
 		}
-	}
-
-	socialCheesecake.Grid.prototype.unfocusAll = function() {
-		this.unfocus(this.actors);
-	}
+	};
 
 	socialCheesecake.Grid.prototype.fadeOut = function(actor_ids, time, modifyDisplay, ignoreSelected) {
 		var actor;

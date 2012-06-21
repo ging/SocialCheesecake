@@ -92,7 +92,7 @@ var socialCheesecake = socialCheesecake || {};
 				parent : cheesecake,
 				center : cheesecake.center,
 				id : jsonSectors[i].id,
-				label : jsonSectors[i].name,
+				label : jsonSectors[i].label,
 				rOut : cheesecakeData.rMax,
 				subsectors : jsonSectors[i].subsectors,
 				type : "normalSector"
@@ -147,8 +147,8 @@ var socialCheesecake = socialCheesecake || {};
 			if(cheesecake.sectors[i] === sector)
 				sectorIndex = i;
 		}
-		if(sectorIndex == null)
-			throw "sector doesn't belong to this cheesecake"
+		if(!sectorIndex)
+			throw "sector doesn't belong to this cheesecake";
 		cheesecake.clearLayer();
 		cheesecake.setHighlightedSector(sector);
 		cheesecake.disable();
@@ -171,11 +171,13 @@ var socialCheesecake = socialCheesecake || {};
 
 		cheesecake.addToLayer(greySector);
 		cheesecake.addToLayer(dummySector);
+
 		//Animations
 		var greyResizeCallback = function() {
 			greySector.changeProperty("label", "BACK");
 			cheesecake.enable();
 		};
+
 		var greyRotateToCallback = function() {
 			greySector.resizeDelta({
 				delta : 3 * Math.PI / 2,
@@ -183,19 +185,22 @@ var socialCheesecake = socialCheesecake || {};
 				callback : greyResizeCallback
 			});
 		};
+
 		var dummyResizeCallback = function() {
 			var grid = cheesecake.grid;
 			grid.hideAll();
 			grid.show(cheesecake.sectors[sectorIndex].actors);
 			dummySector.splitUp();
 		};
+
 		var dummyRotateToCallback = function() {
 			var callback = function() {
 				dummySector.resizeDelta({
 					anchor : "M",
 					callback : dummyResizeCallback
 				});
-			}
+			};
+
 			if(onSectorFocusBegin) {
 				if(cheesecake.syncSectorFocusCallbacks) {
 					onSectorFocusBegin(cheesecake, callback);
@@ -207,6 +212,7 @@ var socialCheesecake = socialCheesecake || {};
 				callback();
 			}
 		};
+
 		greySector.rotateTo({
 			destination : 5 * Math.PI / 4,
 			callback : greyRotateToCallback,
@@ -218,7 +224,8 @@ var socialCheesecake = socialCheesecake || {};
 			callback : dummyRotateToCallback,
 			anchor : "M"
 		});
-	}
+	};
+
 	socialCheesecake.Cheesecake.prototype.recoverCheesecake = function() {
 		var cheesecake = this;
 		var lastSector = this.highlightedSector;
@@ -305,6 +312,10 @@ var socialCheesecake = socialCheesecake || {};
 		}
 	};
 
+	socialCheesecake.Cheesecake.prototype.getGrid = function() {
+		return this.grid;
+	};
+
 	socialCheesecake.Cheesecake.prototype.newSector = function(settings) {
 		settings = settings || {};
 		settings.parent = this;
@@ -387,13 +398,13 @@ var socialCheesecake = socialCheesecake || {};
 			if(changesInSectors[s].id == sector.id){
 				alreadyChanged = true;
 				changesInSectors[s].subsectors = sector.getSubsectorsIds();
-				changesInSectors[s].name = sector.label;
+				changesInSectors[s].label = sector.label;
 			}
 		}if(!alreadyChanged){
 			changesInSectors.push({
 				id : sector.id,
 				subsectors : sector.getSubsectorsIds(),
-				name : sector.label
+				label : sector.label
 			});
 		}
 	}
@@ -635,7 +646,7 @@ var socialCheesecake = socialCheesecake || {};
 		} else {
 			grid.fadeIn(grid.actors, 100, true);
 		}
-	}
+	};
 
 	socialCheesecake.Cheesecake.prototype._setInitialState = function() {
 		var state = this._initialState;
@@ -656,7 +667,7 @@ var socialCheesecake = socialCheesecake || {};
 			if(sectors[sector].type == "normalSector"){
 				state.sectors.push({
 					id : sectors[sector].id,
-					name : sectors[sector].label,
+					label : sectors[sector].label,
 					subsectors : sectors[sector].getSubsectorsIds()
 				});
 			}

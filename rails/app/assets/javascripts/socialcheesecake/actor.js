@@ -5,9 +5,8 @@ var socialCheesecake = socialCheesecake || {};
 			throw "No arguments passed to the function";
 		
 		this.id = settings.id;
-		this.name = settings.name;
+//		this.name = settings.name;
 		this.grid = settings.grid;
-		this.extraInfo = (settings.extraInfo) ? settings.extraInfo : undefined;
 		this.opacity = this.grid.maxOpacity || 1;
 		this._focused = false;
 		this._selected = false;
@@ -15,14 +14,31 @@ var socialCheesecake = socialCheesecake || {};
 		this._filtered = false;
 		this.fading = "none";
 		this.parents = [];
+		/*
 		if(settings.parent)
 			this.parents.push(settings.parent);
+		*/
 
+		this.buildGridElement();
+
+	};
+
+	socialCheesecake.Actor.prototype.buildGridElement = function() {
+		var container = this.grid.getAvailableActorsContainer();
+		html = '<div id="actor_' + this.id + '" class="actor"/>';
+		this.gridElement = $(html);
+		container.append(this.gridElement);
+
+		this.setGridElementCallbacks();
+	};
+
+	socialCheesecake.Actor.prototype.setGridElementCallbacks = function() {
 		var actor = this;
-		var actor_div = actor.getDiv();
+		var el = this.gridElement;
 
-		actor_div.addEventListener("mouseover", function() {
+		el.on("mouseover", function() {
 			var sector;
+
 			actor.focus();
 			if(!actor.isOrphan()){
 				for(var subsector in actor.parents) {
@@ -32,8 +48,9 @@ var socialCheesecake = socialCheesecake || {};
 					actor.parents[subsector].colorHandler("mouseover");
 				}
 			}
-		}, false);
-		actor_div.addEventListener("mouseout", function() {
+		});
+
+		el.on("mouseout", function() {
 			var sector;
 			actor.unfocus();
 			if(!actor.isOrphan()){
@@ -44,18 +61,17 @@ var socialCheesecake = socialCheesecake || {};
 					actor.parents[subsector].colorHandler("mouseout");
 				}
 			}
-		}, false);
+		});
 
-		actor_div.addEventListener("click", function() {
-			var sector;
-			if(actor.isSelected()) {
+		el.on("click", function() {
+			if (actor.isSelected()) {
 				actor.unselect();
 			} else {
 				actor.select();
 				actor.unfocus();
 			}
-		}, false);
-	}
+		});
+	};
 
 	socialCheesecake.Actor.prototype.getParentsIds = function() {
 		var parents = this.parents;
@@ -65,67 +81,34 @@ var socialCheesecake = socialCheesecake || {};
 			parentsIds.push(parents[i].id);
 		}
 		return parentsIds;
-	}
+	};
 
-	socialCheesecake.Actor.prototype.addClass = function(cssClass) {
-		var actor_div = this.getDiv();
-		var newClass = "";
-		var classRegExp = new RegExp("(^|\\s)" + cssClass + "($|\\s)");
-
-		if(actor_div.getAttribute("class")) {
-			newClass = actor_div.getAttribute("class");
-			if(!(newClass.match(classRegExp)) ) {
-				newClass = newClass.concat(" " + cssClass);
-				actor_div.setAttribute("class", newClass);
-			}
-		} else {
-			newClass = cssClass;
-			actor_div.setAttribute("class", newClass);
-		}
-	}
-
-	socialCheesecake.Actor.prototype.removeClass = function(cssClass) {
-		var actor_div = this.getDiv();
-		var newClass = "";
-		var classRegExp = new RegExp("(^|\\s)" + cssClass + "($|\\s)");
-
-		if(actor_div.getAttribute("class")) {
-			newClass = actor_div.getAttribute("class");
-			if (newClass.match(classRegExp)){
-				classRegExp = new RegExp("(^|\\s)" + cssClass);
-				newClass = actor_div.getAttribute("class").replace(classRegExp, "");
-				actor_div.setAttribute("class", newClass);
-			}
-		}
-	}
 
 	socialCheesecake.Actor.prototype.isSelected = function() {
 		return this._selected;
-	}
+	};
 
 	socialCheesecake.Actor.prototype.select = function() {
 		this._selected = true;
-		this.addClass("selected");
-	}
+		this.gridElement.addClass("selected");
+	};
 
 	socialCheesecake.Actor.prototype.unselect = function() {
 		this._selected = false;
-		this.removeClass("selected");
-	}
+		this.gridElement.removeClass("selected");
+	};
 
 	socialCheesecake.Actor.prototype.focus = function() {
 		this._focused = true;
-		this.addClass("focused");
-	}
+		this.gridElement.addClass("focused");
+	};
 
 	socialCheesecake.Actor.prototype.unfocus = function() {
 		this._focused = false;
-		this.removeClass("focused");
+		this.gridElement.removeClass("focused");
 	};
 
 	socialCheesecake.Actor.prototype.isFocused = function() {
-		var actor = this;
-		var gridIdPrefix = this.getCheesecake().grid.divIdPrefix;
 		return this._focused;
 	};
 	
@@ -252,17 +235,14 @@ var socialCheesecake = socialCheesecake || {};
 		if(modifyDisplay)
 			actor.show();
 		actor.fade(time, modifyDisplay);
-	}
+	};
 
 	socialCheesecake.Actor.prototype.getCheesecake = function() {
 		return this.grid.parent;
-	}
+	};
 
 
 	socialCheesecake.Actor.prototype.getDiv = function() {
-		var gridIdPrefix = this.grid.divIdPrefix;
-		var actor_id = this.id;
-		var actor_div = document.getElementById(gridIdPrefix + actor_id);
-		return actor_div;
-	}
+		return this.gridElement[0];
+	};
 })();
