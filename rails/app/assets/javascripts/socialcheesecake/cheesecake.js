@@ -618,6 +618,7 @@ var socialCheesecake = socialCheesecake || {};
 
 			jsonSector.id = sector.id;
 			jsonSector.label = sector.label;
+			jsonSector.actors = sector.actors;
 			jsonSector.subsectors = [];
 
 			for (var ss in sector.subsectors) {
@@ -626,11 +627,7 @@ var socialCheesecake = socialCheesecake || {};
 
 				jsonSubsector.id = subsector.id;
 				jsonSubsector.label = subsector.label;
-				jsonSubsector.actors = [];
-
-				for (var ac in subsector.actors) {
-					jsonSubsector.actors.push(subsector.actors[ac].id);
-				}
+				jsonSubsector.actors = subsector.actors;
 			}
 		}
 
