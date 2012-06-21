@@ -30,6 +30,10 @@ var socialCheesecake = socialCheesecake || {};
 				this.addActor(settings.actors[i]);
 			}
 		}
+
+		this.originalActors = this.actors.slice();
+		this.actorChanges = [[], []];
+
 		this.originalAttr = {
 			x : this.x,
 			y : this.y,
@@ -83,6 +87,8 @@ var socialCheesecake = socialCheesecake || {};
 		if ($.inArray(this, actor.parents) === -1)
 			actor.parents.push(this);
 
+		this.recordAddActor(actor);
+
 		return actor;
 	};
 
@@ -99,7 +105,8 @@ var socialCheesecake = socialCheesecake || {};
 		return index;
 	};
 	
-	socialCheesecake.Subsector.prototype.removeActor = function(actor){
+	socialCheesecake.Subsector.prototype.removeActor = function(obj){
+		var actor = this.getActor(obj);
 		var index;
 
 		// remove from subsector list
@@ -116,6 +123,8 @@ var socialCheesecake = socialCheesecake || {};
 
 		// remove from sector
 		this.parent.removeActor(actor);
+
+		this.recordRemoveActor(actor);
 
 		return actor;
 	};

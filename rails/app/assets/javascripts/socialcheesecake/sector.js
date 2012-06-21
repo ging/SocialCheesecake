@@ -63,9 +63,14 @@ var socialCheesecake = socialCheesecake || {};
 					color : socialCheesecake.colors.normalSector.background
 				});
 
+				this.actors = $.unique(this.actors, settings.subsectors[i].actors);
+
 				this.subsectors.push(subsector);
 			}
 		}
+
+		this.originalActors = this.actors.slice();
+		this.actorChanges = [[], []];
 		
 		this.originalAttr = {
 			x : this.x,
@@ -837,9 +842,12 @@ var socialCheesecake = socialCheesecake || {};
 			
 		}
 	       
-		// Include the array in the list of actors in this sector
+		// Include the actor id in the list of actors in this sector
 		if ($.inArray(actor.id, this.actors) === -1)
 			this.actors.push(actor.id);
+
+		this.recordAddActor(actor);
+
 
 		return actor;
 	}
@@ -858,8 +866,48 @@ var socialCheesecake = socialCheesecake || {};
 
 		if (index !== -1)
 			this.actors.splice(index, 1);
+
+		this.recordRemoveActor(actor);
 	}
 
+	/*
+	 * Include the actor id in the list of added actorChanges in this sector
+	 */
+	socialCheesecake.Sector.prototype.recordAddActor = function (actor){
+		if (!this.actorChanges)
+			return;
+	
+		if ($.inArray(actor.id, this.originalActors) === -1) {
+			// If it was not in the original actors, add to changes
+			if ($.inArray(actor.id, this.actorChanges[0]) === -1)
+				this.actorChanges[0].push(actor.id);
+		} else {
+			// Remove from changes
+			var delIndex = $.inArray(actor.id, this.actorChanges[1]);
+			if (delIndex ==! -1)
+				this.actorChanges[1].splice(delIndex, 1);
+		}
+	};
+
+	/*
+	 * Include the actor id in the list of removed actorChanges in this sector
+	 */
+	socialCheesecake.Sector.prototype.recordRemoveActor = function (actor){
+		if (!this.actorChanges)
+			return;
+	
+		if ($.inArray(actor.id, this.originalActors) === -1) {
+			// If it was not in the original actors, remove changes
+			var addIndex = $.inArray(actor.id, this.actorChanges[0]);
+			if (addIndex ==! -1)
+				this.actorChanges[0].splice(addIndex, 1);
+		} else {
+			// Add to changes
+			if ($.inArray(actor.id, this.actorChanges[1]) === -1)
+				this.actorChanges[1].push(actor.id);
+
+		}
+	};
 
 	socialCheesecake.Sector.prototype.getWidth = function (){
 		return (this.rOut - this.rIn);
