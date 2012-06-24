@@ -12,13 +12,19 @@ describe("Sector", function() {
 		center: { x: 220, y: 220 },
 		rMax: 200,
 		sectors: [{
-			label: "S1",
+			id: "S1",
+			label: "Sector 1",
+			state: "saved",
 			subsectors: [{
-				label: "SS1",
+				id: "SS1",
+				label: "Subsector 1",
+				state: "saved",
 				actors: [ "11", "12" ]
 			},
 			{
-				label: "S-2",
+				id: "SS2",
+				label: "Subsector 2",
+				state: "saved",
 				actors: [ "21", "22" ]
 			
 			}]
@@ -32,7 +38,8 @@ describe("Sector", function() {
 	});
 
 	describe("changes in subsector", function() {
-		var sector, subsector, changes;
+		var sector, subsector,
+	       	    changes, cheesecakeChanges, cheesecakeChangesCount;
 
 		beforeEach(function() {
 			sector = cheesecake.sectors[0];
@@ -43,6 +50,25 @@ describe("Sector", function() {
 			beforeEach(function() {
 				subsector.addActor("1");
 				changes = [["1"], []];
+				cheesecakeChanges = [
+					{
+						id: "S1",
+						label: "Sector 1",
+						actors: changes,
+						state: "saved",
+						subsectors: [
+							{
+								id: "SS1",
+								label: "Subsector 1",
+								state: "saved",
+								actors: changes
+
+
+							}
+						]
+					}
+				];
+				cheesecakeChangesCount = 1;
 			});
 
 			it("should include it", function() {
@@ -50,16 +76,29 @@ describe("Sector", function() {
 				expect(sector.actorChanges).toEqual(changes);
 			});
 
+			it("should generate cheesecake changes", function() {
+				expect(cheesecake.getChanges()).toEqual(cheesecakeChanges);
+				expect(cheesecake.getChangesCount()).toEqual(cheesecakeChangesCount);
+			});
+
 			describe("removing it", function() {
 				beforeEach(function() {
 					subsector.removeActor("1");
 					changes = [[], []];
+					cheesecakeChanges = [];
+					cheesecakeChangesCount = 0;
 				});
 
 				it("should not include it", function() {
 					expect(subsector.actorChanges).toEqual(changes);
 					expect(sector.actorChanges).toEqual(changes);
 				});
+
+				it("should generate cheesecake changes", function() {
+					expect(cheesecake.getChanges()).toEqual(cheesecakeChanges);
+					expect(cheesecake.getChangesCount()).toEqual(cheesecakeChangesCount);
+				});
+
 
 				describe("and adding it again", function() {
 					beforeEach(function() {
@@ -84,6 +123,25 @@ describe("Sector", function() {
 				subsector.addActor("22");
 				sChanges = [[], []];
 				ssChanges = [["22"], []];
+				cheesecakeChanges = [
+					{
+						id: "S1",
+						label: "Sector 1",
+						state: "saved",
+						subsectors: [
+							{
+								id: "SS1",
+								label: "Subsector 1",
+
+								state: "saved",
+								actors: ssChanges
+
+
+							}
+						]
+					}
+				];
+				cheesecakeChangesCount = 1;
 			});
 
 			it("should include it", function() {
@@ -91,6 +149,10 @@ describe("Sector", function() {
 				expect(sector.actorChanges).toEqual(sChanges);
 			});
 
+			it("should generate cheesecake changes", function() {
+				expect(cheesecake.getChanges()).toEqual(cheesecakeChanges);
+				expect(cheesecake.getChangesCount()).toEqual(cheesecakeChangesCount);
+			});
 
 			describe("removing it", function() {
 				beforeEach(function() {
@@ -112,11 +174,35 @@ describe("Sector", function() {
 			beforeEach(function() {
 				subsector.removeActor("12");
 				changes = [[], ["12"]];
+				cheesecakeChanges = [
+					{
+						id: "S1",
+						label: "Sector 1",
+						state: "saved",
+						actors: changes,
+						subsectors: [
+							{
+								id: "SS1",
+								label: "Subsector 1",
+								state: "saved",
+								actors: changes
+
+
+							}
+						]
+					}
+				];
+				cheesecakeChangesCount = 1;
 			});
 
 			it("should include it", function() {
 				expect(subsector.actorChanges).toEqual(changes);
 				expect(sector.actorChanges).toEqual(changes);
+			});
+
+			it("should generate cheesecake changes", function() {
+				expect(cheesecake.getChanges()).toEqual(cheesecakeChanges);
+				expect(cheesecake.getChangesCount()).toEqual(cheesecakeChangesCount);
 			});
 
 			describe("adding it", function() {

@@ -1,4 +1,5 @@
 //= require jquery
+//= require jquery.extensions
 //= require kinetic
 //
 //= require ./socialcheesecake/_header

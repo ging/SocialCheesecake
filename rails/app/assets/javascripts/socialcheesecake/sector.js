@@ -11,7 +11,8 @@ var socialCheesecake = socialCheesecake || {};
 		color : socialCheesecake.colors.normalSector.background,
 		auxiliar : false,
 		type : "normalSector",
-		subsectors : [{ name : "New Subsector 1" }]
+		state: "added",
+		subsectors : [{ label : "New Subsector 1" }]
 	};
 
 	socialCheesecake.Sector = function(settings) {
@@ -31,6 +32,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.phi = settings.phi;
 		this.delta = settings.delta;
 		this.label = settings.label;
+		this.state = settings.state;
 		this.color = settings.color;
 
 		if(settings.fontColor) this.fontColor = settings.fontColor;
@@ -59,6 +61,7 @@ var socialCheesecake = socialCheesecake || {};
 					delta : null,
 					rIn : null,
 					rOut : null,
+					state: settings.subsectors[i].state,
 					actors : settings.subsectors[i].actors,
 					color : socialCheesecake.colors.normalSector.background
 				});
@@ -90,9 +93,6 @@ var socialCheesecake = socialCheesecake || {};
 		this._region = null;
 	};
 
-	//ID beginning fot the new subsectors created by the user.
-	socialCheesecake.Sector.newSubsectorIdRoot = "new_";
-	
 	socialCheesecake.Sector.prototype._draw = function(context) {
 		var x = this.x;
 		var y = this.y;
@@ -780,8 +780,7 @@ var socialCheesecake = socialCheesecake || {};
 			x : this.x,
 			y : this.y,
 			delta : this.delta,
-			phi : this.phi,
-			id : socialCheesecake.Sector.newSubsectorIdRoot +'S'+ this.getIndex() +'s'+subectorIndex
+			phi : this.phi
 		};
 		//Rearrange subsectors
 		for(var i = subsectors.length ; i >= 0 ; i--){
@@ -907,6 +906,41 @@ var socialCheesecake = socialCheesecake || {};
 				this.actorChanges[1].push(actor.id);
 
 		}
+	};
+
+	socialCheesecake.Sector.prototype.changed = function() {
+		if (this.state !== "saved")
+			return true;
+
+		if (!$(this.actorChanges).compare([[], []]))
+			return true;
+
+		for (var i in this.subsectors) {
+			if (this.subsectors[i].changed())
+				return true;
+		}
+
+		return false;
+	};
+
+	socialCheesecake.Sector.prototype.getChanges = function() {
+		var changes = {
+			id: this.id,
+			label: this.label,
+			state: this.state
+		};
+
+		if (!$(this.actorChanges).compare([[], []]))
+			changes.actors = this.actorChanges;
+
+		$(this.subsectors).each(function(i, ss) {
+			if (ss.changed()) {
+				changes.subsectors = changes.subsectors || [];
+				changes.subsectors.push(ss.getChanges());
+			}
+		});
+
+		return changes;
 	};
 
 	socialCheesecake.Sector.prototype.getWidth = function (){

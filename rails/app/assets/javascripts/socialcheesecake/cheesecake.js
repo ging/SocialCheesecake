@@ -95,6 +95,7 @@ var socialCheesecake = socialCheesecake || {};
 				label : jsonSectors[i].label,
 				rOut : cheesecakeData.rMax,
 				subsectors : jsonSectors[i].subsectors,
+				state: jsonSectors[i].state,
 				type : "normalSector"
 			};
 			cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
@@ -140,6 +141,12 @@ var socialCheesecake = socialCheesecake || {};
 			this.sectors.shift();
 	};
 
+	/*
+	 * Animation to put the clicked sector in the focus of
+	 * the cheesecake.
+	 *
+	 * @params {Sector} The sector that was clicked
+	 */
 	socialCheesecake.Cheesecake.prototype.focusAndBlurCheesecake = function(sector) {
 		var cheesecake = this;
 		var sectorIndex;
@@ -259,6 +266,10 @@ var socialCheesecake = socialCheesecake || {};
 		var sectorNewDelta;
 		var sectorNewPhi;
 		var greySector;
+		// Callback for onSectorUnfocusBegin
+		// Si encuentra un auxiliarSector con simulate,
+		// llama a getAuxiliarClone con ese indice y
+		// opciones de geometria
 		var actions = function() {
 			//Localize the dummy and grey sectors
 			for(var i in auxiliarSectors) {
@@ -544,6 +555,7 @@ var socialCheesecake = socialCheesecake || {};
 				auxiliar : true,
 				type: "dummySector"
 			}
+
 			//if dummy doesnt exist, create a new one
 			if(!dummy){ 
 				dummy = new socialCheesecake.Sector({
@@ -579,7 +591,7 @@ var socialCheesecake = socialCheesecake || {};
 			}
 		}
 		return sector;
-	}
+	};
 
 	socialCheesecake.Cheesecake.prototype.getSubsectorById = function(id) {
 		var sectors = this.sectors;
@@ -595,15 +607,49 @@ var socialCheesecake = socialCheesecake || {};
 			}
 		}
 		return subsector;
-	}
+	};
 
 	socialCheesecake.Cheesecake.prototype.getChanges = function() {
-		return this._changes;
-	}
+		var changes = [];
+
+		$(this.sectors).each(function(i, sector) {
+			if (sector.type !== "normalSector")
+				// continue in $.each
+				return true;
+
+			if (sector.changed())
+				changes.push(sector.getChanges());
+		});
+
+		return changes;
+	};
+
+	socialCheesecake.Cheesecake.prototype.getChangesCount = function(changes) {
+		if (!changes)
+			changes = this.getChanges();
+
+		var count = 0;
+
+		$(changes).each(function(i, sector) {
+			if (sector.state !== "saved")
+				count += 1;
+
+			$(sector.subsectors).each(function(j, subsector) {
+				if (subsector.state !== "saved")
+					count += 1;
+
+				$(subsector.actors).each(function(k, list) {
+					count += list.length;
+				});
+			});
+		});
+
+		return count;
+	};
 
 	socialCheesecake.Cheesecake.prototype.getInitialState = function() {
 		return this._initialState;
-	}
+	};
 	
 	socialCheesecake.Cheesecake.prototype.getCurrentState = function() {
 		var state = [];
@@ -618,6 +664,7 @@ var socialCheesecake = socialCheesecake || {};
 
 			jsonSector.id = sector.id;
 			jsonSector.label = sector.label;
+			jsonSector.state = sector.state;
 			jsonSector.actors = sector.actors;
 			jsonSector.subsectors = [];
 
@@ -627,6 +674,7 @@ var socialCheesecake = socialCheesecake || {};
 
 				jsonSubsector.id = subsector.id;
 				jsonSubsector.label = subsector.label;
+				jsonSubsector.state = subsector.state;
 				jsonSubsector.actors = subsector.actors;
 			}
 		}

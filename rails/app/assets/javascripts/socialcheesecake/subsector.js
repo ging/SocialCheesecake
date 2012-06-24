@@ -33,6 +33,12 @@ var socialCheesecake = socialCheesecake || {};
 
 		this.originalActors = this.actors.slice();
 		this.actorChanges = [[], []];
+		console.dir(settings);
+		if (settings.state) {
+			this.state = settings.state;
+		} else {
+			this.state = "added";
+		}
 
 		this.originalAttr = {
 			x : this.x,
@@ -151,4 +157,27 @@ var socialCheesecake = socialCheesecake || {};
 
 		this.getCheesecake().calculatePortions();
 	};
-}) ();
+
+	socialCheesecake.Subsector.prototype.changed = function(){
+		if (this.state !== "saved")
+			return true;
+
+		if (!$(this.actorChanges).compare([[], []]))
+			return true;
+
+		return false;
+	};
+
+	socialCheesecake.Subsector.prototype.getChanges = function(){
+		var changes = {
+			id: this.id,
+			label: this.label,
+			state: this.state
+		};
+
+		if (!$(this.actorChanges).compare([[], []]))
+			changes.actors = this.actorChanges;
+
+		return changes;
+	};
+})();
