@@ -14,17 +14,17 @@ describe("Sector", function() {
 		sectors: [{
 			id: "S1",
 			label: "Sector 1",
-			state: "saved",
+			status: "saved",
 			subsectors: [{
 				id: "SS1",
 				label: "Subsector 1",
-				state: "saved",
+				status: "saved",
 				actors: [ "11", "12" ]
 			},
 			{
 				id: "SS2",
 				label: "Subsector 2",
-				state: "saved",
+				status: "saved",
 				actors: [ "21", "22" ]
 			
 			}]
@@ -55,12 +55,14 @@ describe("Sector", function() {
 						id: "S1",
 						label: "Sector 1",
 						actors: changes,
-						state: "saved",
+						status: "saved",
+						object: sector,
 						subsectors: [
 							{
 								id: "SS1",
 								label: "Subsector 1",
-								state: "saved",
+								status: "saved",
+								object: subsector,
 								actors: changes
 
 
@@ -127,13 +129,15 @@ describe("Sector", function() {
 					{
 						id: "S1",
 						label: "Sector 1",
-						state: "saved",
+						status: "saved",
+						object: sector,
 						subsectors: [
 							{
 								id: "SS1",
 								label: "Subsector 1",
 
-								state: "saved",
+								status: "saved",
+								object: subsector,
 								actors: ssChanges
 
 
@@ -178,13 +182,15 @@ describe("Sector", function() {
 					{
 						id: "S1",
 						label: "Sector 1",
-						state: "saved",
+						status: "saved",
+						object: sector,
 						actors: changes,
 						subsectors: [
 							{
 								id: "SS1",
 								label: "Subsector 1",
-								state: "saved",
+								status: "saved",
+								object: subsector,
 								actors: changes
 
 
