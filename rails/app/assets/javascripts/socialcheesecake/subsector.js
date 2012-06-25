@@ -112,8 +112,11 @@ var socialCheesecake = socialCheesecake || {};
 	};
 	
 	socialCheesecake.Subsector.prototype.removeActor = function(obj){
-		var actor = this.getActor(obj);
 		var index;
+		var actor = obj;
+
+		if (!(actor instanceof socialCheesecake.Actor))
+			actor = this.getActor(obj);
 
 		// remove from subsector list
 		index = $.inArray(actor.id, this.actors);
@@ -126,6 +129,7 @@ var socialCheesecake = socialCheesecake || {};
 
 		if (index !== -1)
 			actor.parents.splice(index, 1);
+
 
 		// remove from sector
 		this.parent.removeActor(actor);
