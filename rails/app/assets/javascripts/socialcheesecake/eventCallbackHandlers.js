@@ -125,6 +125,7 @@ var socialCheesecake = socialCheesecake || {};
 		onSectorFocusEnd : null,
 		onSectorUnfocusBegin : null,
 		onSectorUnfocusEnd : null,
-		onChange : null
+		onChange : null,
+		onSave: null
 	}
 })();

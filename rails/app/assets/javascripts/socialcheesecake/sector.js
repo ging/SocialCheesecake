@@ -11,7 +11,7 @@ var socialCheesecake = socialCheesecake || {};
 		color : socialCheesecake.colors.normalSector.background,
 		auxiliar : false,
 		type : "normalSector",
-		state: "added",
+		status: "added",
 		subsectors : [{ label : "New Subsector 1" }]
 	};
 
@@ -32,7 +32,7 @@ var socialCheesecake = socialCheesecake || {};
 		this.phi = settings.phi;
 		this.delta = settings.delta;
 		this.label = settings.label;
-		this.state = settings.state;
+		this.status = settings.status;
 		this.color = settings.color;
 
 		if(settings.fontColor) this.fontColor = settings.fontColor;
@@ -61,7 +61,7 @@ var socialCheesecake = socialCheesecake || {};
 					delta : null,
 					rIn : null,
 					rOut : null,
-					state: settings.subsectors[i].state,
+					status: settings.subsectors[i].status,
 					actors : settings.subsectors[i].actors,
 					color : socialCheesecake.colors.normalSector.background
 				});
@@ -465,7 +465,6 @@ var socialCheesecake = socialCheesecake || {};
 		var cheesecake = sector.getCheesecake();
 		var layer = sector.getLayer();
 		sector[name] = value;
-		if((sector.type == "normalSector") && (name == "label")) cheesecake.updateSectorChanges(sector);
 		if(layer) cheesecake.drawLayer(layer);
 	}
 	
@@ -790,8 +789,6 @@ var socialCheesecake = socialCheesecake || {};
 				subsectors[i]= new socialCheesecake.Subsector(settings);
 			}
 		}
-		//Communicate changes to Cheesecake
-		this.getCheesecake().updateSectorChanges(this);
 		return subsectors[subectorIndex];
 	}
 	
@@ -909,7 +906,7 @@ var socialCheesecake = socialCheesecake || {};
 	};
 
 	socialCheesecake.Sector.prototype.changed = function() {
-		if (this.state !== "saved")
+		if (this.status !== "saved")
 			return true;
 
 		if (!$(this.actorChanges).compare([[], []]))
@@ -927,7 +924,8 @@ var socialCheesecake = socialCheesecake || {};
 		var changes = {
 			id: this.id,
 			label: this.label,
-			state: this.state
+			status: this.status,
+			object: this
 		};
 
 		if (!$(this.actorChanges).compare([[], []]))
@@ -941,6 +939,40 @@ var socialCheesecake = socialCheesecake || {};
 		});
 
 		return changes;
+	};
+
+	socialCheesecake.Sector.prototype.saved = function(sectorId) {
+		this.id = sectorId;
+		this.status = "saved";
+
+		this.updated();
+	};
+
+	socialCheesecake.Sector.prototype.actorAdded = function(actorId) {
+		var list = this.actorChanges[0];
+		var index = $.inArray(actorId, list);
+
+		if (index !== -1) {
+			list.splice(index, 1)
+		}
+
+		this.updated();
+	};
+
+	socialCheesecake.Sector.prototype.actorRemoved = function(actorId) {
+		var list = this.actorChanges[1];
+		var index = $.inArray(actorId, list);
+
+		if (index !== -1) {
+			list.splice(index, 1)
+		}
+
+		this.updated();
+	};
+
+	socialCheesecake.Sector.prototype.updated = function(actorId) {
+		if (! this.changed())
+			this.parent.updated();
 	};
 
 	socialCheesecake.Sector.prototype.getWidth = function (){

@@ -9,6 +9,7 @@ var socialCheesecake = socialCheesecake || {};
 			y : cheesecakeData.center.y
 		};
 		cheesecake.rMax = cheesecakeData.rMax;
+		cheesecake.saveUrl = cheesecakeData.saveUrl;
 		cheesecake.sectors = [];
 		cheesecake.highlightedSector = null;
 		cheesecake.auxiliarSectors = [];
@@ -30,7 +31,6 @@ var socialCheesecake = socialCheesecake || {};
 		if(cheesecake.matchActorsNumber === null) cheesecake.matchActorsNumber = true;
 
 		cheesecake._initialState = {};
-		cheesecake._changes = {};
 
 		//Text settings
 		if(cheesecakeData.text) {
@@ -95,7 +95,7 @@ var socialCheesecake = socialCheesecake || {};
 				label : jsonSectors[i].label,
 				rOut : cheesecakeData.rMax,
 				subsectors : jsonSectors[i].subsectors,
-				state: jsonSectors[i].state,
+				status: jsonSectors[i].status,
 				type : "normalSector"
 			};
 			cheesecake.sectors[i] = new socialCheesecake.Sector(settings);
@@ -130,10 +130,25 @@ var socialCheesecake = socialCheesecake || {};
 		}
 	};
 
-	socialCheesecake.Cheesecake.prototype.saved = function() {
-		this.saveState();
-		this.enable();
+	socialCheesecake.Cheesecake.prototype.updated = function() {
+		if (this.changed())
+			return;
+
+		this.save();
 	};
+
+	socialCheesecake.Cheesecake.prototype.save = function() {
+		var cheesecake = this;
+
+		$.post(this.saveUrl, { data: JSON.stringify(this.getCurrentState()) }, function() {
+			var callback = socialCheesecake.eventCallbackHandlers.onSave;
+			if (callback)
+				callback(cheesecake);
+
+			cheesecake.enable();
+		});
+	};
+
 
 		// hack remove black sector
 	socialCheesecake.Cheesecake.prototype.clearBlackSector = function() {
@@ -367,65 +382,8 @@ var socialCheesecake = socialCheesecake || {};
 			return;
 		}
 		sector.turnExtraIntoNewSubsector(subsectorIndex);
-	}
+	};
 	
-	/**
-	 * actorId 		- actor which changes one of its parents
-	 */
-	socialCheesecake.Cheesecake.prototype.updateActorMembership = function(actor) {
-		var changes = this._changes;
-		var grid = this.grid;
-		changes.actors = changes.actors || [];
-		var changesInActors = changes.actors;
-		var alreadyChanged = false;
-		var actorId = actor.id;
-		var actorParents = actor.getParentsIds();
-		var actorName = actor.name;
-		var actorExtraInfo = actor.extraInfo;
-		var onChange = socialCheesecake.eventCallbackHandlers.onChange;
-
-		for(var a in changesInActors) {
-			if(changesInActors[a].id == actorId) {
-				alreadyChanged = true;
-				changesInActors[a].subsectors = actorParents;
-			}
-		}
-		if(!alreadyChanged) {
-			changesInActors.push({
-				id : actorId,
-				subsectors : actorParents,
-				name : actorName,
-				extraInfo : actorExtraInfo,
-				justAdded : false
-			});
-		}
-		//Execute onChange Callback
-		if(onChange) onChange(this);
-	}
-	
-	/*
-	 * Executes when a sector is removed / added and/or subsectors are added or removed from them
-	 */
-	socialCheesecake.Cheesecake.prototype.updateSectorChanges = function(sector){
-		var changes = this._changes;
-		changes.sectors = changes.sectors || [];
-		var changesInSectors = changes.sectors;
-		var alreadyChanged = false;
-		for(var s in changesInSectors){
-			if(changesInSectors[s].id == sector.id){
-				alreadyChanged = true;
-				changesInSectors[s].subsectors = sector.getSubsectorsIds();
-				changesInSectors[s].label = sector.label;
-			}
-		}if(!alreadyChanged){
-			changesInSectors.push({
-				id : sector.id,
-				subsectors : sector.getSubsectorsIds(),
-				label : sector.label
-			});
-		}
-	}
-
 	socialCheesecake.Cheesecake.prototype.calculatePortions = function() {
 		var sectors = this.sectors;
 		var match = this.matchActorsNumber;
@@ -609,6 +567,11 @@ var socialCheesecake = socialCheesecake || {};
 		return subsector;
 	};
 
+
+	socialCheesecake.Cheesecake.prototype.changed = function() {
+		return this.getChanges().length !== 0;
+	};
+
 	socialCheesecake.Cheesecake.prototype.getChanges = function() {
 		var changes = [];
 
@@ -631,11 +594,11 @@ var socialCheesecake = socialCheesecake || {};
 		var count = 0;
 
 		$(changes).each(function(i, sector) {
-			if (sector.state !== "saved")
+			if (sector.status !== "saved")
 				count += 1;
 
 			$(sector.subsectors).each(function(j, subsector) {
-				if (subsector.state !== "saved")
+				if (subsector.status !== "saved")
 					count += 1;
 
 				$(subsector.actors).each(function(k, list) {
@@ -664,7 +627,7 @@ var socialCheesecake = socialCheesecake || {};
 
 			jsonSector.id = sector.id;
 			jsonSector.label = sector.label;
-			jsonSector.state = sector.state;
+			jsonSector.status = sector.status;
 			jsonSector.actors = sector.actors;
 			jsonSector.subsectors = [];
 
@@ -674,17 +637,12 @@ var socialCheesecake = socialCheesecake || {};
 
 				jsonSubsector.id = subsector.id;
 				jsonSubsector.label = subsector.label;
-				jsonSubsector.state = subsector.state;
+				jsonSubsector.status = subsector.status;
 				jsonSubsector.actors = subsector.actors;
 			}
 		}
 
 		return state;
-	};
-
-	socialCheesecake.Cheesecake.prototype.saveState = function() {
-		//TODO: save initalstate
-		this._changes = {};
 	};
 
 	socialCheesecake.Cheesecake.prototype.filter = function(pattern) {
