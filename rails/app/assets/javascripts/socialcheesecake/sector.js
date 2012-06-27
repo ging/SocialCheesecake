@@ -466,6 +466,8 @@ var socialCheesecake = socialCheesecake || {};
 		var layer = sector.getLayer();
 		sector[name] = value;
 		if(layer) cheesecake.drawLayer(layer);
+		
+		this.eventHandler('property.'+ name);
 	}
 	
 	/**
@@ -799,8 +801,8 @@ var socialCheesecake = socialCheesecake || {};
 	 * @return {Actor} The actor object
 	 *
 	 */
-	socialCheesecake.Sector.prototype.getActor = function(id){
-		return this.getGrid().getActor(id);
+	socialCheesecake.Sector.prototype.getActor = function(obj){
+		return this.getGrid().getActor(obj);
 	};
 
 	/* 
