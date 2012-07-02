@@ -93,6 +93,10 @@ var socialCheesecake = socialCheesecake || {};
 		this._region = null;
 	};
 
+	socialCheesecake.Sector.defaultSettings = function() {
+		return defaultSettings;
+	};
+
 	socialCheesecake.Sector.prototype._draw = function(context) {
 		var x = this.x;
 		var y = this.y;
